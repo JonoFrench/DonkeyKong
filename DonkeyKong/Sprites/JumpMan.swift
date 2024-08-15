@@ -20,7 +20,8 @@ struct JumpMan {
     var hasHammer = false
     var hammerFrame = false
     var jumpManPosition = CGPoint()
-    var frameSize: CGSize = CGSize(width: 30, height:  25)
+    //var frameSize: CGSize = CGSize(width: 30, height:  25)
+    var frameSize: CGSize = CGSize(width: 24, height:  24)
     var animateFrame = 0
     var facing:JMDirection = .right
     var currentFrame:ImageResource = ImageResource(name: "JM1", bundle: .main)
@@ -34,7 +35,7 @@ struct JumpMan {
 
     
     func calcPositionFromGrid(gameSize:CGSize, assetDimention: Double, xPos:Int,yPos:Int,heightAdjust:Double ) -> CGPoint {
-        let heightFactor = (gameSize.height - ( 27.0 * assetDimention)) / 4
+        let heightFactor = (gameSize.height - ( 26.0 * assetDimention)) / 4
         let heightPos = assetDimention * Double(yPos)
         return CGPoint(x: (gameSize.width / assetDimention) * Double(xPos) + (frameSize.width / 4), y: heightPos + heightFactor + frameSize.height )
     }

@@ -46,6 +46,7 @@
 		343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */; };
 		343E0DEF2C6AB1F100F79DA0 /* JumpMan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */; };
 		343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF02C6AB74300F79DA0 /* JumpManView.swift */; };
+		343E0DF32C6CE9CA00F79DA0 /* ScreenScratchPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,7 @@
 		343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonusBoxView.swift; sourceTree = "<group>"; };
 		343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpMan.swift; sourceTree = "<group>"; };
 		343E0DF02C6AB74300F79DA0 /* JumpManView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpManView.swift; sourceTree = "<group>"; };
+		343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenScratchPad.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				343E0D9A2C68D4D500F79DA0 /* Assets.xcassets */,
 				343E0D9C2C68D4D500F79DA0 /* Preview Content */,
 				343E0DE92C6A126600F79DA0 /* ScreenAsset.swift */,
+				343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */,
 			);
 			path = DonkeyKong;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
 				343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */,
+				343E0DF32C6CE9CA00F79DA0 /* ScreenScratchPad.swift in Sources */,
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
 				343E0DBA2C68DB1600F79DA0 /* HiScoreView.swift in Sources */,
 				343E0DBC2C68DF1800F79DA0 /* InfoView.swift in Sources */,
@@ -550,7 +554,6 @@
 				343E0DAA2C68D55200F79DA0 /* HighScores.xcdatamodel */,
 			);
 			currentVersion = 343E0DAA2C68D55200F79DA0 /* HighScores.xcdatamodel */;
-			name = HighScores.xcdatamodeld;
 			path = HighScores.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
