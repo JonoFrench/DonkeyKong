@@ -10,10 +10,11 @@ import QuartzCore
 import SwiftUI
 
 enum GameState {
-    case intro,getready,playing,ended,highscore
+    case intro,kongintro,howhigh,playing,ended,highscore
 }
 
 class GameManager: ObservableObject {
+    let soundFX:SoundFX = SoundFX()
     let animationSpeed = 0.08
     let animationFrames = 5
     
@@ -59,6 +60,15 @@ class GameManager: ObservableObject {
     
     var jmAnimationCounter = 0
     
+    @Published
+    var kongIntroCounter = 0
+    @Published
+    var kong:Kong = Kong()
+    var dkAnimationCounter = 0
+    var dkBouncePos = 0
+    var dkBounceYPos = 0
+    var pauline:Pauline = Pauline()
+    
     init() {
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
         let displayLink:CADisplayLink = CADisplayLink(target: self, selector: #selector(refreshModel))
@@ -66,6 +76,16 @@ class GameManager: ObservableObject {
     }
     
     @objc func refreshModel() {
+        if gameState == .kongintro {
+            if kong.state == .intro {
+                animateIntro()
+            } else if kong.state == .jumpingup {
+                animateJumpUp()
+            } else if kong.state == .bouncing {
+                animateHop()
+            }
+        }
+        
         if gameState == .playing {
             moveJumpMan()
             animateJumpMan()
@@ -79,14 +99,31 @@ class GameManager: ObservableObject {
         print("assetDimention \(assetDimention)")
         print("assetOffset \(assetOffset)")
         print("verticalOffset \(verticalOffset)")
+        setKongIntro()
+    }
+    
+    func startPlaying() {
         screenData = Screens().getScreenData()
-        
         jumpManXPos = 0
         jumpManYPos = 27
         //jumpMan.hasHammer = true
         jumpMan.jumpManPosition = jumpMan.calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: jumpManXPos,yPos: jumpManYPos,heightAdjust: screenData[jumpManXPos][jumpManYPos].assetOffset)
+        pauline.xPos = 6
+        pauline.yPos = 2
+        pauline.paulinePosition = calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: pauline.xPos,yPos: pauline.yPos,heightAdjust: -4.0,frameSize: pauline.frameSize)
+        kong.xPos = 2
+        kong.yPos = 2
+
+
+        kong.kongPosition = calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: kong.xPos,yPos: kong.yPos,heightAdjust: screenData[kong.xPos][kong.yPos].assetOffset,frameSize: kong.frameSize)
+        
+        pauline.paulinePosition.x += 4.0
+        kong.kongPosition.x += 8.0 // cos theres an asset mod on the line
+        kong.kongPosition.y -= 2.0 // cos theres an asset mod on the line
+        pauline.isShowing = true
         gameState = .playing
         whatsAround()
+
     }
     
     func moveJumpMan() {
@@ -276,6 +313,10 @@ class GameManager: ObservableObject {
     func calcPositionForAsset(xPos:Int, yPos:Int) -> CGPoint  {
         let assetOffsetAtPosition = screenData[yPos][xPos].assetOffset
         return CGPoint(x: Double(xPos) * assetDimention + (assetDimention / 2), y: Double(yPos) * assetDimention - (assetOffset * assetOffsetAtPosition) + 80)
+    }
+    
+    func calcPositionForXY(xPos:Int, yPos:Int, frameSize:CGSize) -> CGPoint  {
+        return CGPoint(x: assetDimention * Double(xPos) + (frameSize.width / 2) + (assetDimention / 2), y: assetDimention * Double(yPos) - (frameSize.height / 2) - 80 - (assetDimention / 2))
     }
     
     func calculateLadderHeightDown() {

@@ -46,7 +46,14 @@
 		343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */; };
 		343E0DEF2C6AB1F100F79DA0 /* JumpMan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */; };
 		343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF02C6AB74300F79DA0 /* JumpManView.swift */; };
-		343E0DF32C6CE9CA00F79DA0 /* ScreenScratchPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */; };
+		343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */; };
+		343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF42C6F669600F79DA0 /* KongIntroView.swift */; };
+		343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF62C6F66A800F79DA0 /* HowHighView.swift */; };
+		343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */; };
+		343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFA2C6F720F00F79DA0 /* KongView.swift */; };
+		343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFC2C6F73BE00F79DA0 /* Kong.swift */; };
+		347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645712C70DAA900E8AE5F /* PaulineView.swift */; };
+		347645742C70DAB900E8AE5F /* Pauline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645732C70DAB900E8AE5F /* Pauline.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,7 +98,14 @@
 		343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BonusBoxView.swift; sourceTree = "<group>"; };
 		343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpMan.swift; sourceTree = "<group>"; };
 		343E0DF02C6AB74300F79DA0 /* JumpManView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpManView.swift; sourceTree = "<group>"; };
-		343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenScratchPad.swift; sourceTree = "<group>"; };
+		343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenKongIntro.swift; sourceTree = "<group>"; };
+		343E0DF42C6F669600F79DA0 /* KongIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongIntroView.swift; sourceTree = "<group>"; };
+		343E0DF62C6F66A800F79DA0 /* HowHighView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighView.swift; sourceTree = "<group>"; };
+		343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerKongIntro.swift; sourceTree = "<group>"; };
+		343E0DFA2C6F720F00F79DA0 /* KongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongView.swift; sourceTree = "<group>"; };
+		343E0DFC2C6F73BE00F79DA0 /* Kong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kong.swift; sourceTree = "<group>"; };
+		347645712C70DAA900E8AE5F /* PaulineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaulineView.swift; sourceTree = "<group>"; };
+		347645732C70DAB900E8AE5F /* Pauline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pauline.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +150,7 @@
 				343E0D9A2C68D4D500F79DA0 /* Assets.xcassets */,
 				343E0D9C2C68D4D500F79DA0 /* Preview Content */,
 				343E0DE92C6A126600F79DA0 /* ScreenAsset.swift */,
-				343E0DF22C6CE9CA00F79DA0 /* ScreenScratchPad.swift */,
+				343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */,
 			);
 			path = DonkeyKong;
 			sourceTree = "<group>";
@@ -153,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				343E0DB42C68D5E300F79DA0 /* GameManager.swift */,
+				343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -172,6 +187,8 @@
 				343E0DE52C6A111800F79DA0 /* ScreenView.swift */,
 				343E0DE72C6A118F00F79DA0 /* NewHighScoreView.swift */,
 				343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */,
+				343E0DF42C6F669600F79DA0 /* KongIntroView.swift */,
+				343E0DF62C6F66A800F79DA0 /* HowHighView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -221,6 +238,10 @@
 			children = (
 				343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */,
 				343E0DF02C6AB74300F79DA0 /* JumpManView.swift */,
+				343E0DFA2C6F720F00F79DA0 /* KongView.swift */,
+				343E0DFC2C6F73BE00F79DA0 /* Kong.swift */,
+				347645712C70DAA900E8AE5F /* PaulineView.swift */,
+				347645732C70DAB900E8AE5F /* Pauline.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -309,10 +330,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				343E0DC42C68E36F00F79DA0 /* TopView.swift in Sources */,
+				343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
 				343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */,
+				347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */,
 				343E0DE42C6A10FC00F79DA0 /* GameView.swift in Sources */,
+				343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */,
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
 				343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
@@ -323,8 +347,11 @@
 				343E0DC02C68E24000F79DA0 /* IntroView.swift in Sources */,
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
+				343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */,
 				343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */,
-				343E0DF32C6CE9CA00F79DA0 /* ScreenScratchPad.swift in Sources */,
+				343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */,
+				343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */,
+				347645742C70DAB900E8AE5F /* Pauline.swift in Sources */,
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
 				343E0DBA2C68DB1600F79DA0 /* HiScoreView.swift in Sources */,
 				343E0DBC2C68DF1800F79DA0 /* InfoView.swift in Sources */,
@@ -332,6 +359,7 @@
 				343E0DEF2C6AB1F100F79DA0 /* JumpMan.swift in Sources */,
 				343E0DEA2C6A126600F79DA0 /* ScreenAsset.swift in Sources */,
 				343E0DAE2C68D55200F79DA0 /* HighScores.xcdatamodeld in Sources */,
+				343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */,
 				343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

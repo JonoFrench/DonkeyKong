@@ -22,20 +22,20 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity)
                         .background(.clear)
                 } 
-//                else if manager.gameState == .getready {
-//                    LevelView()
-//                        .background(.clear)
-//                        .zIndex(1.0)
-//                }  
+                else if manager.gameState == .kongintro {
+                    KongIntroView()
+                        .background(.clear)
+                        .zIndex(1.0)
+                }  
                 else if manager.gameState == .playing {
                         GameView()
                             .zIndex(1.0)
                 } 
- //                   else if manager.gameState == .ended {
-//                    GameOverView()
-//                        .background(.clear)
-//                        .zIndex(1.0)
-//                }
+                    else if manager.gameState == .howhigh {
+                    HowHighView()
+                        .background(.clear)
+                        .zIndex(1.0)
+                }
 //                else if manager.gameState == .highscore {
 //                    NewHighScoreView()
 //                        .background(.clear)
