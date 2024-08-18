@@ -14,16 +14,20 @@ enum JMState {
 enum JMDirection {
     case left,right
 }
-struct JumpMan {
+class JumpMan: ObservableObject {
     var xPos = 0
     var yPos = 0
+    @Published
     var hasHammer = false
     var hammerFrame = false
+    @Published
     var jumpManPosition = CGPoint()
     //var frameSize: CGSize = CGSize(width: 30, height:  25)
     var frameSize: CGSize = CGSize(width: 24, height:  24)
     var animateFrame = 0
+    @Published
     var facing:JMDirection = .right
+    @Published
     var currentFrame:ImageResource = ImageResource(name: "JM1", bundle: .main)
     
     var walking:[ImageResource] = [ImageResource(name: "JM2", bundle: .main),ImageResource(name: "JM3", bundle: .main),ImageResource(name: "JM1", bundle: .main)]

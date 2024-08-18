@@ -8,26 +8,26 @@
 import SwiftUI
 
 struct PaulineView: View {
-    var pauline:Pauline?
+    //@EnvironmentObject var manager: GameManager
+    @ObservedObject var pauline:Pauline
     var body: some View {
-        if let pauline = pauline {
+//        if let pauline = manager.pauline {
             ZStack {
-                if pauline.isShowing {
-                    Image(pauline.currentFrame)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: pauline.frameSize.width, height: pauline.frameSize.height)
-                    //                    .rotationEffect(Angle(degrees: 180))
-                        .background(.clear)
-                    //                    .scaleEffect(CGSize(width: 1, height: -1))
-                }
-                
+                //if let pauline = pauline {
+                    if pauline.isShowing {
+                        Image(pauline.currentFrame)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: pauline.frameSize.width, height: pauline.frameSize.height)
+                            .background(.clear)
+                    }
+              //  }
             }.background(.clear)
                 .frame(width: 1,height: 1,alignment: .center)
         }
-    }
+//    }
 }
 
-#Preview {
-    PaulineView()
-}
+//#Preview {
+//    PaulineView()
+//}

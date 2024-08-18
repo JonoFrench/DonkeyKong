@@ -61,16 +61,13 @@ extension GameManager {
             dkAnimationCounter = 0
         }
     }
-    
-    
+        
     func animateJumpUp() {
         dkAnimationCounter += 1
 
         if dkAnimationCounter == 4 {
             kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
             kongIntroCounter += 1
-            print("Kong jumping pos \(kong.kongPosition)")
-
             if kongIntroCounter > kong.jumpingPoints.count - 1 {
                 kong.yPos = 2
                 generateBouncingPoints()
@@ -82,12 +79,10 @@ extension GameManager {
                 kong.frameSize = CGSize(width: 72, height:  72)
                 kong.currentFrame = kong.kongFacing
                 kong.state = .sitting
-                print("Kong bouncing pos \(kong.kongPosition) x \(kong.xPos)")
                 bendLine(line: 7)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                     kong.state = .bouncing
                 }
-
             }
             dkAnimationCounter = 0
         }
@@ -99,18 +94,15 @@ extension GameManager {
             kong.kongPosition = kong.bouncingPoints[dkBouncePos][dkBounceYPos]
             dkBounceYPos += 1
             if dkBounceYPos == kong.bouncingPoints[dkBouncePos].count {
-                print("Bending line \(11 + (dkBouncePos * 4))")
-                print("y \(dkBounceYPos) x \(dkBouncePos)")
                 bendLine(line: 11 + (dkBouncePos * 4))
                 dkBouncePos += 1
                 dkBounceYPos = 0
             }
             if dkBouncePos == 5 {
                 kong.state = .sitting
-                DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) { [self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
                     showHowHigh()
                 }
-
             }
          dkAnimationCounter = 0
         }
@@ -118,11 +110,10 @@ extension GameManager {
     
     func showHowHigh(){
         gameState = .howhigh
-        soundFX.introSound()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [self] in
+        //soundFX.howHighSound()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [self] in
             startPlaying()
         }
-
     }
     
     func runIntro() {
@@ -141,19 +132,16 @@ extension GameManager {
         }
         kong.yPos -= 1
         kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
-        print("Kong pos \(kong.kongPosition)")
     }
 
     func generateBouncingPoints() {
         var c = 0
         for i in stride(from: 12, through: 4, by: -2) {
-            print("Generating for x \(i) y \(kong.yPos) to x \(i-2) y \(kong.yPos) ")
             var pointA = calcPositionForXY(xPos: i, yPos: kong.yPos,frameSize: kong.frameSize)
             pointA.y -= 4.0
             var pointB = calcPositionForXY(xPos: i - 2, yPos: kong.yPos,frameSize: kong.frameSize)
             pointB.y -= 4.0
             let points = generateParabolicPoints(from: pointA, to: pointB, angleInDegrees: -50)
-            //kong.bouncingPoints
             kong.bouncingPoints.append(points)
             c += 1
         }
@@ -193,14 +181,4 @@ extension GameManager {
         
         return points
     }
-    
-    func jumpKong() {
-        
-    }
-    
-    func hopKong() {
-        
-    }
-    
-    
 }

@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct JumpManView: View {
-    var jumpMan:JumpMan?
+    //var jumpMan:JumpMan?
+    @ObservedObject var jumpMan:JumpMan
     var body: some View {
-        if let jumpMan = jumpMan {
+        //if let jumpMan = jumpMan {
             ZStack {
                 if jumpMan.facing == .right {
                 Image(jumpMan.currentFrame)
@@ -27,9 +28,9 @@ struct JumpManView: View {
                         .frame(width: jumpMan.frameSize.width, height: jumpMan.frameSize.height)
                         //.rotationEffect(Angle(degrees: 180))
                         .background(.clear)
-                }
+            }
             }.background(.clear)
-        }
+       // }
     }
 }
 

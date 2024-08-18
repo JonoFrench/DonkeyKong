@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GameView: View {
     @EnvironmentObject var manager: GameManager
+    @ObservedObject var jumpMan:JumpMan
     var body: some View {
         ZStack {
             ScreenView()
@@ -25,6 +26,14 @@ struct GameView: View {
             PaulineView(pauline: manager.pauline)
                 .position(manager.pauline.paulinePosition)
                 .zIndex(1.9)
+            FlamesView(flames: manager.flames)
+                .position(manager.flames.flamesPosition)
+                .zIndex(1.9)
+            ForEach(manager.collectibles, id: \.id) { collectible in
+                CollectiblesView(collectible: collectible)
+                    .position(collectible.collectiblePosition)
+            }
+            
         }.zIndex(1.0)
     }
 }

@@ -10,31 +10,31 @@ import AVFoundation
 
 final class SoundFX {
     
-    var backGroundMusicAudioPlayer: AVAudioPlayer?
-    var deathAudioPlayer: AVAudioPlayer?
-    var hammerAudioPlayer: AVAudioPlayer?
-    var howHighAudioPlayer: AVAudioPlayer?
-    var introLongAudioPlayer: AVAudioPlayer?
-    var introAudioPlayer: AVAudioPlayer?
-    var jumpAudioPlayer: AVAudioPlayer?
-    var getAudioPlayer: AVAudioPlayer?
-    var barrelJumpAudioPlayer: AVAudioPlayer?
-    var walkingAudioPlayer: AVAudioPlayer?
-    var win1AudioPlayer: AVAudioPlayer?
-    var win2AudioPlayer: AVAudioPlayer?
+    private var backGroundMusicAudioPlayer: AVAudioPlayer?
+    private var deathAudioPlayer: AVAudioPlayer?
+    private var hammerAudioPlayer: AVAudioPlayer?
+    private var howHighAudioPlayer: AVAudioPlayer?
+    private var introLongAudioPlayer: AVAudioPlayer?
+    private var introAudioPlayer: AVAudioPlayer?
+    private var jumpAudioPlayer: AVAudioPlayer?
+    private var getAudioPlayer: AVAudioPlayer?
+    private var barrelJumpAudioPlayer: AVAudioPlayer?
+    private var walkingAudioPlayer: AVAudioPlayer?
+    private var win1AudioPlayer: AVAudioPlayer?
+    private var win2AudioPlayer: AVAudioPlayer?
 
-    lazy var backgroundurl = Bundle.main.url(forResource: "bacmusic", withExtension: "wav")
-    lazy var deathurl = Bundle.main.url(forResource: "death", withExtension: "wav")
-    lazy var hammerurl = Bundle.main.url(forResource: "hammer", withExtension: "wav")
-    lazy var howhighurl = Bundle.main.url(forResource: "howhigh", withExtension: "wav")
-    lazy var introLongurl = Bundle.main.url(forResource: "intro1_long", withExtension: "wav")
-    lazy var introurl = Bundle.main.url(forResource: "intro1", withExtension: "wav")
-    lazy var jumpurl = Bundle.main.url(forResource: "jump", withExtension: "wav")
-    lazy var geturl = Bundle.main.url(forResource: "itemget", withExtension: "wav")
-    lazy var barrelJumpurl = Bundle.main.url(forResource: "jumpbar", withExtension: "wav")
-    lazy var walkingurl = Bundle.main.url(forResource: "walking", withExtension: "wav")
-    lazy var win1url = Bundle.main.url(forResource: "win1", withExtension: "wav")
-    lazy var win2url = Bundle.main.url(forResource: "win2", withExtension: "wav")
+    private lazy var backgroundurl = Bundle.main.url(forResource: "bacmusic", withExtension: "wav")
+    private lazy var deathurl = Bundle.main.url(forResource: "death", withExtension: "wav")
+    private lazy var hammerurl = Bundle.main.url(forResource: "hammer", withExtension: "wav")
+    private lazy var howhighurl = Bundle.main.url(forResource: "howhigh", withExtension: "wav")
+    private lazy var introLongurl = Bundle.main.url(forResource: "intro1_long", withExtension: "wav")
+    private lazy var introurl = Bundle.main.url(forResource: "intro1", withExtension: "wav")
+    private lazy var jumpurl = Bundle.main.url(forResource: "jump", withExtension: "wav")
+    private lazy var geturl = Bundle.main.url(forResource: "itemget", withExtension: "wav")
+    private lazy var barrelJumpurl = Bundle.main.url(forResource: "jumpbar", withExtension: "wav")
+    private lazy var walkingurl = Bundle.main.url(forResource: "walking", withExtension: "wav")
+    private lazy var win1url = Bundle.main.url(forResource: "win1", withExtension: "wav")
+    private lazy var win2url = Bundle.main.url(forResource: "win2", withExtension: "wav")
 
     init() {
         do {

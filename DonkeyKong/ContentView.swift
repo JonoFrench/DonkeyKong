@@ -23,12 +23,12 @@ struct ContentView: View {
                         .background(.clear)
                 } 
                 else if manager.gameState == .kongintro {
-                    KongIntroView()
+                    KongIntroView(manager: manager,kong: manager.kong)
                         .background(.clear)
                         .zIndex(1.0)
                 }  
                 else if manager.gameState == .playing {
-                        GameView()
+                    GameView(jumpMan: manager.jumpMan)
                             .zIndex(1.0)
                 } 
                     else if manager.gameState == .howhigh {

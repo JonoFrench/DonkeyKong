@@ -54,6 +54,11 @@
 		343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFC2C6F73BE00F79DA0 /* Kong.swift */; };
 		347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645712C70DAA900E8AE5F /* PaulineView.swift */; };
 		347645742C70DAB900E8AE5F /* Pauline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645732C70DAB900E8AE5F /* Pauline.swift */; };
+		347645762C7218BD00E8AE5F /* Flames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645752C7218BD00E8AE5F /* Flames.swift */; };
+		347645782C7218D100E8AE5F /* FlamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645772C7218D100E8AE5F /* FlamesView.swift */; };
+		3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645792C725B2100E8AE5F /* DKFunctions.swift */; };
+		3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457B2C726A5700E8AE5F /* Collectible.swift */; };
+		3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,6 +111,11 @@
 		343E0DFC2C6F73BE00F79DA0 /* Kong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kong.swift; sourceTree = "<group>"; };
 		347645712C70DAA900E8AE5F /* PaulineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaulineView.swift; sourceTree = "<group>"; };
 		347645732C70DAB900E8AE5F /* Pauline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pauline.swift; sourceTree = "<group>"; };
+		347645752C7218BD00E8AE5F /* Flames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flames.swift; sourceTree = "<group>"; };
+		347645772C7218D100E8AE5F /* FlamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlamesView.swift; sourceTree = "<group>"; };
+		347645792C725B2100E8AE5F /* DKFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DKFunctions.swift; sourceTree = "<group>"; };
+		3476457B2C726A5700E8AE5F /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
+		3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectiblesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +161,7 @@
 				343E0D9C2C68D4D500F79DA0 /* Preview Content */,
 				343E0DE92C6A126600F79DA0 /* ScreenAsset.swift */,
 				343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */,
+				347645792C725B2100E8AE5F /* DKFunctions.swift */,
 			);
 			path = DonkeyKong;
 			sourceTree = "<group>";
@@ -242,6 +253,10 @@
 				343E0DFC2C6F73BE00F79DA0 /* Kong.swift */,
 				347645712C70DAA900E8AE5F /* PaulineView.swift */,
 				347645732C70DAB900E8AE5F /* Pauline.swift */,
+				347645752C7218BD00E8AE5F /* Flames.swift */,
+				347645772C7218D100E8AE5F /* FlamesView.swift */,
+				3476457B2C726A5700E8AE5F /* Collectible.swift */,
+				3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -329,8 +344,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */,
 				343E0DC42C68E36F00F79DA0 /* TopView.swift in Sources */,
 				343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */,
+				3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
 				343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */,
@@ -339,6 +356,7 @@
 				343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */,
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
 				343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */,
+				347645782C7218D100E8AE5F /* FlamesView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
 				343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */,
 				343E0DC22C68E2E600F79DA0 /* ControlsView.swift in Sources */,
@@ -346,6 +364,7 @@
 				343E0DC62C68F50B00F79DA0 /* SoundFX.swift in Sources */,
 				343E0DC02C68E24000F79DA0 /* IntroView.swift in Sources */,
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
+				3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
 				343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */,
 				343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */,
@@ -353,6 +372,7 @@
 				343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */,
 				347645742C70DAB900E8AE5F /* Pauline.swift in Sources */,
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
+				347645762C7218BD00E8AE5F /* Flames.swift in Sources */,
 				343E0DBA2C68DB1600F79DA0 /* HiScoreView.swift in Sources */,
 				343E0DBC2C68DF1800F79DA0 /* InfoView.swift in Sources */,
 				343E0DE82C6A118F00F79DA0 /* NewHighScoreView.swift in Sources */,

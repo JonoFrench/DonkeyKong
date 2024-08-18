@@ -33,7 +33,8 @@ class GameManager: ObservableObject {
     var score = 0
     var highScore = 9999
     var level = 1
-    var bonus = 0
+    @Published
+    var bonus = 4000
     ///New High Score Handling
     @Published
     var letterIndex = 0
@@ -44,7 +45,7 @@ class GameManager: ObservableObject {
     
     var screenData:[[ScreenAsset]] = [[]]
     ///Sprites of sorts....
-    @Published
+    @ObservedObject
     var jumpMan:JumpMan = JumpMan()
     var isWalking = false
     var isWalkingRight = false
@@ -62,13 +63,15 @@ class GameManager: ObservableObject {
     
     @Published
     var kongIntroCounter = 0
-    @Published
-    var kong:Kong = Kong()
+    @ObservedObject var kong:Kong = Kong()
     var dkAnimationCounter = 0
     var dkBouncePos = 0
     var dkBounceYPos = 0
-    var pauline:Pauline = Pauline()
-    
+    @ObservedObject var pauline:Pauline = Pauline()
+    let heartBeat = 0.6
+    @ObservedObject var flames:Flames = Flames()
+    var collectibles:[Collectible] = []
+
     init() {
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
         let displayLink:CADisplayLink = CADisplayLink(target: self, selector: #selector(refreshModel))
@@ -89,6 +92,8 @@ class GameManager: ObservableObject {
         if gameState == .playing {
             moveJumpMan()
             animateJumpMan()
+            pauline.animate()
+            flames.animate()
         }
     }
     
@@ -100,6 +105,7 @@ class GameManager: ObservableObject {
         print("assetOffset \(assetOffset)")
         print("verticalOffset \(verticalOffset)")
         setKongIntro()
+        //startPlaying()
     }
     
     func startPlaying() {
@@ -117,13 +123,53 @@ class GameManager: ObservableObject {
 
         kong.kongPosition = calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: kong.xPos,yPos: kong.yPos,heightAdjust: screenData[kong.xPos][kong.yPos].assetOffset,frameSize: kong.frameSize)
         
-        pauline.paulinePosition.x += 4.0
+        pauline.paulinePosition.x += 8.0
         kong.kongPosition.x += 8.0 // cos theres an asset mod on the line
         kong.kongPosition.y -= 2.0 // cos theres an asset mod on the line
         pauline.isShowing = true
+        flames.flamesPosition = calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: flames.xPos,yPos: flames.yPos,heightAdjust: screenData[flames.xPos][flames.yPos].assetOffset,frameSize: flames.frameSize)
+        flames.flamesPosition.y -= 9
+        flames.flamesPosition.x -= 11
+        collectibles.append(Collectible(type: .hammer, xPos: 2, yPos: 10, position: calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: 2,yPos: 10,heightAdjust: 0.0,frameSize: CGSize(width: 18, height: 18))))
+        collectibles.append(Collectible(type: .hammer, xPos: 10, yPos: 22, position: calcPositionFromGrid(gameSize: gameSize, assetDimention: assetDimention,xPos: 10,yPos: 22,heightAdjust: 0.0,frameSize: CGSize(width: 18, height: 18))))
         gameState = .playing
+        startBonusCountdown()
+        //startHeartBeat()
         whatsAround()
-
+    }
+    
+    func startBonusCountdown() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            bonus -= 100
+            if bonus > 0 {
+                startBonusCountdown()
+            }
+        }
+    }
+    
+    /// Sound FX of the game
+    func startHeartBeat(){
+        if gameState == .playing {
+            DispatchQueue.main.asyncAfter(deadline: .now() + heartBeat) { [self] in
+                soundFX.backgroundSound()
+                DispatchQueue.main.asyncAfter(deadline: .now() + heartBeat) { [self] in
+                    soundFX.backgroundSound()
+                    startHeartBeat()
+                }
+            }
+        }
+    }
+    
+    func animatePauline() {
+        pauline.animateCounter += 1
+        if pauline.animateCounter == pauline.animateFrames {
+            pauline.currentFrame = pauline.standing[pauline.cFrame]
+            pauline.cFrame += 1
+            if pauline.cFrame == 4 {
+                pauline.cFrame = 0
+            }
+            pauline.animateCounter = 0
+        }
     }
     
     func moveJumpMan() {

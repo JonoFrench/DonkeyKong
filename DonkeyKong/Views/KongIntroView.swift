@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct KongIntroView: View {
-    @EnvironmentObject var manager: GameManager
+    @ObservedObject var manager: GameManager
+    @ObservedObject var kong:Kong
     var body: some View {
         ZStack {
             ForEach(0..<28) { y in
@@ -29,7 +30,7 @@ struct KongIntroView: View {
             KongView(kong: manager.kong)
                 .position(manager.kong.kongPosition)
                 .zIndex(2.0)
-                    PaulineView(pauline: manager.pauline)
+            PaulineView(pauline: manager.pauline)
                         .position(manager.pauline.paulinePosition)
                         .zIndex(1.9)
         }
