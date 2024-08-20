@@ -49,16 +49,12 @@ class GameManager: ObservableObject {
     var jumpMan:JumpMan = JumpMan()
     var ladderHeight = 0.0
     var ladderStep = 0.0
-    var startedClimbing = false
     
     var jmAnimationCounter = 0
     
     @Published
     var kongIntroCounter = 0
     @ObservedObject var kong:Kong = Kong()
-    var dkAnimationCounter = 0
-    var dkBouncePos = 0
-    var dkBounceYPos = 0
     @ObservedObject var pauline:Pauline = Pauline()
     let heartBeat = 0.6
     @ObservedObject var flames:Flames = Flames()
@@ -73,11 +69,11 @@ class GameManager: ObservableObject {
     @objc func refreshModel() {
         if gameState == .kongintro {
             if kong.state == .intro {
-                animateIntro()
+                animateKongIntro()
             } else if kong.state == .jumpingup {
-                animateJumpUp()
+                animateKongJumpUp()
             } else if kong.state == .bouncing {
-                animateHop()
+                animateKongHop()
             }
         }
         
@@ -96,7 +92,7 @@ class GameManager: ObservableObject {
         print("assetDimention \(assetDimention)")
         print("assetOffset \(assetOffset)")
         print("verticalOffset \(verticalOffset)")
-        setKongIntro()
+        setKongIntro()   // If we don't want the intro....
         //startPlaying()
     }
     
@@ -113,24 +109,24 @@ class GameManager: ObservableObject {
         jumpMan.xPos = 2
         jumpMan.yPos = 27
         //jumpMan.hasHammer = true
-        jumpMan.jumpManPosition = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+        jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
         
         pauline.xPos = 14
         pauline.yPos = 3
-        pauline.paulinePosition = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
+        pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
         kong.xPos = 6
         kong.yPos = 7
-        kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
-        kong.kongPosition.y += 7
+        kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+        kong.position.y += 7
         pauline.isShowing = true
-        flames.flamesPosition = calcPositionFromScreen(xPos: flames.xPos,yPos: flames.yPos,frameSize: flames.frameSize)
-        flames.flamesPosition.y += 4
-        flames.flamesPosition.x -= 8
+        flames.position = calcPositionFromScreen(xPos: flames.xPos,yPos: flames.yPos,frameSize: flames.frameSize)
+        flames.position.y += 4
+        flames.position.x -= 8
         
         let collectible1 = Collectible(type: .hammer, xPos: 3, yPos: 10)
-        collectible1.collectiblePosition = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
+        collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
         let collectible2 = Collectible(type: .hammer, xPos: 20, yPos: 21)
-        collectible2.collectiblePosition = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
+        collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
         collectibles.append(collectible1)
         collectibles.append(collectible2)
     }
@@ -158,7 +154,7 @@ class GameManager: ObservableObject {
     }
     
     func moveJumpMan() {
-        if !jumpMan.isWalking {
+        if !jumpMan.isWalking && !jumpMan.isJumping {
             if jumpMan.isWalkingRight {
                 print("walk right")
                 walkRight()
@@ -176,15 +172,62 @@ class GameManager: ObservableObject {
                 climbDown()
             }
         }
+        if !jumpMan.isJumping {
+            if jumpMan.isJumpingUp {
+                jump()
+                print("Jump up")
+            }
+//            if jumpMan.isJumpingLeft {
+//                jumpMan.isWalkingLeft = false
+//                jump()
+//                print("Jump Left")
+//            }
+//            if jumpMan.isJumpingRight {
+//                jumpMan.isWalkingRight = false
+//                jump()
+//                print("Jump Right")
+//            }
+        }
+    }
+    
+    func jump() {
+        jumpMan.isJumping = true
+        jumpMan.willJump = false
+        jumpMan.isWalking = false
+        let pointA = jumpMan.position
+        var pointB = CGPoint()
+        var points = [CGPoint]()
+        if jumpMan.isJumpingLeft {
+            pointB = calcPositionFromScreen(xPos: jumpMan.xPos - 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+//            pointB.y -= screenData[jumpMan.yPos][jumpMan.xPos - 2].assetOffset
+            points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: -60)
+        } else {
+            pointB = calcPositionFromScreen(xPos: jumpMan.xPos + 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+//            pointB.y -= screenData[jumpMan.yPos][jumpMan.xPos + 2].assetOffset
+            points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: 60)
+        }
+        points[6] = pointB
+        jumpMan.jumpingPoints = points
+
+        
+    }
+    
+    func jumpLeft() {
+        jumpMan.isJumping = true
+    }
+    
+    func jumpRight() {
+        jumpMan.isJumping = true
+
     }
     
     func animateJumpMan(){
-        guard jumpMan.isWalking || jumpMan.isClimbing else {
+        guard jumpMan.isWalking || jumpMan.isClimbing || jumpMan.isJumping else {
             return
         }
         if jmAnimationCounter == jumpMan.animationFrames {
             if jumpMan.isWalking {
-                startedClimbing = false
+                jumpMan.startedClimbing = false
                 if jumpMan.facing == .right {
                     animateJMRight()
                 } else {
@@ -192,21 +235,53 @@ class GameManager: ObservableObject {
                 }
             } else if jumpMan.isClimbing {
                 if jumpMan.isClimbingUp {
-                    if !startedClimbing {
-                        startedClimbing = true
+                    if !jumpMan.startedClimbing {
+                        jumpMan.startedClimbing = true
                     }
                     animateJMUp()
                 } else {
-                    if !startedClimbing {
-                        startedClimbing = true
+                    if !jumpMan.startedClimbing {
+                        jumpMan.startedClimbing = true
                     }
                     animateJMDown()
                 }
+            } else if jumpMan.isJumping {
+                animateJMJumping()
             }
             jmAnimationCounter = 0
         }
         jmAnimationCounter += 1
     }
+    
+    func animateJMJumping() {
+        jumpMan.currentFrame = ImageResource(name: "JM2", bundle: .main)
+        if jumpMan.isJumpingUp {
+            jumpMan.position.y = jumpMan.jumpingPoints[jumpMan.jumpingFrame].y
+        } else {
+            jumpMan.position = jumpMan.jumpingPoints[jumpMan.jumpingFrame]
+        }
+        jumpMan.jumpingFrame += 1
+        if jumpMan.jumpingFrame == jumpMan.jumpingPoints.count {
+            jumpMan.jumpingFrame = 0
+            jumpMan.jumpingPoints.removeAll()
+            if jumpMan.isJumpingLeft {
+                jumpMan.xPos -= 2
+                jumpMan.isJumpingLeft = false
+            } else if jumpMan.isJumpingRight {
+                jumpMan.xPos += 2
+                jumpMan.isJumpingRight = false
+            }
+            jumpMan.isJumping = false
+            jumpMan.isJumpingUp = false
+            jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
+            currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+            jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+        }
+
+    }
+    
+    
+
     
     func walkRight() {
         guard canMoveRight() else {
@@ -220,9 +295,9 @@ class GameManager: ObservableObject {
         currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
         if currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
             if currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
-                jumpMan.jumpManPosition.y += self.assetOffset
+                jumpMan.position.y += self.assetOffset
             } else {
-                jumpMan.jumpManPosition.y -= self.assetOffset
+                jumpMan.position.y -= self.assetOffset
             }
         }
     }
@@ -239,16 +314,15 @@ class GameManager: ObservableObject {
         currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
         if currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
             if currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
-                jumpMan.jumpManPosition.y += self.assetOffset
+                jumpMan.position.y += self.assetOffset
             } else {
-                jumpMan.jumpManPosition.y -= self.assetOffset
+                jumpMan.position.y -= self.assetOffset
             }
         }
     }
     
     func animateJMRight(){
-        print("walking right frame \(jumpMan.animateFrame)")
-        jumpMan.jumpManPosition.x += assetDimention / 3.0
+        jumpMan.position.x += assetDimention / 3.0
         if jumpMan.hasHammer {
             jumpMan.currentFrame = jumpMan.hammerFrame == false ? jumpMan.hammer1[jumpMan.animateFrame] : jumpMan.hammer2[jumpMan.animateFrame]
         } else {
@@ -262,12 +336,17 @@ class GameManager: ObservableObject {
             if jumpMan.xPos < screenDimentionX {
                 jumpMan.xPos += 1
             }
+            if jumpMan.willJump {
+                jumpMan.isJumping = true
+                jumpMan.isJumpingRight = true
+                jump()
+            }
             whatsAround()
         }
     }
     
     func animateJMLeft(){
-        jumpMan.jumpManPosition.x -= assetDimention / 3.0
+        jumpMan.position.x -= assetDimention / 3.0
         if jumpMan.hasHammer {
             jumpMan.currentFrame = jumpMan.hammerFrame == false ? jumpMan.hammer1[jumpMan.animateFrame] : jumpMan.hammer2[jumpMan.animateFrame]
         } else {
@@ -281,12 +360,18 @@ class GameManager: ObservableObject {
             if jumpMan.xPos > 0 {
                 jumpMan.xPos -= 1
             }
+            if jumpMan.willJump {
+                jumpMan.isJumping = true
+                jumpMan.isJumpingLeft = true
+                jump()
+            }
+
             whatsAround()
         }
     }
     
     func animateJMUp(){
-        jumpMan.jumpManPosition.y -= ladderStep / 4.0
+        jumpMan.position.y -= ladderStep / 4.0
         jumpMan.currentFrame = jumpMan.climbing[jumpMan.animateFrame]
         jumpMan.animateFrame += 1
         if jumpMan.facing == .left {
@@ -312,7 +397,7 @@ class GameManager: ObservableObject {
     }
     
     func animateJMDown() {
-        jumpMan.jumpManPosition.y += ladderStep / 4.0
+        jumpMan.position.y += ladderStep / 4.0
         jumpMan.currentFrame = jumpMan.climbing[jumpMan.animateFrame]
         jumpMan.animateFrame += 1
         if jumpMan.facing == .left {
@@ -344,7 +429,7 @@ class GameManager: ObservableObject {
             yCount += 1
         }
         let endPosition = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos - (yCount + 1),frameSize: jumpMan.frameSize)
-        ladderHeight = jumpMan.jumpManPosition.y - endPosition.y
+        ladderHeight = jumpMan.position.y - endPosition.y
         ladderStep = ladderHeight / Double(yCount + 1)
     }
     
@@ -355,7 +440,7 @@ class GameManager: ObservableObject {
             yCount += 1
         }
         let endPosition = calcPositionFromScreen(xPos: jumpMan.xPos, yPos: jumpMan.yPos+(yCount+1),frameSize: jumpMan.frameSize)
-        ladderHeight = endPosition.y - jumpMan.jumpManPosition.y
+        ladderHeight = endPosition.y - jumpMan.position.y
         ladderStep = ladderHeight / Double(yCount+1)
     }
     
@@ -411,7 +496,7 @@ class GameManager: ObservableObject {
     }
     
     func canMoveLeft() -> Bool {
-        guard jumpMan.xPos > 0 else {
+        guard jumpMan.xPos > 0 || !jumpMan.willJump else {
             return false
         }
         if screenData[jumpMan.yPos][jumpMan.xPos - 1].assetType != .blank {
@@ -421,7 +506,7 @@ class GameManager: ObservableObject {
     }
     
     func canMoveRight() -> Bool {
-        guard jumpMan.xPos < screenDimentionX - 2 else {
+        guard jumpMan.xPos < screenDimentionX - 2 || !jumpMan.willJump else {
             return false
         }
         if screenData[jumpMan.yPos][jumpMan.xPos + 1].assetType != .blank {
@@ -461,9 +546,9 @@ class GameManager: ObservableObject {
     }
     
     func whatsAround() {
-        //return
+        return
         print("JumpMan Current position is X \(jumpMan.xPos) Y \(jumpMan.yPos)")
-        print("JumpMan Current screen position is \(jumpMan.jumpManPosition)")
+        print("JumpMan Current screen position is \(jumpMan.position)")
         print("JumpMan Current height offset is \(currentHeightOffset)")
         print("Current Standing on is \(screenData[jumpMan.yPos][jumpMan.xPos].assetType)")
         if jumpMan.xPos == 0 {

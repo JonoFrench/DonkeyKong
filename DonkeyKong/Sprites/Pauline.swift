@@ -14,7 +14,7 @@ class Pauline: ObservableObject {
     var cFrame = 0
     var xPos = 0
     var yPos = 0
-    var paulinePosition = CGPoint()
+    var position = CGPoint()
     var frame = 0
     @Published
     var currentFrame:ImageResource = ImageResource(name: "Pauline1", bundle: .main)

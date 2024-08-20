@@ -14,10 +14,10 @@ struct KongIntroView: View {
         ZStack {
             ScreenView()
             KongView(kong: manager.kong)
-                .position(manager.kong.kongPosition)
+                .position(manager.kong.position)
                 .zIndex(2.0)
             PaulineView(pauline: manager.pauline)
-                        .position(manager.pauline.paulinePosition)
+                        .position(manager.pauline.position)
                         .zIndex(1.9)
         }
     }

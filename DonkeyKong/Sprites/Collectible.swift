@@ -19,7 +19,7 @@ class Collectible: ObservableObject {
     var xPos = 0
     var yPos = 0
     var type: CollectibleType = .hammer
-    var collectiblePosition = CGPoint()
+    var position = CGPoint()
     var currentFrame:ImageResource = ImageResource(name: "Hammer", bundle: .main)
     var frameSize: CGSize = CGSize(width: 24, height:  24)
     @Published
@@ -29,10 +29,8 @@ class Collectible: ObservableObject {
         self.type = type
         self.xPos = xPos
         self.yPos = yPos
-       // self.collectiblePosition = position
     }
-    
-    
+        
     func collectibleImage() -> ImageResource  {
         switch type {
         case .hammer : return ImageResource(name: "Hammer", bundle: .main)

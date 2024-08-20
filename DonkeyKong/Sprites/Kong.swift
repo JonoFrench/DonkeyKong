@@ -18,7 +18,7 @@ class Kong: ObservableObject {
     @Published
     var state:KongState = .waiting
     @Published
-    var kongPosition = CGPoint()
+    var position = CGPoint()
     var currentFrame:ImageResource = ImageResource(name: "KongClimbRight", bundle: .main)
     let kongClimbLeft:ImageResource = ImageResource(name: "KongClimbLeft", bundle: .main)
     let kongClimbRight:ImageResource = ImageResource(name: "KongClimbRight", bundle: .main)
@@ -27,5 +27,8 @@ class Kong: ObservableObject {
     var frameSize: CGSize = CGSize(width: 72, height:  72)
     var jumpingPoints:[Int] = [11,10,9,8,7,8]
     var bouncingPoints = [[CGPoint]]()
+    var animationCounter = 0
+    var bouncePos = 0
+    var bounceYPos = 0
 
 }

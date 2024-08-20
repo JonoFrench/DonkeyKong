@@ -13,7 +13,7 @@ class Flames: ObservableObject {
     var animateCounter = 0
     var xPos = 4
     var yPos = 25
-    var flamesPosition = CGPoint()
+    var position = CGPoint()
     var currentFrame:ImageResource = ImageResource(name: "Flames", bundle: .main)
     var frameSize: CGSize = CGSize(width: 24, height:  24)
     @Published

@@ -32,6 +32,16 @@ struct ControlsView: View {
                     // Jump action
                     if manager.gameState == .intro {
                         manager.startGame()
+                    } else if manager.gameState == .playing {
+                        if manager.jumpMan.canJump() {
+                            if manager.jumpMan.isWalkingLeft || manager.jumpMan.isWalkingRight {
+                                print("Jump activated")
+                                manager.jumpMan.willJump = true
+                            } else {
+                                print("Jump Now")
+                                manager.jumpMan.isJumpingUp = true
+                            }
+                        }
                     }
                 }) {
                     Image("ControlJump")

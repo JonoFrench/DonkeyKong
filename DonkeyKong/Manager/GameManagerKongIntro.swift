@@ -14,11 +14,11 @@ extension GameManager {
         screenData = KongScreen().getScreenData()
         kong.xPos = 16
         kong.yPos = 25
-        dkAnimationCounter = 0
-        kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        kong.animationCounter = 0
+        kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
         adjustKongPosition()
         setLadders()
-        runIntro()
+        runKongIntro()
     }
     
     func setLadders() {
@@ -44,9 +44,9 @@ extension GameManager {
         }
     }
     
-    func animateIntro() {
-        dkAnimationCounter += 1
-        if dkAnimationCounter == 14 {
+    func animateKongIntro() {
+        kong.animationCounter += 1
+        if kong.animationCounter == 14 {
             
             kongIntroCounter -= 1
             if kongIntroCounter > 10 {
@@ -57,23 +57,23 @@ extension GameManager {
                 kongIntroCounter = 0
                 
             }
-            dkAnimationCounter = 0
+            kong.animationCounter = 0
         }
     }
         
-    func animateJumpUp() {
-        dkAnimationCounter += 1
+    func animateKongJumpUp() {
+        kong.animationCounter += 1
 
-        if dkAnimationCounter == 4 {
-            kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
+        if kong.animationCounter == 4 {
+            kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
             adjustKongPosition()
             kongIntroCounter += 1
             if kongIntroCounter > kong.jumpingPoints.count - 1 {
                 kong.yPos = 7
                 generateBouncingPoints()
-                pauline.paulinePosition = calcPositionFromScreen(xPos: 14, yPos: 3,frameSize: pauline.frameSize)
+                pauline.position = calcPositionFromScreen(xPos: 14, yPos: 3,frameSize: pauline.frameSize)
                 pauline.isShowing = true
-                kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+                kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
                 adjustKongPosition()
                 kong.currentFrame = kong.kongFacing
                 kong.state = .sitting
@@ -82,28 +82,28 @@ extension GameManager {
                     kong.state = .bouncing
                 }
             }
-            dkAnimationCounter = 0
+            kong.animationCounter = 0
         }
     }
     
-    func animateHop(){
-        dkAnimationCounter += 1
-        if dkAnimationCounter == 4 {
-            kong.kongPosition = kong.bouncingPoints[dkBouncePos][dkBounceYPos]
+    func animateKongHop(){
+        kong.animationCounter += 1
+        if kong.animationCounter == 4 {
+            kong.position = kong.bouncingPoints[kong.bouncePos][kong.bounceYPos]
             adjustKongPosition()
-            dkBounceYPos += 1
-            if dkBounceYPos == kong.bouncingPoints[dkBouncePos].count {
-                bendLine(line: 11 + (dkBouncePos * 4))
-                dkBouncePos += 1
-                dkBounceYPos = 0
+            kong.bounceYPos += 1
+            if kong.bounceYPos == kong.bouncingPoints[kong.bouncePos].count {
+                bendLine(line: 11 + (kong.bouncePos * 4))
+                kong.bouncePos += 1
+                kong.bounceYPos = 0
             }
-            if dkBouncePos == 5 {
+            if kong.bouncePos == 5 {
                 kong.state = .sitting
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
                     showHowHigh()
                 }
             }
-         dkAnimationCounter = 0
+            kong.animationCounter = 0
         }
     }
     
@@ -114,7 +114,7 @@ extension GameManager {
         }
     }
     
-    func runIntro() {
+    func runKongIntro() {
         soundFX.introLongSound()
         kong.state = .intro
         kongIntroCounter = 27
@@ -129,13 +129,13 @@ extension GameManager {
             kong.currentFrame = kong.kongClimbRight
         }
         kong.yPos -= 1
-        kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
         adjustKongPosition()
     }
     
     func adjustKongPosition() {
-        kong.kongPosition.y += 9
-        kong.kongPosition.x += assetDimention / 2
+        kong.position.y += 9
+        kong.position.x += assetDimention / 2
     }
 
     func generateBouncingPoints() {
