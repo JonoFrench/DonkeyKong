@@ -9,7 +9,7 @@ import SwiftUI
 
 struct JoyPadView: View {
     @EnvironmentObject var manager: GameManager
-
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -24,16 +24,14 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.canClimbLadder() {
-                                        //manager.isClimbing = true
+                                        manager.calculateLadderHeightUp()
                                         manager.isClimbingUp = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                    //manager.isClimbingUp = false
                                 }
-                                // Up action
                             }
                     )
                 Spacer()
@@ -78,7 +76,6 @@ struct JoyPadView: View {
                         DragGesture(minimumDistance: 0)// Adjust duration as needed
                             .onChanged { _ in
                                 if manager.gameState == .playing {
-//                                    print("xpos \(manager.jumpManXPos) dim \(manager.screenDimentionX)")
                                     if manager.canMoveRight() {
                                         manager.isWalkingRight = true
                                     }
@@ -104,14 +101,13 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.canDecendLadder() {
-                                        //manager.isClimbing = true
+                                        manager.calculateLadderHeightDown()
                                         manager.isClimbingDown = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                   // manager.isClimbingDown = false
                                 }
                             }
                     )

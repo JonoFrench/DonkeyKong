@@ -10,7 +10,9 @@ import SwiftUI
 
 class DKFunctions {
     var assetDimention:Double = 0.0
-    
+    var gameSize = CGSize()
+    var screenSize = CGSize()
+
     init(assetDimention: Double) {
         self.assetDimention = assetDimention
     }

@@ -24,21 +24,8 @@ class Kong: ObservableObject {
     let kongClimbRight:ImageResource = ImageResource(name: "KongClimbRight", bundle: .main)
     let kongFacing:ImageResource = ImageResource(name: "KongFacing", bundle: .main)
     var kongStep = false
-    var frameSize: CGSize = CGSize(width: 96, height:  96)
-    var jumpingPoints:[Int] = [5,4,3,2,1,2]
+    var frameSize: CGSize = CGSize(width: 72, height:  72)
+    var jumpingPoints:[Int] = [11,10,9,8,7,8]
     var bouncingPoints = [[CGPoint]]()
 
-    
-//    func generateBouncingPoints() {
-//        var c = 0
-//        for i in stride(from: 12, through: 4, by: -2) {
-//            var pointA = calcPositionForXY(xPos: i, yPos: kong.yPos,frameSize: kong.frameSize)
-//            pointA.y -= 4.0
-//            var pointB = calcPositionForXY(xPos: i - 2, yPos: kong.yPos,frameSize: kong.frameSize)
-//            pointB.y -= 4.0
-//            let points = generateParabolicPoints(from: pointA, to: pointB, angleInDegrees: -50)
-//            kong.bouncingPoints.append(points)
-//            c += 1
-//        }
-//    }
 }

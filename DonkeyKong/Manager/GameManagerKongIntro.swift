@@ -9,20 +9,19 @@ import Foundation
 
 extension GameManager {
  
-    
     func setKongIntro() {
         gameState = .kongintro
         screenData = KongScreen().getScreenData()
-        kong.xPos = 13
-        kong.yPos = 19
+        kong.xPos = 16
+        kong.yPos = 25
         dkAnimationCounter = 0
-        kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        adjustKongPosition()
         setLadders()
         runIntro()
     }
     
     func setLadders() {
-        
         for i in 8..<27 {
             screenData[i][15] = ScreenAsset(assetType: .ladder, assetOffset: 0.0)
             screenData[i][17] = ScreenAsset(assetType: .ladder, assetOffset: 0.0)
@@ -66,17 +65,16 @@ extension GameManager {
         dkAnimationCounter += 1
 
         if dkAnimationCounter == 4 {
-            kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
+            kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
+            adjustKongPosition()
             kongIntroCounter += 1
             if kongIntroCounter > kong.jumpingPoints.count - 1 {
-                kong.yPos = 2
+                kong.yPos = 7
                 generateBouncingPoints()
-                pauline.paulinePosition = calcPositionForXY(xPos: 12, yPos: -3,frameSize: pauline.frameSize)
-                pauline.paulinePosition.y -= 4.0 // cos theres an asset mod on the line
+                pauline.paulinePosition = calcPositionFromScreen(xPos: 14, yPos: 3,frameSize: pauline.frameSize)
                 pauline.isShowing = true
-                kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
-                kong.kongPosition.y -= 4.0 // cos theres an asset mod on the line
-                kong.frameSize = CGSize(width: 72, height:  72)
+                kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+                adjustKongPosition()
                 kong.currentFrame = kong.kongFacing
                 kong.state = .sitting
                 bendLine(line: 7)
@@ -92,6 +90,7 @@ extension GameManager {
         dkAnimationCounter += 1
         if dkAnimationCounter == 4 {
             kong.kongPosition = kong.bouncingPoints[dkBouncePos][dkBounceYPos]
+            adjustKongPosition()
             dkBounceYPos += 1
             if dkBounceYPos == kong.bouncingPoints[dkBouncePos].count {
                 bendLine(line: 11 + (dkBouncePos * 4))
@@ -110,7 +109,6 @@ extension GameManager {
     
     func showHowHigh(){
         gameState = .howhigh
-        //soundFX.howHighSound()
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [self] in
             startPlaying()
         }
@@ -131,28 +129,27 @@ extension GameManager {
             kong.currentFrame = kong.kongClimbRight
         }
         kong.yPos -= 1
-        kong.kongPosition = calcPositionForXY(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        kong.kongPosition = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.yPos,frameSize: kong.frameSize)
+        adjustKongPosition()
+    }
+    
+    func adjustKongPosition() {
+        kong.kongPosition.y += 9
+        kong.kongPosition.x += assetDimention / 2
     }
 
     func generateBouncingPoints() {
         var c = 0
-        for i in stride(from: 12, through: 4, by: -2) {
-            var pointA = calcPositionForXY(xPos: i, yPos: kong.yPos,frameSize: kong.frameSize)
+        for i in stride(from: 16, through: 8, by: -2) {
+            var pointA = calcPositionFromScreen(xPos: i, yPos: kong.yPos,frameSize: kong.frameSize)
             pointA.y -= 4.0
-            var pointB = calcPositionForXY(xPos: i - 2, yPos: kong.yPos,frameSize: kong.frameSize)
+            var pointB = calcPositionFromScreen(xPos: i - 2, yPos: kong.yPos,frameSize: kong.frameSize)
             pointB.y -= 4.0
             let points = generateParabolicPoints(from: pointA, to: pointB, angleInDegrees: -50)
             kong.bouncingPoints.append(points)
             c += 1
         }
     }
-    
-    func calcPositionFromGrid(gameSize:CGSize, assetDimention: Double, xPos:Int,yPos:Int,heightAdjust:Double, frameSize: CGSize) -> CGPoint {
-        let heightFactor = (gameSize.height - ( 26.0 * assetDimention)) / 4
-        let heightPos = assetDimention * Double(yPos)
-        return CGPoint(x: (gameSize.width / assetDimention) * Double(xPos) + (frameSize.width / 4), y: heightPos + heightFactor + frameSize.height )
-    }
-    
     
     func generateParabolicPoints(from pointA: CGPoint, to pointB: CGPoint, steps: Int = 9, angleInDegrees: CGFloat = 10) -> [CGPoint] {
         var points: [CGPoint] = []

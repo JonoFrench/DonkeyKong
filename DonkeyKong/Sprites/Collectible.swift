@@ -25,11 +25,11 @@ class Collectible: ObservableObject {
     @Published
     var collected = false
     
-    init(type: CollectibleType, xPos: Int, yPos:Int,position: CGPoint) {
+    init(type: CollectibleType, xPos: Int, yPos:Int) {
         self.type = type
         self.xPos = xPos
         self.yPos = yPos
-        self.collectiblePosition = position
+       // self.collectiblePosition = position
     }
     
     
