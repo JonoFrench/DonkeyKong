@@ -47,12 +47,6 @@ class GameManager: ObservableObject {
     ///Sprites of sorts....
     @ObservedObject
     var jumpMan:JumpMan = JumpMan()
-    var isWalking = false
-    var isWalkingRight = false
-    var isWalkingLeft = false
-    var isClimbing = false
-    var isClimbingUp = false
-    var isClimbingDown = false
     var ladderHeight = 0.0
     var ladderStep = 0.0
     var startedClimbing = false
@@ -164,20 +158,20 @@ class GameManager: ObservableObject {
     }
     
     func moveJumpMan() {
-        if !isWalking {
-            if isWalkingRight {
+        if !jumpMan.isWalking {
+            if jumpMan.isWalkingRight {
                 print("walk right")
                 walkRight()
-            } else if isWalkingLeft {
+            } else if jumpMan.isWalkingLeft {
                 print("walk left")
                 walkLeft()
             }
         }
-        if !isClimbing {
-            if isClimbingUp {
+        if !jumpMan.isClimbing {
+            if jumpMan.isClimbingUp {
                 print("climb up")
                 climbUp()
-            } else if isClimbingDown {
+            } else if jumpMan.isClimbingDown {
                 print("climb down")
                 climbDown()
             }
@@ -185,19 +179,19 @@ class GameManager: ObservableObject {
     }
     
     func animateJumpMan(){
-        guard isWalking || isClimbing else {
+        guard jumpMan.isWalking || jumpMan.isClimbing else {
             return
         }
         if jmAnimationCounter == jumpMan.animationFrames {
-            if isWalking {
+            if jumpMan.isWalking {
                 startedClimbing = false
                 if jumpMan.facing == .right {
                     animateJMRight()
                 } else {
                     animateJMLeft()
                 }
-            } else if isClimbing {
-                if isClimbingUp {
+            } else if jumpMan.isClimbing {
+                if jumpMan.isClimbingUp {
                     if !startedClimbing {
                         startedClimbing = true
                     }
@@ -216,11 +210,11 @@ class GameManager: ObservableObject {
     
     func walkRight() {
         guard canMoveRight() else {
-            isWalking = false
-            isWalkingRight = false
+            jumpMan.isWalking = false
+            jumpMan.isWalkingRight = false
             return
         }
-        isWalking = true
+        jumpMan.isWalking = true
         jumpMan.facing = .right
         animateJMRight()
         currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
@@ -235,11 +229,11 @@ class GameManager: ObservableObject {
     
     func walkLeft() {
         guard canMoveLeft() else {
-            isWalking = false
-            isWalkingLeft = false
+            jumpMan.isWalking = false
+            jumpMan.isWalkingLeft = false
             return
         }
-        isWalking = true
+        jumpMan.isWalking = true
         jumpMan.facing = .left
         animateJMLeft()
         currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
@@ -263,7 +257,7 @@ class GameManager: ObservableObject {
         jumpMan.animateFrame += 1
         if jumpMan.animateFrame == 3 {
             jumpMan.animateFrame = 0
-            isWalking = false
+            jumpMan.isWalking = false
             jumpMan.hammerFrame = !jumpMan.hammerFrame
             if jumpMan.xPos < screenDimentionX {
                 jumpMan.xPos += 1
@@ -282,7 +276,7 @@ class GameManager: ObservableObject {
         jumpMan.animateFrame += 1
         if jumpMan.animateFrame == 3 {
             jumpMan.animateFrame = 0
-            isWalking = false
+            jumpMan.isWalking = false
             jumpMan.hammerFrame = !jumpMan.hammerFrame
             if jumpMan.xPos > 0 {
                 jumpMan.xPos -= 1
@@ -302,16 +296,16 @@ class GameManager: ObservableObject {
         }
         if jumpMan.animateFrame == 4 {
             jumpMan.animateFrame = 0
-            isClimbing = false
-            isClimbingUp = false
+            jumpMan.isClimbing = false
+            jumpMan.isClimbingUp = false
             if jumpMan.yPos != 0 {
                 jumpMan.yPos -= 1
                 currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             }
             if !isLadderAbove() {
                 jumpMan.currentFrame = ImageResource(name: "JMBack", bundle: .main)
-                isClimbing = false
-                isClimbingUp = false
+                jumpMan.isClimbing = false
+                jumpMan.isClimbingUp = false
             }
             whatsAround()
         }
@@ -328,16 +322,16 @@ class GameManager: ObservableObject {
         }
         if jumpMan.animateFrame == 4 {
             jumpMan.animateFrame = 0
-            isClimbing = false
-            isClimbingDown = false
+            jumpMan.isClimbing = false
+            jumpMan.isClimbingDown = false
             if jumpMan.yPos < screenDimentionY - 1 {
                 jumpMan.yPos += 1
                 currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             }
             if !isLadderBelow() {
                 jumpMan.currentFrame = ImageResource(name: "JMBack", bundle: .main)
-                isClimbing = false
-                isClimbingDown = false
+                jumpMan.isClimbing = false
+                jumpMan.isClimbingDown = false
             }
             whatsAround()
         }
@@ -377,12 +371,12 @@ class GameManager: ObservableObject {
     }
     
     func climbUp() {
-        isClimbing = true
+        jumpMan.isClimbing = true
         animateJMUp()
     }
     
     func climbDown() {
-        isClimbing = true
+        jumpMan.isClimbing = true
         animateJMDown()
     }
     
@@ -437,28 +431,28 @@ class GameManager: ObservableObject {
     }
     
     func canClimbLadder() -> Bool {
-        guard isLadderAbove() && !isClimbing else {
+        guard isLadderAbove() && !jumpMan.isClimbing else {
             return false
         }
         return true
     }
     
     func canDecendLadder() -> Bool {
-        guard isLadderBelow() && !isClimbing else {
+        guard isLadderBelow() && !jumpMan.isClimbing else {
             return false
         }
         return true
     }
     
     func canStandFromLadder() -> Bool {
-        guard isClimbing else {
+        guard jumpMan.isClimbing else {
             return false
         }
-        if isClimbingUp {
+        if jumpMan.isClimbingUp {
             if screenData[jumpMan.yPos - 1][jumpMan.xPos].assetType == .girder {
                 return true
             }
-        } else if isClimbingDown {
+        } else if jumpMan.isClimbingDown {
             if screenData[jumpMan.yPos + 1][jumpMan.xPos].assetType == .girder {
                 return true
             }

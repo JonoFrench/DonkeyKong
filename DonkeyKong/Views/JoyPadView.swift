@@ -25,7 +25,7 @@ struct JoyPadView: View {
                                 if manager.gameState == .playing {
                                     if manager.canClimbLadder() {
                                         manager.calculateLadderHeightUp()
-                                        manager.isClimbingUp = true
+                                        manager.jumpMan.isClimbingUp = true
                                     }
                                 }
                             }
@@ -47,13 +47,13 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.canMoveLeft() {
-                                        manager.isWalkingLeft = true
+                                        manager.jumpMan.isWalkingLeft = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                    manager.isWalkingLeft = false
+                                    manager.jumpMan.isWalkingLeft = false
                                 }
                             }
                     )
@@ -77,13 +77,13 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.canMoveRight() {
-                                        manager.isWalkingRight = true
+                                        manager.jumpMan.isWalkingRight = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                    manager.isWalkingRight = false
+                                    manager.jumpMan.isWalkingRight = false
                                 }
                             }
                     )
@@ -102,7 +102,7 @@ struct JoyPadView: View {
                                 if manager.gameState == .playing {
                                     if manager.canDecendLadder() {
                                         manager.calculateLadderHeightDown()
-                                        manager.isClimbingDown = true
+                                        manager.jumpMan.isClimbingDown = true
                                     }
                                 }
                             }

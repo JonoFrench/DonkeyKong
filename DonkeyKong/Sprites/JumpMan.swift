@@ -18,6 +18,13 @@ class JumpMan: ObservableObject {
     var xPos = 0
     var yPos = 0
     let animationFrames = 5
+    var isWalking = false
+    var isWalkingRight = false
+    var isWalkingLeft = false
+    var isClimbing = false
+    var isClimbingUp = false
+    var isClimbingDown = false
+
     @Published
     var hasHammer = false
     var hammerFrame = false
