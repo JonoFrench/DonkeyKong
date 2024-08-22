@@ -59,6 +59,11 @@
 		3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645792C725B2100E8AE5F /* DKFunctions.swift */; };
 		3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457B2C726A5700E8AE5F /* Collectible.swift */; };
 		3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */; };
+		347645802C752C0600E8AE5F /* Barrel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457F2C752C0600E8AE5F /* Barrel.swift */; };
+		347645822C752C1800E8AE5F /* BarrelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645812C752C1800E8AE5F /* BarrelView.swift */; };
+		347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645832C752C2C00E8AE5F /* FireBlob.swift */; };
+		347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645852C752C3F00E8AE5F /* FireBlobView.swift */; };
+		3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,6 +121,11 @@
 		347645792C725B2100E8AE5F /* DKFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DKFunctions.swift; sourceTree = "<group>"; };
 		3476457B2C726A5700E8AE5F /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
 		3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectiblesView.swift; sourceTree = "<group>"; };
+		3476457F2C752C0600E8AE5F /* Barrel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Barrel.swift; sourceTree = "<group>"; };
+		347645812C752C1800E8AE5F /* BarrelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarrelView.swift; sourceTree = "<group>"; };
+		347645832C752C2C00E8AE5F /* FireBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlob.swift; sourceTree = "<group>"; };
+		347645852C752C3F00E8AE5F /* FireBlobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlobView.swift; sourceTree = "<group>"; };
+		347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerBarrels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +189,7 @@
 			children = (
 				343E0DB42C68D5E300F79DA0 /* GameManager.swift */,
 				343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */,
+				347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -257,6 +268,10 @@
 				347645772C7218D100E8AE5F /* FlamesView.swift */,
 				3476457B2C726A5700E8AE5F /* Collectible.swift */,
 				3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */,
+				3476457F2C752C0600E8AE5F /* Barrel.swift */,
+				347645812C752C1800E8AE5F /* BarrelView.swift */,
+				347645832C752C2C00E8AE5F /* FireBlob.swift */,
+				347645852C752C3F00E8AE5F /* FireBlobView.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -346,6 +361,7 @@
 			files = (
 				3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */,
 				343E0DC42C68E36F00F79DA0 /* TopView.swift in Sources */,
+				347645822C752C1800E8AE5F /* BarrelView.swift in Sources */,
 				343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */,
 				3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
@@ -359,6 +375,7 @@
 				347645782C7218D100E8AE5F /* FlamesView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
 				343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */,
+				3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */,
 				343E0DC22C68E2E600F79DA0 /* ControlsView.swift in Sources */,
 				343E0DAF2C68D55200F79DA0 /* HighScores+CoreDataProperties.swift in Sources */,
 				343E0DC62C68F50B00F79DA0 /* SoundFX.swift in Sources */,
@@ -372,14 +389,17 @@
 				343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */,
 				347645742C70DAB900E8AE5F /* Pauline.swift in Sources */,
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
+				347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */,
 				347645762C7218BD00E8AE5F /* Flames.swift in Sources */,
 				343E0DBA2C68DB1600F79DA0 /* HiScoreView.swift in Sources */,
 				343E0DBC2C68DF1800F79DA0 /* InfoView.swift in Sources */,
+				347645802C752C0600E8AE5F /* Barrel.swift in Sources */,
 				343E0DE82C6A118F00F79DA0 /* NewHighScoreView.swift in Sources */,
 				343E0DEF2C6AB1F100F79DA0 /* JumpMan.swift in Sources */,
 				343E0DEA2C6A126600F79DA0 /* ScreenAsset.swift in Sources */,
 				343E0DAE2C68D55200F79DA0 /* HighScores.xcdatamodeld in Sources */,
 				343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */,
+				347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */,
 				343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

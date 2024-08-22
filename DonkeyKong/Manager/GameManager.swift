@@ -8,6 +8,7 @@
 import Foundation
 import QuartzCore
 import SwiftUI
+import Combine
 
 enum GameState {
     case intro,kongintro,howhigh,playing,ended,highscore
@@ -54,11 +55,14 @@ class GameManager: ObservableObject {
     
     @Published
     var kongIntroCounter = 0
-    @ObservedObject var kong:Kong = Kong()
-    @ObservedObject var pauline:Pauline = Pauline()
+    var kong:Kong = Kong()
+    var pauline:Pauline = Pauline()
     let heartBeat = 0.6
-    @ObservedObject var flames:Flames = Flames()
+    var flames:Flames = Flames()
     var collectibles:[Collectible] = []
+    @ObservedObject
+    var barrelArray:BarrelArray = BarrelArray()
+
     
     init() {
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
@@ -82,6 +86,12 @@ class GameManager: ObservableObject {
             animateJumpMan()
             pauline.animate()
             flames.animate()
+            throwBarrel()
+            
+            for barrel in barrelArray.barrels {
+                barrel.animate()
+                moveBarrel(barrel: barrel)
+            }
         }
     }
     
@@ -100,6 +110,8 @@ class GameManager: ObservableObject {
         setDataForLevel()
         gameState = .playing
         startBonusCountdown()
+        kong.currentFrame = kong.kongFacing
+        kong.state = .sitting
         //startHeartBeat()
         whatsAround()
     }
@@ -199,11 +211,9 @@ class GameManager: ObservableObject {
         var points = [CGPoint]()
         if jumpMan.isJumpingLeft {
             pointB = calcPositionFromScreen(xPos: jumpMan.xPos - 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-//            pointB.y -= screenData[jumpMan.yPos][jumpMan.xPos - 2].assetOffset
             points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: -60)
         } else {
             pointB = calcPositionFromScreen(xPos: jumpMan.xPos + 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-//            pointB.y -= screenData[jumpMan.yPos][jumpMan.xPos + 2].assetOffset
             points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: 60)
         }
         points[6] = pointB

@@ -26,7 +26,7 @@ struct BonusBoxView: View {
 
                             Text("\(String(format: "%04d", manager.bonus))")
                                 .foregroundStyle(.cyan)
-                                .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
+                                .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
                                 .padding(.bottom, 6)
                         })
                     //Spacer()

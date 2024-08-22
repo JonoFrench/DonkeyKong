@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 
 enum CollectibleType {
-    case hammer,umbrella
+    case hammer,umbrella,hat,diamond
 }
 
 class Collectible: ObservableObject {
@@ -35,6 +35,8 @@ class Collectible: ObservableObject {
         switch type {
         case .hammer : return ImageResource(name: "Hammer", bundle: .main)
         case .umbrella: return ImageResource(name: "Umbrella", bundle: .main)
+        case .hat: return ImageResource(name: "Hat", bundle: .main)
+        case .diamond: return ImageResource(name: "Diamond", bundle: .main)
         }
     }
 }

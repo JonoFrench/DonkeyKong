@@ -9,7 +9,9 @@ import SwiftUI
 
 struct GameView: View {
     @EnvironmentObject var manager: GameManager
+//    @ObservedObject var manager: GameManager
     @ObservedObject var jumpMan:JumpMan
+    @ObservedObject var barrelArray:BarrelArray
     var body: some View {
         ZStack {
             ScreenView()
@@ -17,21 +19,29 @@ struct GameView: View {
                 .zIndex(0.1)
             BonusBoxView()
                 .position(x:manager.gameSize.width - 80,y:60)
-            JumpManView(jumpMan: manager.jumpMan)
-                .position(manager.jumpMan.position)
+            JumpManView(jumpMan: jumpMan)
+                .position(jumpMan.position)
                 .zIndex(2.0)
             KongView(kong: manager.kong)
                 .position(manager.kong.position)
-                .zIndex(2.0)
+                .zIndex(1.95)
             PaulineView(pauline: manager.pauline)
                 .position(manager.pauline.position)
-                .zIndex(1.9)
+                .zIndex(1.7)
             FlamesView(flames: manager.flames)
                 .position(manager.flames.position)
                 .zIndex(1.9)
+            ForEach(barrelArray.barrels, id: \.id) { barrel in
+                if barrel.isShowing {
+                    BarrelView(barrel: barrel)
+                        .position(barrel.position)
+                        .zIndex(2.1)
+                }
+            }
             ForEach(manager.collectibles, id: \.id) { collectible in
                 CollectiblesView(collectible: collectible)
                     .position(collectible.position)
+                    .zIndex(1.8)
             }
             
         }.zIndex(1.0)

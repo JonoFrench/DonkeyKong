@@ -28,7 +28,8 @@ struct ContentView: View {
                         .zIndex(1.0)
                 }  
                 else if manager.gameState == .playing {
-                    GameView(jumpMan: manager.jumpMan)
+                    GameView(jumpMan: manager.jumpMan,barrelArray:manager.barrelArray)
+//                    GameView(manager: manager)
                             .zIndex(1.0)
                 } 
                     else if manager.gameState == .howhigh {
