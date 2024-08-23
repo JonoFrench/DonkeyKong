@@ -22,17 +22,22 @@ class Pauline: ObservableObject {
     var frameSize: CGSize = CGSize(width: 63, height:  36)
     @Published
     var isShowing = false
-
+    var isRescued = false
     
     func animate() {
-        animateCounter += 1
-        if animateCounter == animateFrames {
-            currentFrame = standing[cFrame]
-            cFrame += 1
-            if cFrame == 4 {
-                cFrame = 0
+        if !isRescued {
+            animateCounter += 1
+            if animateCounter == animateFrames {
+                currentFrame = standing[cFrame]
+                cFrame += 1
+                if cFrame == 4 {
+                    cFrame = 0
+                }
+                animateCounter = 0
             }
-            animateCounter = 0
+        }
+        else {
+            currentFrame = ImageResource(name: "Pauline1", bundle: .main)
         }
     }
 }

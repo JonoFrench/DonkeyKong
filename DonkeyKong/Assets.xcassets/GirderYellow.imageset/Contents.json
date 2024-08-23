@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "GirderYellow.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -44,17 +44,47 @@ extension GameManager {
         }
     }
     
+    func kongExitLevel() {
+        kong.xPos = 10
+        kong.yPos = 7
+        kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+        introCounter = 8
+        kong.animationCounter = 0
+        kong.kongStep = false
+        kong.currentFrame = kong.kongClimbLeft
+        animateKongExit()
+    }
+    
+    func animateKongExit() {
+
+        kong.animationCounter += 1
+        if kong.animationCounter == 14 {
+            print("Kong exit \(introCounter)")
+            introCounter -= 1
+            if introCounter > 0 {
+                nextStepUp()
+            } else {
+                level += 1
+                 soundFX.howHighSound()
+                showHowHigh()
+                
+            }
+            kong.animationCounter = 0
+        }
+    }
+
+    
     func animateKongIntro() {
         kong.animationCounter += 1
         if kong.animationCounter == 14 {
             
-            kongIntroCounter -= 1
-            if kongIntroCounter > 10 {
-                clearLadder(line: kongIntroCounter)
+            introCounter -= 1
+            if introCounter > 10 {
+                clearLadder(line: introCounter)
                 nextStepUp()
             } else {
                 kong.state = .jumpingup
-                kongIntroCounter = 0
+                introCounter = 0
                 
             }
             kong.animationCounter = 0
@@ -65,10 +95,10 @@ extension GameManager {
         kong.animationCounter += 1
 
         if kong.animationCounter == 4 {
-            kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.jumpingPoints[kongIntroCounter],frameSize: kong.frameSize)
+            kong.position = calcPositionFromScreen(xPos: kong.xPos, yPos: kong.jumpingPoints[introCounter],frameSize: kong.frameSize)
             adjustKongPosition()
-            kongIntroCounter += 1
-            if kongIntroCounter > kong.jumpingPoints.count - 1 {
+            introCounter += 1
+            if introCounter > kong.jumpingPoints.count - 1 {
                 kong.yPos = 7
                 generateBouncingPoints()
                 pauline.position = calcPositionFromScreen(xPos: 14, yPos: 3,frameSize: pauline.frameSize)
@@ -117,8 +147,8 @@ extension GameManager {
     func runKongIntro() {
         soundFX.introLongSound()
         kong.state = .intro
-        kongIntroCounter = 27
-        clearLadder(line: kongIntroCounter)
+        introCounter = 27
+        clearLadder(line: introCounter)
         }
         
     func nextStepUp() {

@@ -17,7 +17,7 @@ struct ScreenView: View {
                 ForEach(0..<30) { x in
                     let ir = manager.screenData[y][x]
                     if ir.assetType != .blank {
-                        Image(ir.assetImage())
+                        Image(ir.assetImage(level: manager.level))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: manager.assetDimention, height: manager.assetDimention)

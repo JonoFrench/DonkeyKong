@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 
 enum CollectibleType {
-    case hammer,umbrella,hat,diamond
+    case hammer,umbrella,hat,phone,heart,heartbreak
 }
 
 class Collectible: ObservableObject {
@@ -21,7 +21,7 @@ class Collectible: ObservableObject {
     var type: CollectibleType = .hammer
     var position = CGPoint()
     var currentFrame:ImageResource = ImageResource(name: "Hammer", bundle: .main)
-    var frameSize: CGSize = CGSize(width: 24, height:  24)
+    var frameSize: CGSize = CGSize(width: 24, height:  18)
     @Published
     var collected = false
     
@@ -36,7 +36,9 @@ class Collectible: ObservableObject {
         case .hammer : return ImageResource(name: "Hammer", bundle: .main)
         case .umbrella: return ImageResource(name: "Umbrella", bundle: .main)
         case .hat: return ImageResource(name: "Hat", bundle: .main)
-        case .diamond: return ImageResource(name: "Diamond", bundle: .main)
+        case .phone: return ImageResource(name: "Diamond", bundle: .main)
+        case .heart: return ImageResource(name: "Heart", bundle: .main)
+        case .heartbreak: return ImageResource(name: "HeartBreak", bundle: .main)
         }
     }
 }

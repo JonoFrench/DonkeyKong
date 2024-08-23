@@ -64,6 +64,7 @@
 		347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645832C752C2C00E8AE5F /* FireBlob.swift */; };
 		347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645852C752C3F00E8AE5F /* FireBlobView.swift */; };
 		3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */; };
+		3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,6 +127,7 @@
 		347645832C752C2C00E8AE5F /* FireBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlob.swift; sourceTree = "<group>"; };
 		347645852C752C3F00E8AE5F /* FireBlobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlobView.swift; sourceTree = "<group>"; };
 		347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerBarrels.swift; sourceTree = "<group>"; };
+		3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighLineView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +213,7 @@
 				343E0DEB2C6A8AFA00F79DA0 /* BonusBoxView.swift */,
 				343E0DF42C6F669600F79DA0 /* KongIntroView.swift */,
 				343E0DF62C6F66A800F79DA0 /* HowHighView.swift */,
+				3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
 				343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */,
 				347645782C7218D100E8AE5F /* FlamesView.swift in Sources */,
+				3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
 				343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */,
 				3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */,

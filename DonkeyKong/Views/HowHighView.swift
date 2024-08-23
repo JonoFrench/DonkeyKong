@@ -8,17 +8,21 @@
 import SwiftUI
 
 struct HowHighView: View {
+    var level:Int
     var body: some View {
         VStack {
             Spacer()
-            HStack {
-                Spacer()
-                Text("25 m")
-                    .foregroundStyle(.white)
-                    .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
-                Spacer()
-                ImageView(image: ImageResource(name: "KongHowHigh", bundle: .main), frameSize: CGSize(width: 96, height: 96))
-                Spacer()
+            if level >= 4 {
+                HowHighLineView(howHigh: "100 m")
+            }
+            if level >= 3 {
+                HowHighLineView(howHigh: "75 m")
+            }
+            if level >= 2 {
+                HowHighLineView(howHigh: "50 m")
+            }
+            if level >= 1 {
+                HowHighLineView(howHigh: "25 m")
             }
             Text("How high can you get ?")
                 .foregroundStyle(.white)
@@ -28,5 +32,5 @@ struct HowHighView: View {
 }
 
 #Preview {
-    HowHighView()
+    HowHighView(level: 4)
 }

@@ -33,7 +33,7 @@ struct ContentView: View {
                             .zIndex(1.0)
                 } 
                     else if manager.gameState == .howhigh {
-                    HowHighView()
+                        HowHighView(level: manager.level)
                         .background(.clear)
                         .zIndex(1.0)
                 }

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "heartbreak.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

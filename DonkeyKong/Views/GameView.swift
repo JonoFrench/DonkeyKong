@@ -18,7 +18,7 @@ struct GameView: View {
                 .position(x:manager.gameSize.width / 2,y:manager.gameSize.height / 2)
                 .zIndex(0.1)
             BonusBoxView()
-                .position(x:manager.gameSize.width - 80,y:60)
+                .position(x:manager.gameSize.width - 70,y:50)
             JumpManView(jumpMan: jumpMan)
                 .position(jumpMan.position)
                 .zIndex(2.0)
@@ -28,9 +28,11 @@ struct GameView: View {
             PaulineView(pauline: manager.pauline)
                 .position(manager.pauline.position)
                 .zIndex(1.7)
-            FlamesView(flames: manager.flames)
-                .position(manager.flames.position)
-                .zIndex(1.9)
+            if manager.hasFlames {
+                FlamesView(flames: manager.flames)
+                    .position(manager.flames.position)
+                    .zIndex(1.9)
+            }
             ForEach(barrelArray.barrels, id: \.id) { barrel in
                 if barrel.isShowing {
                     BarrelView(barrel: barrel)

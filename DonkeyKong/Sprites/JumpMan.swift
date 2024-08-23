@@ -17,7 +17,8 @@ enum JMDirection {
 class JumpMan: ObservableObject {
     var xPos = 0
     var yPos = 0
-    let animationFrames = 4
+    let speed = 3
+    var speedCounter = 0
     var isWalking = false
     var isWalkingRight = false
     var isWalkingLeft = false
