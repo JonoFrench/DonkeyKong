@@ -68,6 +68,7 @@ class GameManager: ObservableObject {
     var pointsShow:Points = Points()
     @Published
     var hasPoints = false
+    var pause = false
     
     init() {
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
@@ -87,38 +88,41 @@ class GameManager: ObservableObject {
         }
         
         if gameState == .playing {
-            moveJumpMan()
-            animateJumpMan()
-            pauline.animate()
-            if hasFlames {
-                flames.animate()
-            }
-            if level == 1 {
-                throwBarrel()
-                
-                for barrel in barrelArray.barrels {
-                    barrel.animate()
-                    if !barrel.isThrown {
-                        moveBarrel(barrel: barrel)
-                    } else {
-                        moveThrownBarrel(barrel: barrel)
+            if !pause {
+                moveJumpMan()
+                animateJumpMan()
+                pauline.animate()
+                if hasFlames {
+                    flames.animate()
+                }
+                if level == 1 {
+                    throwBarrel()
+                    
+                    for barrel in barrelArray.barrels {
+                        barrel.animate()
+                        if !barrel.isThrown {
+                            moveBarrel(barrel: barrel)
+                        } else {
+                            moveThrownBarrel(barrel: barrel)
+                        }
                     }
                 }
+                if levelEnd {
+                    animateKongExit()
+                    flames.animate()
+                }
+                
+                if collectibles.count > 0 {
+                    checkCollectibles()
+                }
             }
-            if levelEnd {
-                animateKongExit()
-                flames.animate()
-            }
-            
             if hasExplosion {
                 animateExplosion()
             }
             if hasPoints {
                 animatePoints()
             }
-            if collectibles.count > 0 {
-                checkCollectibles()
-            }
+
             
         }
     }
@@ -177,7 +181,7 @@ class GameManager: ObservableObject {
             flames.position.y += 4
             flames.position.x -= 8
             hasFlames = true
-            let collectible1 = Collectible(type: .hammer, xPos: 3, yPos: 10)
+            let collectible1 = Collectible(type: .hammer, xPos: 3, yPos: 9)
             collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
             let collectible2 = Collectible(type: .hammer, xPos: 20, yPos: 21)
             collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
@@ -257,7 +261,30 @@ class GameManager: ObservableObject {
             collectibles.append(collectible4)
             collectibles.append(collectible5)
         } else if level == 4 {
+            jumpMan.xPos = 1
+            jumpMan.yPos = 25
+            jumpMan.facing = .right
+            jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+            pauline.xPos = 14
+            pauline.yPos = 3
+            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
+            pauline.isShowing = true
+            kong.xPos = 6
+            kong.yPos = 7
+            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+            kong.position.y += 7
+
             
+            let collectible1 = Collectible(type: .phone, xPos: 27, yPos: 9)
+            collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
+            let collectible2 = Collectible(type: .umbrella, xPos: 1, yPos: 13)
+            collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
+            let collectible3 = Collectible(type: .hat, xPos: 9, yPos: 22)
+            collectible3.position = calcPositionFromScreen(xPos: collectible3.xPos,yPos: collectible3.yPos,frameSize: collectible3.frameSize)
+            collectibles.append(collectible1)
+            collectibles.append(collectible2)
+            collectibles.append(collectible3)
+
         }
     }
     
@@ -269,7 +296,7 @@ class GameManager: ObservableObject {
             }
         }
     }
-    
+    /// todo change the time
     func startHammerCountdown() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 120) { [self] in
             jumpMan.hasHammer = false
@@ -314,13 +341,11 @@ class GameManager: ObservableObject {
         hasPoints = true
         pointsShow.pointsText = "\(value)"
         score += value
-        //        pointsShow.xPos = explosion.xPos
-        //        pointsShow.yPos = explosion.yPos
         pointsShow.position = position
         pointsShow.animateCounter = 0
-        
     }
     
+    /// not doing a lot but display the points colleted.
     func animatePoints() {
         pointsShow.animateCounter += 1
         if pointsShow.animateCounter == pointsShow.animateFrames {

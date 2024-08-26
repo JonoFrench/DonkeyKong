@@ -259,7 +259,10 @@ extension GameManager {
                     soundFX.hammerSound()
                     explodeBarrel(barrel: barrel)
                     removeBarrel(barrel: barrel)
-
+                    pause = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+                        pause = false
+                    }
                 }
             }
         }
