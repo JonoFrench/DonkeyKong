@@ -41,4 +41,16 @@ class Collectible: ObservableObject {
         case .heartbreak: return ImageResource(name: "HeartBreak", bundle: .main)
         }
     }
+    func collectibleScore() -> Int {
+        switch type {
+        case .hammer : return 0
+        case .umbrella: return 200
+        case .hat: return 300
+        case .phone: return 300
+        case .heart: return 0
+        case .heartbreak: return 0
+        }
+
+    }
+    
 }

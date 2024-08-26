@@ -65,6 +65,10 @@
 		347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645852C752C3F00E8AE5F /* FireBlobView.swift */; };
 		3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */; };
 		3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */; };
+		34AE2C1B2C7B403200656DBF /* ExplodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1A2C7B403200656DBF /* ExplodeView.swift */; };
+		34AE2C1D2C7B404000656DBF /* Explode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1C2C7B404000656DBF /* Explode.swift */; };
+		34AE2C1F2C7B495200656DBF /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1E2C7B495200656DBF /* Points.swift */; };
+		34AE2C212C7B496100656DBF /* PointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C202C7B496100656DBF /* PointsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -128,6 +132,10 @@
 		347645852C752C3F00E8AE5F /* FireBlobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlobView.swift; sourceTree = "<group>"; };
 		347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerBarrels.swift; sourceTree = "<group>"; };
 		3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighLineView.swift; sourceTree = "<group>"; };
+		34AE2C1A2C7B403200656DBF /* ExplodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplodeView.swift; sourceTree = "<group>"; };
+		34AE2C1C2C7B404000656DBF /* Explode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Explode.swift; sourceTree = "<group>"; };
+		34AE2C1E2C7B495200656DBF /* Points.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
+		34AE2C202C7B496100656DBF /* PointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +283,10 @@
 				347645812C752C1800E8AE5F /* BarrelView.swift */,
 				347645832C752C2C00E8AE5F /* FireBlob.swift */,
 				347645852C752C3F00E8AE5F /* FireBlobView.swift */,
+				34AE2C1A2C7B403200656DBF /* ExplodeView.swift */,
+				34AE2C1C2C7B404000656DBF /* Explode.swift */,
+				34AE2C1E2C7B495200656DBF /* Points.swift */,
+				34AE2C202C7B496100656DBF /* PointsView.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -370,8 +382,10 @@
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
 				343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */,
+				34AE2C212C7B496100656DBF /* PointsView.swift in Sources */,
 				347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */,
 				343E0DE42C6A10FC00F79DA0 /* GameView.swift in Sources */,
+				34AE2C1D2C7B404000656DBF /* Explode.swift in Sources */,
 				343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */,
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
 				343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */,
@@ -383,6 +397,7 @@
 				343E0DC22C68E2E600F79DA0 /* ControlsView.swift in Sources */,
 				343E0DAF2C68D55200F79DA0 /* HighScores+CoreDataProperties.swift in Sources */,
 				343E0DC62C68F50B00F79DA0 /* SoundFX.swift in Sources */,
+				34AE2C1F2C7B495200656DBF /* Points.swift in Sources */,
 				343E0DC02C68E24000F79DA0 /* IntroView.swift in Sources */,
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
 				3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */,
@@ -402,6 +417,7 @@
 				343E0DEF2C6AB1F100F79DA0 /* JumpMan.swift in Sources */,
 				343E0DEA2C6A126600F79DA0 /* ScreenAsset.swift in Sources */,
 				343E0DAE2C68D55200F79DA0 /* HighScores.xcdatamodeld in Sources */,
+				34AE2C1B2C7B403200656DBF /* ExplodeView.swift in Sources */,
 				343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */,
 				347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */,
 				343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */,

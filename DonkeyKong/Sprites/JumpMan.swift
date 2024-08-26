@@ -35,13 +35,14 @@ class JumpMan: ObservableObject {
     
     @Published
     var hasHammer = false
-    var hammerFrame = false
     @Published
     var position = CGPoint()
-    //var frameSize: CGSize = CGSize(width: 30, height:  25)
-    var frameSize: CGSize = CGSize(width: 24, height:  24)
+    var hammerFrameSize: CGSize = CGSize(width: 64, height:  64)
+    var normalFrameSize: CGSize = CGSize(width: 32, height:  32)
+    var frameSize: CGSize = CGSize(width: 32, height:  32)
     var animateFrame = 0
     var jumpingFrame = 0
+    var animateHammerFrame = 0
     @Published
     var facing:JMDirection = .right
     @Published
@@ -51,9 +52,11 @@ class JumpMan: ObservableObject {
     var climbing:[ImageResource] = [ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb1", bundle: .main)]
     var climbing2:[ImageResource] = [ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb2", bundle: .main),ImageResource(name: "JMClimb3", bundle: .main),ImageResource(name: "JMBack", bundle: .main)]
 
-    var hammer1:[ImageResource] = [ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam2", bundle: .main)]
-    var hammer2:[ImageResource] = [ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam5", bundle: .main)]
-  
+    var hammer1:[ImageResource] = [ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main)]
+    var hammerWalking:[ImageResource] = [ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main)]
+
+    
+    
     func canJump()-> Bool {
         if jumpingPoints.isEmpty { return true }
         return false

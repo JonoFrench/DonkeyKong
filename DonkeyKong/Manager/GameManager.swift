@@ -62,6 +62,12 @@ class GameManager: ObservableObject {
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
     var levelEnd = false
     var hasFlames = false
+    var explosion:Explode = Explode()
+    @Published
+    var hasExplosion = false
+    var pointsShow:Points = Points()
+    @Published
+    var hasPoints = false
     
     init() {
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
@@ -92,13 +98,28 @@ class GameManager: ObservableObject {
                 
                 for barrel in barrelArray.barrels {
                     barrel.animate()
-                    moveBarrel(barrel: barrel)
+                    if !barrel.isThrown {
+                        moveBarrel(barrel: barrel)
+                    } else {
+                        moveThrownBarrel(barrel: barrel)
+                    }
                 }
             }
             if levelEnd {
                 animateKongExit()
                 flames.animate()
             }
+            
+            if hasExplosion {
+                animateExplosion()
+            }
+            if hasPoints {
+                animatePoints()
+            }
+            if collectibles.count > 0 {
+                checkCollectibles()
+            }
+            
         }
     }
     
@@ -109,8 +130,8 @@ class GameManager: ObservableObject {
         print("assetDimention \(assetDimention)")
         print("assetOffset \(assetOffset)")
         print("verticalOffset \(verticalOffset)")
-        setKongIntro()   // If we don't want the intro....
-        //startPlaying()
+        //setKongIntro()   // If we don't want the intro....
+        startPlaying()
     }
     
     func startPlaying() {
@@ -122,6 +143,12 @@ class GameManager: ObservableObject {
         kong.currentFrame = kong.kongFacing
         kong.state = .sitting
         //startHeartBeat()
+        if level == 1 {
+            kong.isThrowing = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+                throwBarrelDown()
+            }
+        }
         whatsAround()
     }
     
@@ -129,7 +156,7 @@ class GameManager: ObservableObject {
         collectibles.removeAll()
         barrelArray.barrels.removeAll()
         screenData = Screens().getScreenData(level: self.level)
-
+        
         if level == 1 {
             jumpMan.xPos = 2
             jumpMan.yPos = 27
@@ -181,13 +208,13 @@ class GameManager: ObservableObject {
             collectible4.position = calcPositionFromScreen(xPos: collectible4.xPos,yPos: collectible4.yPos,frameSize: collectible4.frameSize)
             let collectible5 = Collectible(type: .phone, xPos: 17, yPos: 27)
             collectible5.position = calcPositionFromScreen(xPos: collectible5.xPos,yPos: collectible5.yPos,frameSize: collectible5.frameSize)
-
+            
             collectibles.append(collectible1)
             collectibles.append(collectible2)
             collectibles.append(collectible3)
             collectibles.append(collectible4)
             collectibles.append(collectible5)
-
+            
             flames = Flames()
             
         } else if level == 3 {
@@ -204,15 +231,15 @@ class GameManager: ObservableObject {
             pauline.yPos = 3
             pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
             pauline.isShowing = true
-
+            
             flames.xPos = 15
             flames.yPos = 12
-
+            
             flames.position = calcPositionFromScreen(xPos: flames.xPos,yPos: flames.yPos,frameSize: flames.frameSize)
             flames.position.y += 4
             flames.position.x -= 8
             hasFlames = true
-
+            
             let collectible1 = Collectible(type: .hammer, xPos: 14, yPos: 20)
             collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
             let collectible2 = Collectible(type: .hammer, xPos: 3, yPos: 15)
@@ -223,13 +250,13 @@ class GameManager: ObservableObject {
             collectible4.position = calcPositionFromScreen(xPos: collectible4.xPos,yPos: collectible4.yPos,frameSize: collectible4.frameSize)
             let collectible5 = Collectible(type: .phone, xPos: 16, yPos: 27)
             collectible5.position = calcPositionFromScreen(xPos: collectible5.xPos,yPos: collectible5.yPos,frameSize: collectible5.frameSize)
-
+            
             collectibles.append(collectible1)
             collectibles.append(collectible2)
             collectibles.append(collectible3)
             collectibles.append(collectible4)
             collectibles.append(collectible5)
-
+        } else if level == 4 {
             
         }
     }
@@ -243,6 +270,17 @@ class GameManager: ObservableObject {
         }
     }
     
+    func startHammerCountdown() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 120) { [self] in
+            jumpMan.hasHammer = false
+            jumpMan.frameSize = jumpMan.normalFrameSize
+            jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
+            jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+            jumpMan.objectWillChange.send()
+        }
+    }
+    
+    
     /// Sound FX of the game
     func startHeartBeat(){
         if gameState == .playing {
@@ -255,6 +293,47 @@ class GameManager: ObservableObject {
             }
         }
     }
+    
+    func animateExplosion() {
+        explosion.animateCounter += 1
+        if explosion.animateCounter == explosion.animateFrames {
+            explosion.currentFrame = explosion.explosions[explosion.cFrame]
+            explosion.cFrame += 1
+            if explosion.cFrame == explosion.explosions.count {
+                explosion.cFrame = 0
+                hasExplosion = false
+                if !hasPoints {
+                    addPoints(value: 100, position: explosion.position)
+                }
+            }
+            explosion.animateCounter = 0
+        }
+    }
+    
+    func addPoints(value:Int,position:CGPoint) {
+        hasPoints = true
+        pointsShow.pointsText = "\(value)"
+        score += value
+        //        pointsShow.xPos = explosion.xPos
+        //        pointsShow.yPos = explosion.yPos
+        pointsShow.position = position
+        pointsShow.animateCounter = 0
+        
+    }
+    
+    func animatePoints() {
+        pointsShow.animateCounter += 1
+        if pointsShow.animateCounter == pointsShow.animateFrames {
+            //pointsShow.pointsColor = pointsShow.animateCounter % 1 == 0 ? .black : .white
+            pointsShow.cFrame += 1
+            if pointsShow.cFrame == 6 {
+                pointsShow.cFrame = 0
+                hasPoints = false
+            }
+            pointsShow.animateCounter = 0
+        }
+    }
+    
     
     func moveJumpMan() {
         if !jumpMan.isWalking && !jumpMan.isJumping {
@@ -299,6 +378,7 @@ class GameManager: ObservableObject {
         }
         points[6] = pointB
         jumpMan.jumpingPoints = points
+        soundFX.jumpSound()
     }
     
     func jumpLeft() {
@@ -310,7 +390,7 @@ class GameManager: ObservableObject {
     }
     
     func animateJumpMan(){
-        guard jumpMan.isWalking || jumpMan.isClimbing || jumpMan.isJumping else {
+        guard jumpMan.isWalking || jumpMan.isClimbing || jumpMan.isJumping || jumpMan.hasHammer else {
             return
         }
         if jumpMan.speedCounter == jumpMan.speed {
@@ -335,6 +415,9 @@ class GameManager: ObservableObject {
                 }
             } else if jumpMan.isJumping {
                 animateJMJumping()
+            }
+            if jumpMan.hasHammer {
+                animateHammer()
             }
             jumpMan.speedCounter = 0
         }
@@ -361,11 +444,18 @@ class GameManager: ObservableObject {
             }
             jumpMan.isJumping = false
             jumpMan.isJumpingUp = false
-            jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
+            if jumpMan.hasHammer {
+                jumpMan.frameSize = jumpMan.hammerFrameSize
+                jumpMan.currentFrame = ImageResource(name: "JMHam1", bundle: .main)
+            } else {
+                jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
+                
+            }
             currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+            
         }
-
+        
     }
     
     func walkRight() {
@@ -406,18 +496,28 @@ class GameManager: ObservableObject {
         }
     }
     
+    func animateHammer(){
+        if jumpMan.isWalking {
+            jumpMan.currentFrame = jumpMan.hammerWalking[jumpMan.animateHammerFrame]
+        } else {
+            jumpMan.currentFrame = jumpMan.hammer1[jumpMan.animateHammerFrame]
+        }
+        jumpMan.frameSize = jumpMan.hammerFrameSize
+        jumpMan.animateHammerFrame += 1
+        if jumpMan.animateHammerFrame == 16 {
+            jumpMan.animateHammerFrame = 0
+        }
+    }
+    
     func animateJMRight(){
         jumpMan.position.x += assetDimention / 3.0
-        if jumpMan.hasHammer {
-            jumpMan.currentFrame = jumpMan.hammerFrame == false ? jumpMan.hammer1[jumpMan.animateFrame] : jumpMan.hammer2[jumpMan.animateFrame]
-        } else {
+        if !jumpMan.hasHammer {
             jumpMan.currentFrame = jumpMan.walking[jumpMan.animateFrame]
         }
         jumpMan.animateFrame += 1
         if jumpMan.animateFrame == 3 {
             jumpMan.animateFrame = 0
             jumpMan.isWalking = false
-            jumpMan.hammerFrame = !jumpMan.hammerFrame
             if jumpMan.xPos < screenDimentionX {
                 jumpMan.xPos += 1
             }
@@ -432,16 +532,13 @@ class GameManager: ObservableObject {
     
     func animateJMLeft(){
         jumpMan.position.x -= assetDimention / 3.0
-        if jumpMan.hasHammer {
-            jumpMan.currentFrame = jumpMan.hammerFrame == false ? jumpMan.hammer1[jumpMan.animateFrame] : jumpMan.hammer2[jumpMan.animateFrame]
-        } else {
+        if !jumpMan.hasHammer {
             jumpMan.currentFrame = jumpMan.walking[jumpMan.animateFrame]
         }
         jumpMan.animateFrame += 1
         if jumpMan.animateFrame == 3 {
             jumpMan.animateFrame = 0
             jumpMan.isWalking = false
-            jumpMan.hammerFrame = !jumpMan.hammerFrame
             if jumpMan.xPos > 0 {
                 jumpMan.xPos -= 1
             }
@@ -450,7 +547,7 @@ class GameManager: ObservableObject {
                 jumpMan.isJumpingLeft = true
                 jump()
             }
-
+            
             whatsAround()
         }
     }
@@ -602,6 +699,7 @@ class GameManager: ObservableObject {
     }
     
     func canClimbLadder() -> Bool {
+        if jumpMan.hasHammer { return false }
         guard isLadderAbove() && !jumpMan.isClimbing else {
             return false
         }
@@ -609,6 +707,7 @@ class GameManager: ObservableObject {
     }
     
     func canDecendLadder() -> Bool {
+        if jumpMan.hasHammer { return false }
         guard isLadderBelow() && !jumpMan.isClimbing else {
             return false
         }
@@ -650,6 +749,41 @@ class GameManager: ObservableObject {
             kongExitLevel()
             pauline.isShowing = false
         }
+    }
+    
+    func checkCollectibles() {
+        for collectible in collectibles {
+            if !collectible.collected {
+                if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: collectible.position, diameter2: collectible.frameSize.width / 2) {
+                    collectible.collected = true
+                    soundFX.getItemSound()
+                    if collectible.collectibleScore() > 0 {
+                        addPoints(value: collectible.collectibleScore(), position: collectible.position)
+                    } else if collectible.type == .hammer {
+                        setHammer()
+                    }
+                }
+            }
+        }
+    }
+    
+    func setHammer() {
+        jumpMan.hasHammer = true
+        jumpMan.animateHammerFrame = 0
+        startHammerCountdown()
+    }
+    
+    func circlesIntersect(center1: CGPoint, diameter1: CGFloat, center2: CGPoint, diameter2: CGFloat) -> Bool {
+        let radius1 = diameter1 / 2
+        let radius2 = diameter2 / 2
+        
+        let distanceX = center2.x - center1.x
+        let distanceY = center2.y - center1.y
+        let distanceSquared = distanceX * distanceX + distanceY * distanceY
+        let radiusSum = radius1 + radius2
+        let radiusSumSquared = radiusSum * radiusSum
+        
+        return distanceSquared <= radiusSumSquared
     }
     
     func whatsAround() {

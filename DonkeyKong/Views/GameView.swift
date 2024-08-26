@@ -33,6 +33,16 @@ struct GameView: View {
                     .position(manager.flames.position)
                     .zIndex(1.9)
             }
+            if manager.hasExplosion {
+                ExplodeView(explode: manager.explosion)
+                    .position(manager.explosion.position)
+                    .zIndex(1.9)
+            }
+            if manager.hasPoints {
+                PointsView(points: manager.pointsShow)
+                    .position(manager.pointsShow.position)
+                    .zIndex(1.9)
+            }
             ForEach(barrelArray.barrels, id: \.id) { barrel in
                 if barrel.isShowing {
                     BarrelView(barrel: barrel)
@@ -41,9 +51,11 @@ struct GameView: View {
                 }
             }
             ForEach(manager.collectibles, id: \.id) { collectible in
-                CollectiblesView(collectible: collectible)
-                    .position(collectible.position)
-                    .zIndex(1.8)
+                if !collectible.collected {
+                    CollectiblesView(collectible: collectible)
+                        .position(collectible.position)
+                        .zIndex(1.8)
+                }
             }
             
         }.zIndex(1.0)
