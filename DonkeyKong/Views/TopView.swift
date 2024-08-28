@@ -31,7 +31,7 @@ struct TopView: View {
                         .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
                         .padding([.trailing])
                     //Spacer()
-                    Text("\(String(format: "%06d", manager.highScore))")
+                    Text("\(String(format: "%06d", manager.hiScores.highScore))")
                         .foregroundStyle(.white)
                         .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
                         .padding([.trailing])

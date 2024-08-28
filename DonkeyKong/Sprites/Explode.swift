@@ -8,31 +8,27 @@
 import Foundation
 import SwiftUI
 
-class Explode: ObservableObject {
-//    var id = UUID()
-    let animateFrames = 9
-    var animateCounter = 0
-    var cFrame = 0
-    var xPos = 0
-    var yPos = 0
-    var position = CGPoint()
-    var frame = 0
-    @Published
-    var currentFrame:ImageResource = ImageResource(name: "Explode1", bundle: .main)
+class Explode: SwiftUISprite,Animatable, ObservableObject {
+    static var animateFrames: Int = 9
+    var animateCounter: Int = 0
     var explosions:[ImageResource] = [ImageResource(name: "Explode1", bundle: .main),ImageResource(name: "Explode2", bundle: .main),ImageResource(name: "Explode1", bundle: .main),ImageResource(name: "Explode2", bundle: .main),ImageResource(name: "Explode3", bundle: .main),ImageResource(name: "Explode4", bundle: .main),ImageResource(name: "Explode4", bundle: .main)]
-    var frameSize: CGSize = CGSize(width: 32, height:  32)
-    @Published
-    var isShowing = false
 
-//    func animate() {
-//        animateCounter += 1
-//        if animateCounter == animateFrames {
-//            currentFrame = explosions[cFrame]
-//            cFrame += 1
-//            if cFrame == 6 {
-//                cFrame = 0
-//            }
-//            animateCounter = 0
-//        }
-//    }
+    override init(xPos: Int, yPos: Int, frameSize: CGSize) {
+        super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
+        currentFrame = ImageResource(name: "Explode1", bundle: .main)
+    }
+    
+    func animate() {
+        animateCounter += 1
+        if animateCounter == Explode.animateFrames {
+            currentFrame = explosions[currentAnimationFrame]
+            currentAnimationFrame += 1
+            if currentAnimationFrame == 6 {
+                currentAnimationFrame = 0
+                let position:[String: CGPoint] = ["pos": self.position]
+                NotificationCenter.default.post(name: .notificationRemoveExplosion, object: nil, userInfo: position)
+            }
+            animateCounter = 0
+        }
+    }
 }

@@ -24,23 +24,23 @@ struct NewHighScoreView: View {
 
             HStack {
                 Spacer()
-                Text(String(manager.letterArray[0]))
+                Text(String(manager.hiScores.letterArray[0]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.letterIndex == 0 ? Color.red : Color.white , width: 2)
+                    .border(manager.hiScores.letterIndex == 0 ? Color.red : Color.white , width: 2)
                 Spacer()
-                Text(String(manager.letterArray[1]))
+                Text(String(manager.hiScores.letterArray[1]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.letterIndex == 1 ? Color.red : Color.white, width: 2)
+                    .border(manager.hiScores.letterIndex == 1 ? Color.red : Color.white, width: 2)
                 Spacer()
-                Text(String(manager.letterArray[2]))
+                Text(String(manager.hiScores.letterArray[2]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.letterIndex == 2 ? Color.red : Color.white, width: 2)
+                    .border(manager.hiScores.letterIndex == 2 ? Color.red : Color.white, width: 2)
                 Spacer()
                 
             }

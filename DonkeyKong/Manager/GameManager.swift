@@ -16,74 +16,83 @@ enum GameState {
 
 class GameManager: ObservableObject {
     let soundFX:SoundFX = SoundFX()
+    let hiScores:DonkeyKongHighScores = DonkeyKongHighScores()
+    @Published
+    var gameScreen:ScreenData = ScreenData()
     
-    let screenDimentionX = 30
-    let screenDimentionY = 28
     var assetDimention = 0.0
     var assetOffset = 0.0
     var verticalOffset = 0.0
-    var currentHeightOffset = 0.0
-    let hiScores:DonkeyKongHighScores = DonkeyKongHighScores()
     var gameSize = CGSize()
     var screenSize = CGSize()
+    @Published
+    var screenData:[[ScreenAsset]] = [[]]
     @Published
     var gameState:GameState = .intro
     @Published
     var lives = 3
     var score = 0
-    var highScore = 9999
     var level = 1
-    @Published
-    var introCounter = 0
+//    @Published
+//    var introCounter = 0
     @Published
     var bonus = 5000
-    ///New High Score Handling
-    @Published
-    var letterIndex = 0
-    @Published
-    var letterArray:[Character] = ["A","A","A"]
-    @Published
-    var selectedLetter = 0
-    
-    @Published
-    var screenData:[[ScreenAsset]] = [[]]
     ///Sprites of sorts....
     @ObservedObject
-    var jumpMan:JumpMan = JumpMan()
-    var ladderHeight = 0.0
-    var ladderStep = 0.0
-    var kong:Kong = Kong()
-    var pauline:Pauline = Pauline()
+    var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
+    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: CGSize(width: 72, height:  72))
+    var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: CGSize(width: 63, height:  36))
     let heartBeat = 0.6
-    var flames:Flames = Flames()
+    var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: CGSize(width: 24, height:  24))
     var collectibles:[Collectible] = []
     @ObservedObject
     var barrelArray:BarrelArray = BarrelArray()
+    @ObservedObject
+    var fireBlobArray:FireBlobArray = FireBlobArray()
+    
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
     var levelEnd = false
     var hasFlames = false
-    var explosion:Explode = Explode()
+    var explosion:Explode = Explode(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
     @Published
     var hasExplosion = false
-    var pointsShow:Points = Points()
+    var pointsShow:Points = Points(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
     @Published
     var hasPoints = false
     var pause = false
     
     init() {
+        /// Share these instances so they are available from the Sprites
+        ServiceLocator.shared.register(service: gameScreen)
+        ServiceLocator.shared.register(service: fireBlobArray)
+        ServiceLocator.shared.register(service: barrelArray)
+        
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
         let displayLink:CADisplayLink = CADisplayLink(target: self, selector: #selector(refreshModel))
         displayLink.add(to: .main, forMode:.common)
+        notificationObservers()
+        
+    }
+    
+    func addPoints(value:Int,position:CGPoint) {
+        hasPoints = true
+        pointsShow.pointsText = "\(value)"
+        score += value
+        pointsShow.position = position
+        pointsShow.animateCounter = 0
     }
     
     @objc func refreshModel() {
         if gameState == .kongintro {
             if kong.state == .intro {
-                animateKongIntro()
+                kong.animateIntro()
             } else if kong.state == .jumpingup {
-                animateKongJumpUp()
+                kong.animateJumpUp()
+                if kong.showPauline {
+                    pauline.isShowing = true
+                }
             } else if kong.state == .bouncing {
-                animateKongHop()
+                kong.animateHop()
             }
         }
         
@@ -101,14 +110,23 @@ class GameManager: ObservableObject {
                     for barrel in barrelArray.barrels {
                         barrel.animate()
                         if !barrel.isThrown {
-                            moveBarrel(barrel: barrel)
+                            barrel.move()
                         } else {
-                            moveThrownBarrel(barrel: barrel)
+                            barrel.moveThrown()
+                        }
+                    }
+                    
+                    for fireBlob in fireBlobArray.fireblob {
+                        fireBlob.animate()
+                        if fireBlob.state == .hopping {
+                            fireBlob.hop()
+                        } else {
+                            fireBlob.move()
                         }
                     }
                 }
                 if levelEnd {
-                    animateKongExit()
+                    kong.animateExit()
                     flames.animate()
                 }
                 
@@ -117,25 +135,23 @@ class GameManager: ObservableObject {
                 }
             }
             if hasExplosion {
-                animateExplosion()
+                explosion.animate()
             }
             if hasPoints {
-                animatePoints()
+                pointsShow.animate()
             }
-
-            
         }
     }
     
     func startGame() {
-        assetDimention = gameSize.width / Double(screenDimentionX - 1)
+        assetDimention = gameSize.width / Double(gameScreen.screenDimentionX - 1)
         assetOffset = assetDimention / 8.0
         verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        print("assetDimention \(assetDimention)")
-        print("assetOffset \(assetOffset)")
-        print("verticalOffset \(verticalOffset)")
-        //setKongIntro()   // If we don't want the intro....
-        startPlaying()
+        gameScreen.assetDimention = gameSize.width / Double(gameScreen.screenDimentionX - 1)
+        gameScreen.assetOffset = assetDimention / 8.0
+        gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
+        setKongIntro()   // If we don't want the intro....
+        //startPlaying()
     }
     
     func startPlaying() {
@@ -159,132 +175,89 @@ class GameManager: ObservableObject {
     func setDataForLevel() {
         collectibles.removeAll()
         barrelArray.barrels.removeAll()
+        fireBlobArray.fireblob.removeAll()
         screenData = Screens().getScreenData(level: self.level)
-        
+        gameScreen.screenData = Screens().getScreenData(level: self.level)
         if level == 1 {
-            jumpMan.xPos = 2
+            jumpMan.xPos = 6
             jumpMan.yPos = 27
             //jumpMan.hasHammer = true
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
+            pauline.setPosition(xPos: 14, yPos: 3)
             
-            pauline.xPos = 14
-            pauline.yPos = 3
-            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
-            kong.xPos = 6
-            kong.yPos = 7
-            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
-            kong.position.y += 7
+            kong.setPosition(xPos: 6, yPos: 7)
+//            kong.xPos = 6
+//            kong.yPos = 7
+//            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+//            kong.position.y += 7
             pauline.isShowing = true
-            flames.xPos = 4
-            flames.yPos = 25
-            flames.position = calcPositionFromScreen(xPos: flames.xPos,yPos: flames.yPos,frameSize: flames.frameSize)
-            flames.position.y += 4
-            flames.position.x -= 8
-            hasFlames = true
-            let collectible1 = Collectible(type: .hammer, xPos: 3, yPos: 9)
-            collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
-            let collectible2 = Collectible(type: .hammer, xPos: 20, yPos: 21)
-            collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
-            collectibles.append(collectible1)
-            collectibles.append(collectible2)
+            flames.setPosition(xPos: 4, yPos: 25)
+            hasFlames = false
+            collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 9))
+            collectibles.append(Collectible(type: .hammer, xPos: 20, yPos: 21))
         } else if level == 2 {
             jumpMan.xPos = 3
             jumpMan.yPos = 27
             jumpMan.facing = .right
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-            kong.xPos = 14
-            kong.yPos = 7
-            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
-            kong.position.y += 7
+            kong.setPosition(xPos: 14, yPos: 7)
+//            kong.xPos = 14
+//            kong.yPos = 7
+//            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+//            kong.position.y += 7
             
-            pauline.xPos = 15
-            pauline.yPos = 2
-            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
+            pauline.setPosition(xPos: 15, yPos: 2)
+
+//            pauline.xPos = 15
+//            pauline.yPos = 2
+//            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
             pauline.isShowing = true
             hasFlames = false
-            let collectible1 = Collectible(type: .hammer, xPos: 14, yPos: 10)
-            collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
-            let collectible2 = Collectible(type: .hammer, xPos: 1, yPos: 15)
-            collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
-            let collectible3 = Collectible(type: .umbrella, xPos: 4, yPos: 7)
-            collectible3.position = calcPositionFromScreen(xPos: collectible3.xPos,yPos: collectible3.yPos,frameSize: collectible3.frameSize)
-            let collectible4 = Collectible(type: .hat, xPos: 26, yPos: 22)
-            collectible4.position = calcPositionFromScreen(xPos: collectible4.xPos,yPos: collectible4.yPos,frameSize: collectible4.frameSize)
-            let collectible5 = Collectible(type: .phone, xPos: 17, yPos: 27)
-            collectible5.position = calcPositionFromScreen(xPos: collectible5.xPos,yPos: collectible5.yPos,frameSize: collectible5.frameSize)
+            collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 10))
+            collectibles.append(Collectible(type: .hammer, xPos: 2, yPos: 15))
+            collectibles.append(Collectible(type: .umbrella, xPos: 4, yPos: 7))
+            collectibles.append(Collectible(type: .hat, xPos: 26, yPos: 22))
+            collectibles.append(Collectible(type: .phone, xPos: 17, yPos: 27))
             
-            collectibles.append(collectible1)
-            collectibles.append(collectible2)
-            collectibles.append(collectible3)
-            collectibles.append(collectible4)
-            collectibles.append(collectible5)
-            
-            flames = Flames()
+            //flames = Flames(xPos: 0, yPos: 0, frameSize: CGSize(width: 24, height:  24))
             
         } else if level == 3 {
             jumpMan.xPos = 3
             jumpMan.yPos = 27
             jumpMan.facing = .right
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-            kong.xPos = 21
-            kong.yPos = 7
-            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
-            kong.position.y += 7
+            kong.setPosition(xPos: 21, yPos: 7)
+//            kong.xPos = 21
+//            kong.yPos = 7
+//            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+//            kong.position.y += 7
             
-            pauline.xPos = 14
-            pauline.yPos = 3
-            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
+            pauline.setPosition(xPos: 14, yPos: 3)
             pauline.isShowing = true
             
-            flames.xPos = 15
-            flames.yPos = 12
-            
-            flames.position = calcPositionFromScreen(xPos: flames.xPos,yPos: flames.yPos,frameSize: flames.frameSize)
-            flames.position.y += 4
-            flames.position.x -= 8
+            flames.setPosition(xPos: 15, yPos: 12)
             hasFlames = true
             
-            let collectible1 = Collectible(type: .hammer, xPos: 14, yPos: 20)
-            collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
-            let collectible2 = Collectible(type: .hammer, xPos: 3, yPos: 15)
-            collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
-            let collectible3 = Collectible(type: .umbrella, xPos: 24, yPos: 17)
-            collectible3.position = calcPositionFromScreen(xPos: collectible3.xPos,yPos: collectible3.yPos,frameSize: collectible3.frameSize)
-            let collectible4 = Collectible(type: .hat, xPos: 9, yPos: 17)
-            collectible4.position = calcPositionFromScreen(xPos: collectible4.xPos,yPos: collectible4.yPos,frameSize: collectible4.frameSize)
-            let collectible5 = Collectible(type: .phone, xPos: 16, yPos: 27)
-            collectible5.position = calcPositionFromScreen(xPos: collectible5.xPos,yPos: collectible5.yPos,frameSize: collectible5.frameSize)
-            
-            collectibles.append(collectible1)
-            collectibles.append(collectible2)
-            collectibles.append(collectible3)
-            collectibles.append(collectible4)
-            collectibles.append(collectible5)
+            collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 20))
+            collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 15))
+            collectibles.append(Collectible(type: .umbrella, xPos: 24, yPos: 17))
+            collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 17))
+            collectibles.append(Collectible(type: .phone, xPos: 16, yPos: 27))
         } else if level == 4 {
             jumpMan.xPos = 1
             jumpMan.yPos = 25
             jumpMan.facing = .right
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-            pauline.xPos = 14
-            pauline.yPos = 3
-            pauline.position = calcPositionFromScreen(xPos: pauline.xPos,yPos: pauline.yPos,frameSize: pauline.frameSize)
+            pauline.setPosition(xPos: 14, yPos: 3)
             pauline.isShowing = true
-            kong.xPos = 6
-            kong.yPos = 7
-            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
-            kong.position.y += 7
-
-            
-            let collectible1 = Collectible(type: .phone, xPos: 27, yPos: 9)
-            collectible1.position = calcPositionFromScreen(xPos: collectible1.xPos,yPos: collectible1.yPos,frameSize: collectible1.frameSize)
-            let collectible2 = Collectible(type: .umbrella, xPos: 1, yPos: 13)
-            collectible2.position = calcPositionFromScreen(xPos: collectible2.xPos,yPos: collectible2.yPos,frameSize: collectible2.frameSize)
-            let collectible3 = Collectible(type: .hat, xPos: 9, yPos: 22)
-            collectible3.position = calcPositionFromScreen(xPos: collectible3.xPos,yPos: collectible3.yPos,frameSize: collectible3.frameSize)
-            collectibles.append(collectible1)
-            collectibles.append(collectible2)
-            collectibles.append(collectible3)
-
+            kong.setPosition(xPos: 21, yPos: 7)
+//            kong.xPos = 6
+//            kong.yPos = 7
+//            kong.position = calcPositionFromScreen(xPos: kong.xPos,yPos: kong.yPos,frameSize: kong.frameSize)
+//            kong.position.y += 7
+            collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
+            collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
+            collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
         }
     }
     
@@ -296,9 +269,9 @@ class GameManager: ObservableObject {
             }
         }
     }
-    /// todo change the time
+    /// todo change the time to 30 seconds
     func startHammerCountdown() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 120) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 30) { [self] in
             jumpMan.hasHammer = false
             jumpMan.frameSize = jumpMan.normalFrameSize
             jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
@@ -306,7 +279,6 @@ class GameManager: ObservableObject {
             jumpMan.objectWillChange.send()
         }
     }
-    
     
     /// Sound FX of the game
     func startHeartBeat(){
@@ -320,45 +292,6 @@ class GameManager: ObservableObject {
             }
         }
     }
-    
-    func animateExplosion() {
-        explosion.animateCounter += 1
-        if explosion.animateCounter == explosion.animateFrames {
-            explosion.currentFrame = explosion.explosions[explosion.cFrame]
-            explosion.cFrame += 1
-            if explosion.cFrame == explosion.explosions.count {
-                explosion.cFrame = 0
-                hasExplosion = false
-                if !hasPoints {
-                    addPoints(value: 100, position: explosion.position)
-                }
-            }
-            explosion.animateCounter = 0
-        }
-    }
-    
-    func addPoints(value:Int,position:CGPoint) {
-        hasPoints = true
-        pointsShow.pointsText = "\(value)"
-        score += value
-        pointsShow.position = position
-        pointsShow.animateCounter = 0
-    }
-    
-    /// not doing a lot but display the points colleted.
-    func animatePoints() {
-        pointsShow.animateCounter += 1
-        if pointsShow.animateCounter == pointsShow.animateFrames {
-            //pointsShow.pointsColor = pointsShow.animateCounter % 1 == 0 ? .black : .white
-            pointsShow.cFrame += 1
-            if pointsShow.cFrame == 6 {
-                pointsShow.cFrame = 0
-                hasPoints = false
-            }
-            pointsShow.animateCounter = 0
-        }
-    }
-    
     
     func moveJumpMan() {
         if !jumpMan.isWalking && !jumpMan.isJumping {
@@ -396,10 +329,10 @@ class GameManager: ObservableObject {
         var points = [CGPoint]()
         if jumpMan.isJumpingLeft {
             pointB = calcPositionFromScreen(xPos: jumpMan.xPos - 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-            points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: -60)
+            points = jumpMan.generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: -60)
         } else {
             pointB = calcPositionFromScreen(xPos: jumpMan.xPos + 2,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
-            points = generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: 60)
+            points = jumpMan.generateParabolicPoints(from: pointA, to: pointB,steps: 6, angleInDegrees: 60)
         }
         points[6] = pointB
         jumpMan.jumpingPoints = points
@@ -476,7 +409,7 @@ class GameManager: ObservableObject {
                 jumpMan.currentFrame = ImageResource(name: "JM1", bundle: .main)
                 
             }
-            currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+            jumpMan.currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             jumpMan.position = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos,frameSize: jumpMan.frameSize)
             
         }
@@ -492,9 +425,9 @@ class GameManager: ObservableObject {
         jumpMan.isWalking = true
         jumpMan.facing = .right
         animateJMRight()
-        currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
-        if currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
-            if currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
+        jumpMan.currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+        if jumpMan.currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
+            if jumpMan.currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos+1].assetOffset {
                 jumpMan.position.y += self.assetOffset
             } else {
                 jumpMan.position.y -= self.assetOffset
@@ -511,9 +444,9 @@ class GameManager: ObservableObject {
         jumpMan.isWalking = true
         jumpMan.facing = .left
         animateJMLeft()
-        currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
-        if currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
-            if currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
+        jumpMan.currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+        if jumpMan.currentHeightOffset != screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
+            if jumpMan.currentHeightOffset > screenData[jumpMan.yPos][jumpMan.xPos-1].assetOffset {
                 jumpMan.position.y += self.assetOffset
             } else {
                 jumpMan.position.y -= self.assetOffset
@@ -543,7 +476,7 @@ class GameManager: ObservableObject {
         if jumpMan.animateFrame == 3 {
             jumpMan.animateFrame = 0
             jumpMan.isWalking = false
-            if jumpMan.xPos < screenDimentionX {
+            if jumpMan.xPos < gameScreen.screenDimentionX {
                 jumpMan.xPos += 1
             }
             if jumpMan.willJump {
@@ -578,7 +511,7 @@ class GameManager: ObservableObject {
     }
     
     func animateJMUp(){
-        jumpMan.position.y -= ladderStep / 4.0
+        jumpMan.position.y -= jumpMan.ladderStep / 4.0
         jumpMan.currentFrame = jumpMan.climbing[jumpMan.animateFrame]
         jumpMan.animateFrame += 1
         if jumpMan.facing == .left {
@@ -592,7 +525,7 @@ class GameManager: ObservableObject {
             jumpMan.isClimbingUp = false
             if jumpMan.yPos != 0 {
                 jumpMan.yPos -= 1
-                currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+                jumpMan.currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             }
             if !isLadderAbove() {
                 jumpMan.currentFrame = ImageResource(name: "JMBack", bundle: .main)
@@ -605,7 +538,7 @@ class GameManager: ObservableObject {
     }
     
     func animateJMDown() {
-        jumpMan.position.y += ladderStep / 4.0
+        jumpMan.position.y += jumpMan.ladderStep / 4.0
         jumpMan.currentFrame = jumpMan.climbing[jumpMan.animateFrame]
         jumpMan.animateFrame += 1
         if jumpMan.facing == .left {
@@ -617,9 +550,9 @@ class GameManager: ObservableObject {
             jumpMan.animateFrame = 0
             jumpMan.isClimbing = false
             jumpMan.isClimbingDown = false
-            if jumpMan.yPos < screenDimentionY - 1 {
+            if jumpMan.yPos < gameScreen.screenDimentionY - 1 {
                 jumpMan.yPos += 1
-                currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
+                jumpMan.currentHeightOffset = screenData[jumpMan.yPos][jumpMan.xPos].assetOffset
             }
             if !isLadderBelow() {
                 jumpMan.currentFrame = ImageResource(name: "JMBack", bundle: .main)
@@ -637,8 +570,8 @@ class GameManager: ObservableObject {
             yCount += 1
         }
         let endPosition = calcPositionFromScreen(xPos: jumpMan.xPos,yPos: jumpMan.yPos - (yCount + 1),frameSize: jumpMan.frameSize)
-        ladderHeight = jumpMan.position.y - endPosition.y
-        ladderStep = ladderHeight / Double(yCount + 1)
+        jumpMan.ladderHeight = jumpMan.position.y - endPosition.y
+        jumpMan.ladderStep = jumpMan.ladderHeight / Double(yCount + 1)
     }
     
     func calculateLadderHeightDown() {
@@ -648,12 +581,12 @@ class GameManager: ObservableObject {
             yCount += 1
         }
         let endPosition = calcPositionFromScreen(xPos: jumpMan.xPos, yPos: jumpMan.yPos+(yCount+1),frameSize: jumpMan.frameSize)
-        ladderHeight = endPosition.y - jumpMan.position.y
-        ladderStep = ladderHeight / Double(yCount+1)
+        jumpMan.ladderHeight = endPosition.y - jumpMan.position.y
+        jumpMan.ladderStep = jumpMan.ladderHeight / Double(yCount+1)
     }
     
     func calcPositionForAsset(xPos:Int, yPos:Int) -> CGPoint  {
-        let assetOffsetAtPosition = screenData[yPos][xPos].assetOffset
+        let assetOffsetAtPosition = gameScreen.screenData[yPos][xPos].assetOffset
         return CGPoint(x: Double(xPos) * assetDimention + (assetDimention / 2), y: Double(yPos) * assetDimention - (assetOffset * assetOffsetAtPosition) + 80)
     }
     
@@ -691,7 +624,7 @@ class GameManager: ObservableObject {
     func isLadderBelow() -> Bool {
         if screenData[jumpMan.yPos][jumpMan.xPos].assetType == .ladder { return true }
         if screenData[jumpMan.yPos][jumpMan.xPos].assetType == .blank { return false }
-        if jumpMan.yPos <= screenDimentionY - 2 {
+        if jumpMan.yPos <= gameScreen.screenDimentionY - 2 {
             if screenData[jumpMan.yPos + 1][jumpMan.xPos].assetType == .ladder || screenData[jumpMan.yPos + 1][jumpMan.xPos].assetType == .girder {
                 return true
             } else {
@@ -714,7 +647,7 @@ class GameManager: ObservableObject {
     }
     
     func canMoveRight() -> Bool {
-        guard jumpMan.xPos < screenDimentionX - 2 || !jumpMan.willJump else {
+        guard jumpMan.xPos < gameScreen.screenDimentionX - 2 || !jumpMan.willJump else {
             return false
         }
         if screenData[jumpMan.yPos][jumpMan.xPos + 1].assetType != .blank {
@@ -771,7 +704,7 @@ class GameManager: ObservableObject {
             levelEnd = true
             heart.type = .heartbreak
             self.heart.objectWillChange.send()
-            kongExitLevel()
+            kong.exitLevel()
             pauline.isShowing = false
         }
     }
@@ -815,14 +748,14 @@ class GameManager: ObservableObject {
         return
         print("JumpMan Current position is X \(jumpMan.xPos) Y \(jumpMan.yPos)")
         print("JumpMan Current screen position is \(jumpMan.position)")
-        print("JumpMan Current height offset is \(currentHeightOffset)")
+        print("JumpMan Current height offset is \(jumpMan.currentHeightOffset)")
         print("Current Standing on is \(screenData[jumpMan.yPos][jumpMan.xPos].assetType)")
         if jumpMan.xPos == 0 {
             print("Nothing Behind")
         } else {
             print("Behind is \(screenData[jumpMan.yPos-1][jumpMan.xPos - 1].assetType)")
         }
-        if jumpMan.xPos > screenDimentionX {
+        if jumpMan.xPos > gameScreen.screenDimentionX {
             print("Nothing In front")
         } else {
             print("In front is \(screenData[jumpMan.yPos-1][jumpMan.xPos + 1].assetType)")

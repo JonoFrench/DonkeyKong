@@ -18,6 +18,16 @@ public class DonkeyKongHighScores {
 
     var highScoreLetters:[Character] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var hiScores:[HighScores] = []
+    var highScore = 9999
+
+    ///New High Score Handling
+    @Published
+    var letterIndex = 0
+    @Published
+    var letterArray:[Character] = ["A","A","A"]
+    @Published
+    var selectedLetter = 0
+ 
     
     public init(){
         getScores()

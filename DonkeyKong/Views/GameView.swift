@@ -9,18 +9,18 @@ import SwiftUI
 
 struct GameView: View {
     @EnvironmentObject var manager: GameManager
-//    @ObservedObject var manager: GameManager
     @ObservedObject var jumpMan:JumpMan
     @ObservedObject var barrelArray:BarrelArray
+    @ObservedObject var fireBlobArray:FireBlobArray
     var body: some View {
         ZStack {
-            ScreenView()
+            ScreenView(gameScreen: manager.gameScreen)
                 .position(x:manager.gameSize.width / 2,y:manager.gameSize.height / 2)
                 .zIndex(0.1)
             BonusBoxView()
                 .position(x:manager.gameSize.width - 70,y:50)
-            JumpManView(jumpMan: jumpMan)
-                .position(jumpMan.position)
+            JumpManView(jumpMan: manager.jumpMan)
+                .position(manager.jumpMan.position)
                 .zIndex(2.0)
             KongView(kong: manager.kong)
                 .position(manager.kong.position)
@@ -36,18 +36,25 @@ struct GameView: View {
             if manager.hasExplosion {
                 ExplodeView(explode: manager.explosion)
                     .position(manager.explosion.position)
-                    .zIndex(1.9)
+                    .zIndex(2.9)
             }
             if manager.hasPoints {
                 PointsView(points: manager.pointsShow)
                     .position(manager.pointsShow.position)
-                    .zIndex(1.9)
+                    .zIndex(2.9)
             }
             ForEach(barrelArray.barrels, id: \.id) { barrel in
                 if barrel.isShowing {
                     BarrelView(barrel: barrel)
                         .position(barrel.position)
                         .zIndex(2.1)
+                }
+            }
+            ForEach(fireBlobArray.fireblob, id: \.id) { fireBlob in
+                if fireBlob.isShowing {
+                    FireBlobView(fireBlob: fireBlob)
+                        .position(fireBlob.position)
+                        .zIndex(2.2)
                 }
             }
             ForEach(manager.collectibles, id: \.id) { collectible in

@@ -14,21 +14,15 @@ enum CollectibleType {
     case hammer,umbrella,hat,phone,heart,heartbreak
 }
 
-class Collectible: ObservableObject {
-    var id = UUID()
-    var xPos = 0
-    var yPos = 0
+class Collectible:SwiftUISprite, ObservableObject {
     var type: CollectibleType = .hammer
-    var position = CGPoint()
-    var currentFrame:ImageResource = ImageResource(name: "Hammer", bundle: .main)
-    var frameSize: CGSize = CGSize(width: 24, height:  18)
     @Published
     var collected = false
     
     init(type: CollectibleType, xPos: Int, yPos:Int) {
+        super.init(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  18))
         self.type = type
-        self.xPos = xPos
-        self.yPos = yPos
+        currentFrame = collectibleImage()
     }
         
     func collectibleImage() -> ImageResource  {

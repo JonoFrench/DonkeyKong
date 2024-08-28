@@ -11,17 +11,18 @@ import SwiftUI
 
 struct ScreenView: View {
     @EnvironmentObject var manager: GameManager
+    @ObservedObject var gameScreen: ScreenData
     var body: some View {
         ZStack {
-            ForEach(0..<28) { y in
-                ForEach(0..<30) { x in
-                    let ir = manager.screenData[y][x]
+            ForEach(0..<gameScreen.screenDimentionY, id: \.self) { y in
+                ForEach(0..<gameScreen.screenDimentionX, id: \.self) { x in
+                    let ir = gameScreen.screenData[y][x]
                     if ir.assetType != .blank {
                         Image(ir.assetImage(level: manager.level))
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: manager.assetDimention, height: manager.assetDimention)
-                            .position(x:Double(x) * manager.assetDimention + (manager.assetDimention / 2),y: Double(y) * manager.assetDimention - (manager.assetOffset * ir.assetOffset) + 80)
+                            .frame(width: gameScreen.assetDimention, height: gameScreen.assetDimention)
+                            .position(x:Double(x) * gameScreen.assetDimention + (gameScreen.assetDimention / 2),y: Double(y) * gameScreen.assetDimention - (gameScreen.assetOffset * ir.assetOffset) + 80)
                             .zIndex(ir.assetType == .ladder ? -0.20 : -0.10)
                     }
                 }

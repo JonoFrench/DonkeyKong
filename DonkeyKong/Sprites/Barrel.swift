@@ -16,63 +16,237 @@ enum BarrelColor {
     case orange,blue
 }
 
-class BarrelArray: ObservableObject {
+final class BarrelArray: ObservableObject {
     @Published var barrels: [Barrel] = []
 }
 
-class Barrel: ObservableObject {    
-    var id = UUID()
+final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
+    static var animateFrames: Int = 9
+    static var speed:Int = 2
+    var animateCounter: Int = 0
+    var speedCounter:Int = 0
+
     let moveFrames = 4
-    let animateFrames = 9
-    var animateCounter = 0
     var moveCounter = 0
-    var speedCounter = 0
-    var speed = 2
-    var cFrame = 0
-    var xPos = 0
-    var yPos = 0
-    @Published
-    var position = CGPoint()
-    var frame = 0
     var direction:BarrelDirection = .right
     var nextDirection:BarrelDirection = .left
     var color: BarrelColor = .orange
-    var currentHeightOffset = 0.0
     var dropHeight = 0.0
     var dropStep = 0.0
     var dropCount = 0
-    var currentFrame:ImageResource = ImageResource(name: "Barrel1", bundle: .main)
     var orangeBarrels:[ImageResource] = [ImageResource(name: "Barrel1", bundle: .main),ImageResource(name: "Barrel2", bundle: .main),ImageResource(name: "Barrel3", bundle: .main),ImageResource(name: "Barrel4", bundle: .main)]
     var blueBarrels:[ImageResource] = [ImageResource(name: "BarrelBlue1", bundle: .main),ImageResource(name: "BarrelBlue2", bundle: .main),ImageResource(name: "BarrelBlue3", bundle: .main),ImageResource(name: "BarrelBlue4", bundle: .main)]
     var orangeDroppingBarrels:[ImageResource] = [ImageResource(name: "BarrelDown", bundle: .main),ImageResource(name: "BarrelDown", bundle: .main),ImageResource(name: "BarrelDown", bundle: .main),ImageResource(name: "BarrelDown", bundle: .main)]
     var blueDroppingBarrels:[ImageResource] = [ImageResource(name: "BarrelBlueDown", bundle: .main),ImageResource(name: "BarrelBlueDown2", bundle: .main),ImageResource(name: "BarrelBlueDown", bundle: .main),ImageResource(name: "BarrelBlueDown2", bundle: .main)]
 
-    var frameSize: CGSize = CGSize(width: 16, height:  16)
-    var isShowing = true
     var droppingDown = false
     var isThrown = false
+    var wasThrown = false
+    @Published
+    var toFireBlob = false
+
+    override init(xPos: Int, yPos: Int, frameSize: CGSize) {
+        super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
+        currentFrame = ImageResource(name: "Barrel1", bundle: .main)
+        isShowing = true
+        if Int.random(in: 0..<6) == 3 {
+            color = .blue
+        }
+    }
     
     func animate() {
         animateCounter += 1
-        if animateCounter == animateFrames {
+        if animateCounter == Barrel.animateFrames {
             if color == .blue {
                 if droppingDown || isThrown {
-                    currentFrame = blueDroppingBarrels[cFrame]
+                    currentFrame = blueDroppingBarrels[currentAnimationFrame]
                 } else {
-                    currentFrame = blueBarrels[cFrame]
+                    currentFrame = blueBarrels[currentAnimationFrame]
                 }
             } else {
                 if droppingDown {
-                    currentFrame = orangeDroppingBarrels[cFrame]
+                    currentFrame = orangeDroppingBarrels[currentAnimationFrame]
                 } else {
-                    currentFrame = orangeBarrels[cFrame]
+                    currentFrame = orangeBarrels[currentAnimationFrame]
                 }
             }
-            cFrame += 1
-            if cFrame == 4 {
-                cFrame = 0
+            currentAnimationFrame += 1
+            if currentAnimationFrame == 4 {
+                currentAnimationFrame = 0
             }
             animateCounter = 0
+        }
+    }
+    
+    func move() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+        speedCounter += 1
+            if speedCounter == Barrel.speed {
+                speedCounter = 0
+                moveCounter += 1
+                ///Move left or right
+                if direction == .right || direction == .rightDown {
+                    position.x += assetDimention / CGFloat(moveFrames)
+                } else if direction == .left || direction == .leftDown {
+                    position.x -= assetDimention / CGFloat(moveFrames)
+                }
+                ///Move down
+                if direction == .down || direction == .rightDown || direction == .leftDown {
+                    position.y += dropStep / CGFloat(moveFrames)
+                }
+                ///Next x/y position
+                if moveCounter == moveFrames {
+                    moveCounter = 0
+                    if direction == .left {
+                        if currentHeightOffset != resolvedInstance.screenData[yPos][xPos-1].assetOffset {
+                            position.y += resolvedInstance.assetOffset
+                            currentHeightOffset = resolvedInstance.screenData[yPos][xPos-1].assetOffset
+                        }
+                    } else if direction == .right {
+                        if currentHeightOffset != resolvedInstance.screenData[yPos][xPos+1].assetOffset {
+                            position.y += resolvedInstance.assetOffset
+                            currentHeightOffset = resolvedInstance.screenData[yPos][xPos+1].assetOffset
+                        }
+                    }
+                    
+                    ///Check for drop
+                    if direction == .left || direction == .right {
+                        if checkLadderDrop() {
+                            print("Barrel Ladder Drop")
+                            calculateDropHeight()
+                            droppingDown = true
+                            if direction == .right {
+                                direction = .down
+                                nextDirection = .left
+                            } else if direction == .left {
+                                direction = .down
+                                nextDirection = .right
+                            }
+                            return
+                        }
+                        
+                        if checkDrop() {
+                            print("Barrel Drop")
+                            calculateDropHeight()
+                            
+                            if direction == .right {
+                                direction = .rightDown
+                                nextDirection = .left
+                            } else if direction == .left {
+                                direction = .leftDown
+                                nextDirection = .right
+                            }
+                            return
+                        }
+                    }
+                    
+                    if direction == .down {
+                        dropCount += 1
+                        yPos += 1
+                    } else if direction == .right {
+                        xPos += 1
+                    } else if direction == .left {
+                        xPos -= 1
+                    } else if direction == .rightDown {
+                        xPos += 1
+                        yPos += 1
+                        dropCount += 1
+                        direction = .down
+                    } else if direction == .leftDown {
+                        xPos -= 1
+                        yPos += 1
+                        dropCount += 1
+                        direction = .down
+                    }
+                    if dropCount == 4 {
+                        direction = nextDirection
+                        dropCount = 0
+                        droppingDown = false
+                    }
+                    if xPos == 3 && yPos == 27 {
+                        let barrelID:[String: UUID] = ["id": self.id]
+
+                        if wasThrown {
+                            NotificationCenter.default.post(name: .notificationBarrelToFireblob, object: nil, userInfo: barrelID)
+                        } else {
+                            NotificationCenter.default.post(name: .notificationRemoveBarrel, object: nil, userInfo: barrelID)
+                        }
+                    }
+//                    checkBarrelHit(barrel:barrel)
+                    //NotificationRemoveBarrel
+                }
+                updateScreenArray()
+            }
+        }
+    }
+    
+    func moveThrown() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            speedCounter += 1
+            if speedCounter == Barrel.speed {
+                speedCounter = 0
+                moveCounter += 1
+                position.y += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                
+                if moveCounter == moveFrames {
+                    moveCounter = 0
+                    yPos += 1
+                }
+                if yPos == 27 {
+                    direction = .left
+                    isThrown = false
+                    wasThrown = true
+                }
+                updateScreenArray()
+            }
+        }
+    }
+    
+    
+    private func updateScreenArray() {
+        if let resolvedInstance: BarrelArray = ServiceLocator.shared.resolve() {
+            resolvedInstance.objectWillChange.send()
+        }
+    }
+
+    /// If barrel goes over ladder 1 in 3 of it dropping down
+    private func checkLadderDrop() ->Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if yPos < 27 {
+                
+                if direction == .left {
+                    if resolvedInstance.screenData[yPos+1][xPos].assetType == .ladder {
+                        print("Over ladder left")
+                        if Int.random(in: 0..<3) == 2 { return true }
+                    }
+                } else {
+                    if resolvedInstance.screenData[yPos+1][xPos+1].assetType == .ladder {
+                        print("Over ladder right")
+                        if Int.random(in: 0..<3) == 2 { return true }
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    private func checkDrop() ->Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if direction == .left {
+                if resolvedInstance.screenData[yPos][xPos - 1].assetType == .blank {return true}
+            } else {
+                if resolvedInstance.screenData[yPos][xPos + 1].assetType == .blank {return true}
+            }
+        }
+        return false
+    }
+    
+    private func calculateDropHeight() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            let endPosition = calcPositionFromScreen(xPos: xPos, yPos: yPos+4,frameSize: frameSize)
+            dropHeight = endPosition.y - position.y
+            dropStep = dropHeight / 4.0
+            currentHeightOffset = resolvedInstance.screenData[yPos+4][xPos].assetOffset
         }
     }
 }

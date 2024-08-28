@@ -49,26 +49,29 @@
 		343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */; };
 		343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF42C6F669600F79DA0 /* KongIntroView.swift */; };
 		343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF62C6F66A800F79DA0 /* HowHighView.swift */; };
-		343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */; };
+		343E0DF92C6F671100F79DA0 /* GameManager+KongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */; };
 		343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFA2C6F720F00F79DA0 /* KongView.swift */; };
 		343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFC2C6F73BE00F79DA0 /* Kong.swift */; };
 		347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645712C70DAA900E8AE5F /* PaulineView.swift */; };
 		347645742C70DAB900E8AE5F /* Pauline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645732C70DAB900E8AE5F /* Pauline.swift */; };
 		347645762C7218BD00E8AE5F /* Flames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645752C7218BD00E8AE5F /* Flames.swift */; };
 		347645782C7218D100E8AE5F /* FlamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645772C7218D100E8AE5F /* FlamesView.swift */; };
-		3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645792C725B2100E8AE5F /* DKFunctions.swift */; };
 		3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457B2C726A5700E8AE5F /* Collectible.swift */; };
 		3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */; };
 		347645802C752C0600E8AE5F /* Barrel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476457F2C752C0600E8AE5F /* Barrel.swift */; };
 		347645822C752C1800E8AE5F /* BarrelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645812C752C1800E8AE5F /* BarrelView.swift */; };
 		347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645832C752C2C00E8AE5F /* FireBlob.swift */; };
 		347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645852C752C3F00E8AE5F /* FireBlobView.swift */; };
-		3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */; };
+		3476458A2C75EFC100E8AE5F /* GameManager+Barrels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645892C75EFC100E8AE5F /* GameManager+Barrels.swift */; };
 		3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */; };
 		34AE2C1B2C7B403200656DBF /* ExplodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1A2C7B403200656DBF /* ExplodeView.swift */; };
 		34AE2C1D2C7B404000656DBF /* Explode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1C2C7B404000656DBF /* Explode.swift */; };
 		34AE2C1F2C7B495200656DBF /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C1E2C7B495200656DBF /* Points.swift */; };
 		34AE2C212C7B496100656DBF /* PointsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C202C7B496100656DBF /* PointsView.swift */; };
+		34AE2C232C7DD43A00656DBF /* GameManager+FireBlobs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C222C7DD43A00656DBF /* GameManager+FireBlobs.swift */; };
+		34AE2C252C7E54A800656DBF /* SwiftUISprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */; };
+		34AE2C272C7F106300656DBF /* ScreenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C262C7F106300656DBF /* ScreenData.swift */; };
+		34AE2C292C7F638000656DBF /* GameManager+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,26 +119,29 @@
 		343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenKongIntro.swift; sourceTree = "<group>"; };
 		343E0DF42C6F669600F79DA0 /* KongIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongIntroView.swift; sourceTree = "<group>"; };
 		343E0DF62C6F66A800F79DA0 /* HowHighView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighView.swift; sourceTree = "<group>"; };
-		343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerKongIntro.swift; sourceTree = "<group>"; };
+		343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+KongIntro.swift"; sourceTree = "<group>"; };
 		343E0DFA2C6F720F00F79DA0 /* KongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongView.swift; sourceTree = "<group>"; };
 		343E0DFC2C6F73BE00F79DA0 /* Kong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kong.swift; sourceTree = "<group>"; };
 		347645712C70DAA900E8AE5F /* PaulineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaulineView.swift; sourceTree = "<group>"; };
 		347645732C70DAB900E8AE5F /* Pauline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pauline.swift; sourceTree = "<group>"; };
 		347645752C7218BD00E8AE5F /* Flames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flames.swift; sourceTree = "<group>"; };
 		347645772C7218D100E8AE5F /* FlamesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlamesView.swift; sourceTree = "<group>"; };
-		347645792C725B2100E8AE5F /* DKFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DKFunctions.swift; sourceTree = "<group>"; };
 		3476457B2C726A5700E8AE5F /* Collectible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
 		3476457D2C726A6E00E8AE5F /* CollectiblesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectiblesView.swift; sourceTree = "<group>"; };
 		3476457F2C752C0600E8AE5F /* Barrel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Barrel.swift; sourceTree = "<group>"; };
 		347645812C752C1800E8AE5F /* BarrelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarrelView.swift; sourceTree = "<group>"; };
 		347645832C752C2C00E8AE5F /* FireBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlob.swift; sourceTree = "<group>"; };
 		347645852C752C3F00E8AE5F /* FireBlobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBlobView.swift; sourceTree = "<group>"; };
-		347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManagerBarrels.swift; sourceTree = "<group>"; };
+		347645892C75EFC100E8AE5F /* GameManager+Barrels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+Barrels.swift"; sourceTree = "<group>"; };
 		3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighLineView.swift; sourceTree = "<group>"; };
 		34AE2C1A2C7B403200656DBF /* ExplodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplodeView.swift; sourceTree = "<group>"; };
 		34AE2C1C2C7B404000656DBF /* Explode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Explode.swift; sourceTree = "<group>"; };
 		34AE2C1E2C7B495200656DBF /* Points.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
 		34AE2C202C7B496100656DBF /* PointsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsView.swift; sourceTree = "<group>"; };
+		34AE2C222C7DD43A00656DBF /* GameManager+FireBlobs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+FireBlobs.swift"; sourceTree = "<group>"; };
+		34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUISprite.swift; sourceTree = "<group>"; };
+		34AE2C262C7F106300656DBF /* ScreenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenData.swift; sourceTree = "<group>"; };
+		34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+Notifications.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,7 +187,7 @@
 				343E0D9C2C68D4D500F79DA0 /* Preview Content */,
 				343E0DE92C6A126600F79DA0 /* ScreenAsset.swift */,
 				343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */,
-				347645792C725B2100E8AE5F /* DKFunctions.swift */,
+				34AE2C262C7F106300656DBF /* ScreenData.swift */,
 			);
 			path = DonkeyKong;
 			sourceTree = "<group>";
@@ -198,8 +204,10 @@
 			isa = PBXGroup;
 			children = (
 				343E0DB42C68D5E300F79DA0 /* GameManager.swift */,
-				343E0DF82C6F671100F79DA0 /* GameManagerKongIntro.swift */,
-				347645892C75EFC100E8AE5F /* GameManagerBarrels.swift */,
+				343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */,
+				347645892C75EFC100E8AE5F /* GameManager+Barrels.swift */,
+				34AE2C222C7DD43A00656DBF /* GameManager+FireBlobs.swift */,
+				34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -287,6 +295,7 @@
 				34AE2C1C2C7B404000656DBF /* Explode.swift */,
 				34AE2C1E2C7B495200656DBF /* Points.swift */,
 				34AE2C202C7B496100656DBF /* PointsView.swift */,
+				34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -377,7 +386,7 @@
 				3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */,
 				343E0DC42C68E36F00F79DA0 /* TopView.swift in Sources */,
 				347645822C752C1800E8AE5F /* BarrelView.swift in Sources */,
-				343E0DF92C6F671100F79DA0 /* GameManagerKongIntro.swift in Sources */,
+				343E0DF92C6F671100F79DA0 /* GameManager+KongIntro.swift in Sources */,
 				3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
@@ -393,16 +402,17 @@
 				3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
 				343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */,
-				3476458A2C75EFC100E8AE5F /* GameManagerBarrels.swift in Sources */,
+				34AE2C292C7F638000656DBF /* GameManager+Notifications.swift in Sources */,
+				3476458A2C75EFC100E8AE5F /* GameManager+Barrels.swift in Sources */,
 				343E0DC22C68E2E600F79DA0 /* ControlsView.swift in Sources */,
 				343E0DAF2C68D55200F79DA0 /* HighScores+CoreDataProperties.swift in Sources */,
 				343E0DC62C68F50B00F79DA0 /* SoundFX.swift in Sources */,
 				34AE2C1F2C7B495200656DBF /* Points.swift in Sources */,
 				343E0DC02C68E24000F79DA0 /* IntroView.swift in Sources */,
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
-				3476457A2C725B2100E8AE5F /* DKFunctions.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
 				343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */,
+				34AE2C252C7E54A800656DBF /* SwiftUISprite.swift in Sources */,
 				343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */,
 				343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */,
 				343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */,
@@ -420,6 +430,8 @@
 				34AE2C1B2C7B403200656DBF /* ExplodeView.swift in Sources */,
 				343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */,
 				347645842C752C2C00E8AE5F /* FireBlob.swift in Sources */,
+				34AE2C272C7F106300656DBF /* ScreenData.swift in Sources */,
+				34AE2C232C7DD43A00656DBF /* GameManager+FireBlobs.swift in Sources */,
 				343E0DF12C6AB74300F79DA0 /* JumpManView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

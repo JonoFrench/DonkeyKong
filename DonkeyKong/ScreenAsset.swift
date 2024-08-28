@@ -103,7 +103,6 @@ struct Screens {
         if level == 4 { return screen4 }
         return screen1
     }
-    let g = ScreenAsset(assetType: .girder, assetOffset: 0.0)
 
     let screen1:[[ScreenAsset]] = [
         ///Line1

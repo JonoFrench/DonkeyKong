@@ -8,20 +8,27 @@
 import Foundation
 import SwiftUI
 
-class Flames: ObservableObject {
-    let animateFrames = 17
-    var animateCounter = 0
-    var xPos = 4
-    var yPos = 25
-    var position = CGPoint()
-    var currentFrame:ImageResource = ImageResource(name: "Flames", bundle: .main)
-    var frameSize: CGSize = CGSize(width: 24, height:  24)
+class Flames:SwiftUISprite, Animatable, ObservableObject {
+    static var animateFrames:Int = 17
+    var animateCounter: Int = 0
+
     @Published
     var isLeft = false
     
+    override init(xPos: Int, yPos: Int, frameSize: CGSize) {
+        super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
+        currentFrame = ImageResource(name: "Flames", bundle: .main)
+    }
+
+    override func setPosition(xPos: Int, yPos: Int) {
+        super.setPosition(xPos: xPos, yPos: yPos)
+        position.y += 4
+        position.x -= 8
+    }
+    
     func animate() {
         animateCounter += 1
-        if animateCounter == animateFrames {
+        if animateCounter == Flames.animateFrames {
             isLeft = !isLeft
             animateCounter = 0
         }

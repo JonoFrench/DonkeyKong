@@ -12,7 +12,7 @@ struct KongIntroView: View {
     @ObservedObject var kong:Kong
     var body: some View {
         ZStack {
-            ScreenView()
+            ScreenView(gameScreen: manager.gameScreen)
             KongView(kong: manager.kong)
                 .position(manager.kong.position)
                 .zIndex(2.0)

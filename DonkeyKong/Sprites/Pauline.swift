@@ -8,30 +8,27 @@
 import Foundation
 import SwiftUI
 
-class Pauline: ObservableObject {
-    let animateFrames = 20
-    var animateCounter = 0
-    var cFrame = 0
-    var xPos = 0
-    var yPos = 0
-    var position = CGPoint()
-    var frame = 0
-    @Published
-    var currentFrame:ImageResource = ImageResource(name: "Pauline1", bundle: .main)
-    var standing:[ImageResource] = [ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline2", bundle: .main),ImageResource(name: "Pauline3", bundle: .main),ImageResource(name: "Pauline4", bundle: .main)]
-    var frameSize: CGSize = CGSize(width: 63, height:  36)
-    @Published
-    var isShowing = false
-    var isRescued = false
+class Pauline:SwiftUISprite, Animatable, ObservableObject {
+    static var animateFrames:Int = 20
+    var animateCounter: Int = 0
     
+    var standing:[ImageResource] = [ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline2", bundle: .main),ImageResource(name: "Pauline3", bundle: .main),ImageResource(name: "Pauline4", bundle: .main)]
+    //var frameSize: CGSize = CGSize(width: 63, height:  36)
+    var isRescued = false
+
+    override init(xPos: Int, yPos: Int, frameSize: CGSize) {
+        super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
+        currentFrame = ImageResource(name: "Pauline1", bundle: .main)
+    }
+
     func animate() {
         if !isRescued {
             animateCounter += 1
-            if animateCounter == animateFrames {
-                currentFrame = standing[cFrame]
-                cFrame += 1
-                if cFrame == 4 {
-                    cFrame = 0
+            if animateCounter == Pauline.animateFrames {
+                currentFrame = standing[currentAnimationFrame]
+                currentAnimationFrame += 1
+                if currentAnimationFrame == standing.count {
+                    currentAnimationFrame = 0
                 }
                 animateCounter = 0
             }
