@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class Pauline:SwiftUISprite, Animatable, ObservableObject {
+final class Pauline:SwiftUISprite, Animatable, ObservableObject {
     static var animateFrames:Int = 20
     var animateCounter: Int = 0
     

@@ -12,7 +12,6 @@ struct KongScreen {
     func getScreenData() -> [[ScreenAsset]] {
         return blankScreen
     }
-
     
     let blankScreen:[[ScreenAsset]] = [
         ///Line1

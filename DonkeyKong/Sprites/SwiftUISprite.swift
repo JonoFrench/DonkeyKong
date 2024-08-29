@@ -27,29 +27,34 @@ class SwiftUISprite {
     var yPos = 0
     var currentHeightOffset = 0.0
     var currentAnimationFrame = 0
-    var assetDimention = 0.0
     @Published
     var position = CGPoint()
     @Published
     var isShowing = false
     var frameSize: CGSize = CGSize()
     @Published
-    var currentFrame:ImageResource = ImageResource(name: "Pauline1", bundle: .main)
+    var currentFrame:ImageResource = ImageResource(name: "", bundle: .main)
+
+    var ladderHeight = 0.0
+    var ladderStep = 0.0
 
     init(xPos: Int, yPos: Int, frameSize: CGSize) {
         self.xPos = xPos
         self.yPos = yPos
         self.frameSize = frameSize
         position = calcPositionFromScreen()
-        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-            assetDimention = resolvedInstance.assetDimention
-        }
     }
     
     func setPosition(xPos:Int, yPos:Int) {
         self.xPos = xPos
         self.yPos = yPos
+        position = calcPositionFromScreen()
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+        }
+    }
+    
+    func setPosition() {
         position = calcPositionFromScreen()
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
@@ -89,6 +94,66 @@ class SwiftUISprite {
         }
         return CGPoint()
     }
+    
+    func isBlankAbove() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blank {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func isLadderAbove() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blank { return false }
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func isLadderBelow() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos][xPos].assetType == .ladder { return true }
+            if resolvedInstance.screenData[yPos][xPos].assetType == .blank { return false }
+            if yPos <= resolvedInstance.screenDimentionY - 2 {
+                if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 1][xPos].assetType == .girder {
+                    return true
+                } else {
+                    if resolvedInstance.screenData[yPos + 1][xPos].assetType == .girder {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    func calculateLadderHeightUp() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            var yCount = 0
+            while resolvedInstance.screenData[yPos-(yCount+1)][xPos].assetType == .ladder || yPos-yCount == 0 {
+                yCount += 1
+            }
+            let endPosition = calcPositionFromScreen(xPos: xPos,yPos: yPos - (yCount + 1),frameSize: frameSize)
+            ladderHeight = position.y - endPosition.y
+            ladderStep = ladderHeight / Double(yCount + 1)
+        }
+    }
+    
+    func calculateLadderHeightDown() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            var yCount = 0
+            while resolvedInstance.screenData[yPos+yCount+1][xPos].assetType == .ladder {
+                yCount += 1
+            }
+            let endPosition = calcPositionFromScreen(xPos: xPos, yPos: yPos+(yCount+1),frameSize: frameSize)
+            ladderHeight = endPosition.y - position.y
+            ladderStep = ladderHeight / Double(yCount+1)
+        }
+    }
 
     func generateParabolicPoints(from pointA: CGPoint, to pointB: CGPoint, steps: Int = 9, angleInDegrees: CGFloat = 10) -> [CGPoint] {
         var points: [CGPoint] = []
@@ -113,9 +178,7 @@ class SwiftUISprite {
             let x = pointA.x + t * (pointB.x - pointA.x)
             let y = a * pow(x - vertex.x, 2) + vertex.y
             points.append(CGPoint(x: x, y: y))
-        }
-        
+        }        
         return points
     }
-    
 }

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class Flames:SwiftUISprite, Animatable, ObservableObject {
+final class Flames:SwiftUISprite, Animatable, ObservableObject {
     static var animateFrames:Int = 17
     var animateCounter: Int = 0
 

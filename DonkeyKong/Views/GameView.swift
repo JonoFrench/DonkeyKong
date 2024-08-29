@@ -10,20 +10,21 @@ import SwiftUI
 struct GameView: View {
     @EnvironmentObject var manager: GameManager
     @ObservedObject var jumpMan:JumpMan
+    @ObservedObject var kong:Kong
     @ObservedObject var barrelArray:BarrelArray
     @ObservedObject var fireBlobArray:FireBlobArray
     var body: some View {
         ZStack {
             ScreenView(gameScreen: manager.gameScreen)
-                .position(x:manager.gameSize.width / 2,y:manager.gameSize.height / 2)
+                .position(x:manager.gameScreen.gameSize.width / 2,y:manager.gameScreen.gameSize.height / 2)
                 .zIndex(0.1)
             BonusBoxView()
-                .position(x:manager.gameSize.width - 70,y:50)
-            JumpManView(jumpMan: manager.jumpMan)
-                .position(manager.jumpMan.position)
+                .position(x:manager.gameScreen.gameSize.width - 70,y:50)
+            JumpManView(jumpMan: jumpMan)
+                .position(jumpMan.position)
                 .zIndex(2.0)
-            KongView(kong: manager.kong)
-                .position(manager.kong.position)
+            KongView(kong: kong)
+                .position(kong.position)
                 .zIndex(1.95)
             PaulineView(pauline: manager.pauline)
                 .position(manager.pauline.position)

@@ -86,9 +86,9 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                 moveCounter += 1
                 ///Move left or right
                 if direction == .right || direction == .rightDown {
-                    position.x += assetDimention / CGFloat(moveFrames)
+                    position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
                 } else if direction == .left || direction == .leftDown {
-                    position.x -= assetDimention / CGFloat(moveFrames)
+                    position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
                 }
                 ///Move down
                 if direction == .down || direction == .rightDown || direction == .leftDown {
@@ -112,7 +112,6 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                     ///Check for drop
                     if direction == .left || direction == .right {
                         if checkLadderDrop() {
-                            print("Barrel Ladder Drop")
                             calculateDropHeight()
                             droppingDown = true
                             if direction == .right {
@@ -126,7 +125,6 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                         }
                         
                         if checkDrop() {
-                            print("Barrel Drop")
                             calculateDropHeight()
                             
                             if direction == .right {
@@ -165,15 +163,12 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                     }
                     if xPos == 3 && yPos == 27 {
                         let barrelID:[String: UUID] = ["id": self.id]
-
                         if wasThrown {
                             NotificationCenter.default.post(name: .notificationBarrelToFireblob, object: nil, userInfo: barrelID)
                         } else {
                             NotificationCenter.default.post(name: .notificationRemoveBarrel, object: nil, userInfo: barrelID)
                         }
                     }
-//                    checkBarrelHit(barrel:barrel)
-                    //NotificationRemoveBarrel
                 }
                 updateScreenArray()
             }

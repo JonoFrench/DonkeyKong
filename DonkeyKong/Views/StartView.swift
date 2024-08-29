@@ -31,7 +31,7 @@ struct StartView: View {
             }
                 .onAppear {
                     print("game size \(proxy.size)")
-                    manager.gameSize = proxy.size
+                    manager.gameScreen.gameSize = proxy.size
                 }
         }.background(.introBackground)
     }

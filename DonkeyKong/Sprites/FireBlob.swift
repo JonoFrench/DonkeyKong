@@ -26,7 +26,7 @@ final class FireBlobArray: ObservableObject {
 }
 
 
-class FireBlob: SwiftUISprite,Animatable, ObservableObject {
+final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     static var animateFrames: Int = 9
     var animateCounter: Int = 0
     

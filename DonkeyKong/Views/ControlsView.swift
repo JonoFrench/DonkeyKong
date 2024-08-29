@@ -57,7 +57,7 @@ struct ControlsView: View {
                 .resizable()
                 .scaledToFill()
                 .aspectRatio(contentMode: .fill)
-                .frame(width: manager.gameSize.width, height: 30)
+                .frame(width: manager.gameScreen.gameSize.width, height: 30)
             
         }//.background(.controlBackground)
     }

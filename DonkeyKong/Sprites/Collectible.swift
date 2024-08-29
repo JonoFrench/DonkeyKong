@@ -14,7 +14,7 @@ enum CollectibleType {
     case hammer,umbrella,hat,phone,heart,heartbreak
 }
 
-class Collectible:SwiftUISprite, ObservableObject {
+final class Collectible:SwiftUISprite, ObservableObject {
     var type: CollectibleType = .hammer
     @Published
     var collected = false

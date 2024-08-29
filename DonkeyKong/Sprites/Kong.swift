@@ -12,7 +12,7 @@ enum KongState {
     case waiting,intro,jumpingup,bouncing,sitting,throwing,howhigh,dead
 }
 
-class Kong:SwiftUISprite, ObservableObject {
+final class Kong:SwiftUISprite, ObservableObject {
     @Published
     var state:KongState = .waiting
     let kongClimbLeft:ImageResource = ImageResource(name: "KongClimbLeft", bundle: .main)
@@ -42,9 +42,22 @@ class Kong:SwiftUISprite, ObservableObject {
         position.y += 7
     }
     
+    func runIntro() {
+        if let resolvedInstance: SoundFX = ServiceLocator.shared.resolve() {
+            resolvedInstance.introLongSound()
+        }
+        state = .intro
+        introCounter = 27
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            resolvedInstance.clearLadder(line: introCounter)
+        }
+    }
+    
     func adjustPosition() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             position.y += 9
-            position.x += assetDimention / 2
+            position.x += resolvedInstance.assetDimention / 2
+        }
     }
     
     func nextStepUp() {
@@ -62,7 +75,6 @@ class Kong:SwiftUISprite, ObservableObject {
     func animateExit() {
         animationCounter += 1
         if animationCounter == 14 {
-            print("Kong exit \(introCounter)")
             introCounter -= 1
             if introCounter > 0 {
                 nextStepUp()
@@ -162,5 +174,4 @@ class Kong:SwiftUISprite, ObservableObject {
             c += 1
         }
     }
-    
 }

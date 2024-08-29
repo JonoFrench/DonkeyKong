@@ -42,14 +42,11 @@ class ScreenData:ObservableObject {
         screenData[line] = assetLine
         self.objectWillChange.send()
     }
-
-
 }
 
 
 class ServiceLocator {
     static let shared = ServiceLocator()
-    
     private init() {}
     
     private var services: [String: AnyObject] = [:]

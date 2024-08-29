@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class Points: SwiftUISprite,Animatable, ObservableObject {
+final class Points: SwiftUISprite,Animatable, ObservableObject {
     static var animateFrames: Int = 9
     var animateCounter: Int = 0
 
@@ -19,7 +19,6 @@ class Points: SwiftUISprite,Animatable, ObservableObject {
     func animate() {
         animateCounter += 1
         if animateCounter == Points.animateFrames {
-            //pointsShow.pointsColor = pointsShow.animateCounter % 1 == 0 ? .black : .white
             currentAnimationFrame += 1
             if currentAnimationFrame == 6 {
                 currentAnimationFrame = 0

@@ -23,8 +23,8 @@ struct JoyPadView: View {
                         DragGesture(minimumDistance: 0) // Adjust duration as needed
                             .onChanged { _ in
                                 if manager.gameState == .playing {
-                                    if manager.canClimbLadder() {
-                                        manager.calculateLadderHeightUp()
+                                    if manager.jumpMan.canClimbLadder() {
+                                        manager.jumpMan.calculateLadderHeightUp()
                                         manager.jumpMan.isClimbingUp = true
                                     }
                                 }
@@ -46,7 +46,7 @@ struct JoyPadView: View {
                         DragGesture(minimumDistance: 0) // Adjust duration as needed
                             .onChanged { _ in
                                 if manager.gameState == .playing {
-                                    if manager.canMoveLeft() {
+                                    if manager.jumpMan.canMoveLeft() {
                                         manager.jumpMan.isWalkingLeft = true
                                     }
                                 }
@@ -76,7 +76,7 @@ struct JoyPadView: View {
                         DragGesture(minimumDistance: 0)// Adjust duration as needed
                             .onChanged { _ in
                                 if manager.gameState == .playing {
-                                    if manager.canMoveRight() {
+                                    if manager.jumpMan.canMoveRight() {
                                         manager.jumpMan.isWalkingRight = true
                                     }
                                 }
@@ -100,8 +100,8 @@ struct JoyPadView: View {
                         DragGesture(minimumDistance: 0) // Adjust duration as needed
                             .onChanged { _ in
                                 if manager.gameState == .playing {
-                                    if manager.canDecendLadder() {
-                                        manager.calculateLadderHeightDown()
+                                    if manager.jumpMan.canDecendLadder() {
+                                        manager.jumpMan.calculateLadderHeightDown()
                                         manager.jumpMan.isClimbingDown = true
                                     }
                                 }

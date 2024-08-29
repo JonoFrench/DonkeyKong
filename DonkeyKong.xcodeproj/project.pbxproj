@@ -49,7 +49,6 @@
 		343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */; };
 		343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF42C6F669600F79DA0 /* KongIntroView.swift */; };
 		343E0DF72C6F66A800F79DA0 /* HowHighView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF62C6F66A800F79DA0 /* HowHighView.swift */; };
-		343E0DF92C6F671100F79DA0 /* GameManager+KongIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */; };
 		343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFA2C6F720F00F79DA0 /* KongView.swift */; };
 		343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DFC2C6F73BE00F79DA0 /* Kong.swift */; };
 		347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347645712C70DAA900E8AE5F /* PaulineView.swift */; };
@@ -119,7 +118,6 @@
 		343E0DF22C6CE9CA00F79DA0 /* ScreenKongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenKongIntro.swift; sourceTree = "<group>"; };
 		343E0DF42C6F669600F79DA0 /* KongIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongIntroView.swift; sourceTree = "<group>"; };
 		343E0DF62C6F66A800F79DA0 /* HowHighView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HowHighView.swift; sourceTree = "<group>"; };
-		343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+KongIntro.swift"; sourceTree = "<group>"; };
 		343E0DFA2C6F720F00F79DA0 /* KongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KongView.swift; sourceTree = "<group>"; };
 		343E0DFC2C6F73BE00F79DA0 /* Kong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kong.swift; sourceTree = "<group>"; };
 		347645712C70DAA900E8AE5F /* PaulineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaulineView.swift; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 			isa = PBXGroup;
 			children = (
 				343E0DB42C68D5E300F79DA0 /* GameManager.swift */,
-				343E0DF82C6F671100F79DA0 /* GameManager+KongIntro.swift */,
 				347645892C75EFC100E8AE5F /* GameManager+Barrels.swift */,
 				34AE2C222C7DD43A00656DBF /* GameManager+FireBlobs.swift */,
 				34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */,
@@ -386,7 +383,6 @@
 				3476457E2C726A6E00E8AE5F /* CollectiblesView.swift in Sources */,
 				343E0DC42C68E36F00F79DA0 /* TopView.swift in Sources */,
 				347645822C752C1800E8AE5F /* BarrelView.swift in Sources */,
-				343E0DF92C6F671100F79DA0 /* GameManager+KongIntro.swift in Sources */,
 				3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension Notification.Name {
     static let notificationBarrelToFireblob = Notification.Name("NotificationBarrelToFireblob")
@@ -14,9 +15,9 @@ extension Notification.Name {
     static let notificationRemoveScore = Notification.Name("NotificationRemoveScore")
     static let notificationNextLevel = Notification.Name("NotificationNextLevel")
     static let notificationHowHigh = Notification.Name("NotificationHowHigh")
-
+    static let notificationLevelComplete = Notification.Name("NotificationLevelComplete")
+    
 }
-
 
 extension GameManager {
     
@@ -27,7 +28,7 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeScore(notification:)), name: .notificationRemoveScore, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.nextLevel(notification:)), name: .notificationNextLevel, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.showHowHighView(notification:)), name: .notificationHowHigh, object: nil)
-
+        NotificationCenter.default.addObserver(self, selector: #selector(self.levelComplete(notification:)), name: .notificationLevelComplete, object: nil)
     }
     
     @objc func removeScore(notification: Notification) {
@@ -35,7 +36,7 @@ extension GameManager {
     }
     
     @objc func removeExplosion(notification: Notification) {
-        if let position = notification.userInfo?["position"] as? CGPoint {
+        if let position = notification.userInfo?["pos"] as? CGPoint {
             hasExplosion = false
             if !hasPoints {
                 addPoints(value: 100, position: position)
@@ -71,6 +72,22 @@ extension GameManager {
             startPlaying()
         }
     }
+    
+    @objc func levelComplete(notification: Notification){
+        heart.setPosition()
+        collectibles.removeAll()
+        collectibles.append(heart)
+        barrelArray.barrels.removeAll()
+        fireBlobArray.fireblob.removeAll()
+        kong.isThrowing = true
+        pauline.isRescued = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+            levelEnd = true
+            score += bonus
+            heart.type = .heartbreak
+            self.heart.objectWillChange.send()
+            kong.exitLevel()
+            pauline.isShowing = false
+        }
+    }
 }
-
-

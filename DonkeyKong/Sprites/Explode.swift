@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class Explode: SwiftUISprite,Animatable, ObservableObject {
+final class Explode: SwiftUISprite,Animatable, ObservableObject {
     static var animateFrames: Int = 9
     var animateCounter: Int = 0
     var explosions:[ImageResource] = [ImageResource(name: "Explode1", bundle: .main),ImageResource(name: "Explode2", bundle: .main),ImageResource(name: "Explode1", bundle: .main),ImageResource(name: "Explode2", bundle: .main),ImageResource(name: "Explode3", bundle: .main),ImageResource(name: "Explode4", bundle: .main),ImageResource(name: "Explode4", bundle: .main)]
