@@ -81,6 +81,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
             direction = .right
             xPos = 7
             yPos = 27
+            setPosition()
         }
         updateScreenArray()
     }
@@ -100,12 +101,13 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                 }
                 ///Move down
                 if direction == .down {
-                    position.y += dropStep / CGFloat(moveFrames)
+                    position.y += ladderStep / CGFloat(moveFrames)
                 }
                 
                 ///Move up
                 if direction == .up {
-                    position.y -= dropStep / CGFloat(moveFrames)
+                    position.y -= ladderStep / CGFloat(moveFrames)
+
                 }
                 ///Next x/y position
                 if moveCounter == moveFrames {
@@ -121,7 +123,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                         xPos += 1
                         currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
                         
-                        if xPos == 29 {
+                        if xPos == resolvedInstance.screenDimentionX - 1 || isBlankRight() {
                             direction = .left
                         }
                     } else if direction == .left {
@@ -136,7 +138,64 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                         
                         xPos -= 1
                         currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                        if xPos == 0 {
+                        if xPos == 1 || isBlankLeft() {
+                            direction = .right
+                        }
+                    } else if direction == .up {
+                        if yPos != 0 {
+                            yPos -= 1
+                            currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+                        }
+
+                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder {
+                                if Int.random(in: 0..<2) == 1 {
+                                    direction = .left
+                                } else {
+                                    direction = .right
+                                }
+                            
+                        }
+ 
+                    } else if direction == .down {
+                        if yPos < resolvedInstance.screenDimentionY - 1 {
+                            yPos += 1
+                            currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+                        }
+
+                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder {
+                                if Int.random(in: 0..<2) == 1 {
+                                    direction = .left
+                                } else {
+                                    direction = .right
+                                }
+                            
+                        }
+                    }
+                    
+                    if isLadderAbove() && (direction == .left || direction == .right) {
+                        if yPos > 10 {
+//                            print("FireBlob lets go up?")
+                            if Int.random(in: 0..<5) == 3 {
+//                                print("FireBlob going up")
+                                calculateLadderHeightUp()
+                                direction = .up
+                            }
+                        }
+                    }
+                    
+                    else if isLadderBelow() && (direction == .left || direction == .right) {
+//                        print("FireBlob lets go down?")
+                        if Int.random(in: 0..<5) == 3 {
+//                            print("FireBlob going down")
+                            calculateLadderHeightDown()
+                            direction = .down
+                        }
+                    }
+
+                    if Int.random(in: 0..<20) == 3 {
+                        if direction == .right && xPos > 1 {
+                            direction = .left
+                        } else if direction == .left && xPos < 28 {
                             direction = .right
                         }
                     }
@@ -146,13 +205,51 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
         }
     }
     
+    override func isLadderAbove() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blank && resolvedInstance.screenData[yPos - 2][xPos].assetType == .ladder { return true }
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
+                return true
+            }
+        }
+        return false
+    }
+
+    override func isLadderBelow() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            guard yPos < resolvedInstance.screenDimentionY - 2 else { return false }
+            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blank && resolvedInstance.screenData[yPos + 2][xPos].assetType == .ladder { return true }
+            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
+                return true
+            }
+        }
+        return false
+    }
+    
     private func updateScreenArray() {
         if let resolvedInstance: FireBlobArray = ServiceLocator.shared.resolve() {
             resolvedInstance.objectWillChange.send()
         }
     }
     
-    
+    override func calculateLadderHeightUp() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            let endPosition = calcPositionFromScreen(xPos: xPos, yPos: yPos-4,frameSize: frameSize)
+            ladderHeight = position.y - endPosition.y
+            ladderStep = ladderHeight / 4.0
+            currentHeightOffset = resolvedInstance.screenData[yPos-4][xPos].assetOffset
+        }
+    }
+
+    override func calculateLadderHeightDown() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            let endPosition = calcPositionFromScreen(xPos: xPos, yPos: yPos+4,frameSize: frameSize)
+            ladderHeight = endPosition.y - position.y
+            ladderStep = ladderHeight / 4.0
+            currentHeightOffset = resolvedInstance.screenData[yPos+4][xPos].assetOffset
+        }
+    }
+
     func generateHoppingPoints(from pointA: CGPoint, to pointB: CGPoint, steps: Int = 30, angleInDegrees: CGFloat = 50) -> [CGPoint] {
         var points: [CGPoint] = []
         

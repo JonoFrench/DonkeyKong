@@ -197,7 +197,6 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
         }
     }
     
-    
     private func updateScreenArray() {
         if let resolvedInstance: BarrelArray = ServiceLocator.shared.resolve() {
             resolvedInstance.objectWillChange.send()
@@ -211,12 +210,10 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                 
                 if direction == .left {
                     if resolvedInstance.screenData[yPos+1][xPos].assetType == .ladder {
-                        print("Over ladder left")
                         if Int.random(in: 0..<3) == 2 { return true }
                     }
                 } else {
                     if resolvedInstance.screenData[yPos+1][xPos+1].assetType == .ladder {
-                        print("Over ladder right")
                         if Int.random(in: 0..<3) == 2 { return true }
                     }
                 }

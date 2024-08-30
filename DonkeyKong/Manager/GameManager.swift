@@ -14,6 +14,10 @@ enum GameState {
     case intro,kongintro,howhigh,playing,ended,highscore,levelend
 }
 
+enum JoyPad {
+    case left,right,up,down,stop
+}
+
 class GameManager: ObservableObject {
     let soundFX:SoundFX = SoundFX()
     let hiScores:DonkeyKongHighScores = DonkeyKongHighScores()
@@ -52,7 +56,16 @@ class GameManager: ObservableObject {
     var hasPoints = false
     var pause = false
     
+    var moveDirection: JoyPad {
+        didSet {
+            if moveDirection != oldValue {
+                handleJoyPad()
+            }
+        }
+    }
+        
     init() {
+        moveDirection = .stop
         /// Share these instances so they are available from the Sprites
         ServiceLocator.shared.register(service: gameScreen)
         ServiceLocator.shared.register(service: fireBlobArray)
@@ -74,7 +87,44 @@ class GameManager: ObservableObject {
         pointsShow.animateCounter = 0
     }
     
+    func handleJoyPad() {
+        switch moveDirection {
+        case .down:
+            if gameState == .playing {
+                if jumpMan.canDecendLadder() {
+                    jumpMan.calculateLadderHeightDown()
+                    jumpMan.isClimbingDown = true
+                }
+            }
+        case .left:
+            if gameState == .playing {
+                if jumpMan.canMoveLeft() {
+                    jumpMan.isWalkingLeft = true
+                }
+            }
+        case .right:
+            if gameState == .playing {
+                if jumpMan.canMoveRight() {
+                    jumpMan.isWalkingRight = true
+                }
+            }
+        case .up:
+            if gameState == .playing {
+                if jumpMan.canClimbLadder() {
+                    jumpMan.calculateLadderHeightUp()
+                    jumpMan.isClimbingUp = true
+                }
+            }
+        case.stop:
+            jumpMan.isWalkingLeft = false
+            jumpMan.isWalkingRight = false
+            jumpMan.isClimbingDown = false
+            jumpMan.isClimbingUp = false
+        }
+    }
+    
     @objc func refreshModel() {
+        //handleJoyPad()
         if gameState == .kongintro {
             if kong.state == .intro {
                 kong.animateIntro()
@@ -116,6 +166,7 @@ class GameManager: ObservableObject {
                         } else {
                             fireBlob.move()
                         }
+                        checkFireBlobHit(fireBlob: fireBlob)
                     }
                 }
                 if levelEnd {
@@ -151,8 +202,8 @@ class GameManager: ObservableObject {
         gameScreen.assetDimention = gameScreen.gameSize.width / Double(gameScreen.screenDimentionX - 1)
         gameScreen.assetOffset = gameScreen.assetDimention / 8.0
         gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        setKongIntro()   // If we don't want the intro....
-        //startPlaying()
+        //setKongIntro()   // If we don't want the intro....
+        startPlaying()
     }
     
     func startPlaying() {

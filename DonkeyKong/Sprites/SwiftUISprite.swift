@@ -103,6 +103,26 @@ class SwiftUISprite {
         }
         return false
     }
+ 
+    func isBlankRight() -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos][xPos+1].assetType == .blank {
+                return true
+            }
+        }
+        return false
+    }
+
+    func isBlankLeft() -> Bool {
+        guard xPos >= 1 else { return false }
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if resolvedInstance.screenData[yPos][xPos-1].assetType == .blank {
+                return true
+            }
+        }
+        return false
+    }
+
     
     func isLadderAbove() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {

@@ -37,7 +37,6 @@
 		343E0DDC2C68F55700F79DA0 /* hammer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 343E0DD02C68F55700F79DA0 /* hammer.wav */; };
 		343E0DDD2C68F55700F79DA0 /* jump.wav in Resources */ = {isa = PBXBuildFile; fileRef = 343E0DD12C68F55700F79DA0 /* jump.wav */; };
 		343E0DDE2C68F55700F79DA0 /* intro1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 343E0DD22C68F55700F79DA0 /* intro1.wav */; };
-		343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DDF2C694EF300F79DA0 /* JoyPadView.swift */; };
 		343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DE12C6A01B400F79DA0 /* ImageView.swift */; };
 		343E0DE42C6A10FC00F79DA0 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DE32C6A10FC00F79DA0 /* GameView.swift */; };
 		343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0DE52C6A111800F79DA0 /* ScreenView.swift */; };
@@ -71,6 +70,8 @@
 		34AE2C252C7E54A800656DBF /* SwiftUISprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */; };
 		34AE2C272C7F106300656DBF /* ScreenData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C262C7F106300656DBF /* ScreenData.swift */; };
 		34AE2C292C7F638000656DBF /* GameManager+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */; };
+		34AE2C2B2C80919500656DBF /* JoyPadView2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C2A2C80919500656DBF /* JoyPadView2.swift */; };
+		34AE2C302C82407000656DBF /* JoyPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C2F2C82407000656DBF /* JoyPadView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -106,7 +107,6 @@
 		343E0DD02C68F55700F79DA0 /* hammer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hammer.wav; sourceTree = "<group>"; };
 		343E0DD12C68F55700F79DA0 /* jump.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = jump.wav; sourceTree = "<group>"; };
 		343E0DD22C68F55700F79DA0 /* intro1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = intro1.wav; sourceTree = "<group>"; };
-		343E0DDF2C694EF300F79DA0 /* JoyPadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyPadView.swift; sourceTree = "<group>"; };
 		343E0DE12C6A01B400F79DA0 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		343E0DE32C6A10FC00F79DA0 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		343E0DE52C6A111800F79DA0 /* ScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenView.swift; sourceTree = "<group>"; };
@@ -140,6 +140,8 @@
 		34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUISprite.swift; sourceTree = "<group>"; };
 		34AE2C262C7F106300656DBF /* ScreenData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenData.swift; sourceTree = "<group>"; };
 		34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+Notifications.swift"; sourceTree = "<group>"; };
+		34AE2C2A2C80919500656DBF /* JoyPadView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoyPadView2.swift; sourceTree = "<group>"; };
+		34AE2C2F2C82407000656DBF /* JoyPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoyPadView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,13 +214,13 @@
 		343E0DA52C68D4F200F79DA0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				34AE2C2F2C82407000656DBF /* JoyPadView.swift */,
 				343E0DB92C68DB1600F79DA0 /* HiScoreView.swift */,
 				343E0DBB2C68DF1800F79DA0 /* InfoView.swift */,
 				343E0DBD2C68DF3200F79DA0 /* StartView.swift */,
 				343E0DBF2C68E24000F79DA0 /* IntroView.swift */,
 				343E0DC12C68E2E600F79DA0 /* ControlsView.swift */,
 				343E0DC32C68E36F00F79DA0 /* TopView.swift */,
-				343E0DDF2C694EF300F79DA0 /* JoyPadView.swift */,
 				343E0DE12C6A01B400F79DA0 /* ImageView.swift */,
 				343E0DE32C6A10FC00F79DA0 /* GameView.swift */,
 				343E0DE52C6A111800F79DA0 /* ScreenView.swift */,
@@ -227,6 +229,7 @@
 				343E0DF42C6F669600F79DA0 /* KongIntroView.swift */,
 				343E0DF62C6F66A800F79DA0 /* HowHighView.swift */,
 				3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */,
+				34AE2C2A2C80919500656DBF /* JoyPadView2.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 				3476457C2C726A5700E8AE5F /* Collectible.swift in Sources */,
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
+				34AE2C2B2C80919500656DBF /* JoyPadView2.swift in Sources */,
 				343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */,
 				34AE2C212C7B496100656DBF /* PointsView.swift in Sources */,
 				347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */,
@@ -393,7 +397,6 @@
 				34AE2C1D2C7B404000656DBF /* Explode.swift in Sources */,
 				343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */,
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
-				343E0DE02C694EF300F79DA0 /* JoyPadView.swift in Sources */,
 				347645782C7218D100E8AE5F /* FlamesView.swift in Sources */,
 				3476458C2C788D7F00E8AE5F /* HowHighLineView.swift in Sources */,
 				343E0DB02C68D55200F79DA0 /* CoreDataStack.swift in Sources */,
@@ -413,6 +416,7 @@
 				343E0DF52C6F669600F79DA0 /* KongIntroView.swift in Sources */,
 				343E0DF32C6CE9CA00F79DA0 /* ScreenKongIntro.swift in Sources */,
 				347645742C70DAB900E8AE5F /* Pauline.swift in Sources */,
+				34AE2C302C82407000656DBF /* JoyPadView.swift in Sources */,
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
 				347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */,
 				347645762C7218BD00E8AE5F /* Flames.swift in Sources */,

@@ -74,7 +74,8 @@ extension GameManager {
     }
     
     func checkBarrelHit(barrel:Barrel) {
-        if jumpMan.hasHammer {
+        if jumpMan.hasHammer && jumpMan.hammerDown[jumpMan.animateHammerFrame] {
+            print("checkBarrelHit frame \(jumpMan.animateHammerFrame)")
             let hammerOffset = jumpMan.frameSize.width / 4
             var hammerPos = jumpMan.position
             hammerPos.y += hammerOffset
@@ -85,6 +86,7 @@ extension GameManager {
             }
             
             if circlesIntersect(center1: hammerPos, diameter1: jumpMan.frameSize.width / 4, center2: barrel.position, diameter2: barrel.frameSize.width / 2) {
+                print("hammer frame \(jumpMan.animateHammerFrame)")
                 soundFX.hammerSound()
                 explode(atPosition: barrel.position)
                 removeBarrel(id: barrel.id)

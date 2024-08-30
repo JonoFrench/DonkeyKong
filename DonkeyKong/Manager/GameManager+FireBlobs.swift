@@ -12,7 +12,7 @@ import Foundation
 extension GameManager {
     
     func addfireBlob() {
-        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: CGSize(width: 24, height:  24))
+        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: CGSize(width: 18, height:  18))
         fireBlobArray.fireblob.append(fireBlob)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [fireBlob] in
             fireBlob.state = .hopping

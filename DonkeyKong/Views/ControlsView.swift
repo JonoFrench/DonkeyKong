@@ -14,16 +14,10 @@ struct ControlsView: View {
             HStack {
                 Spacer()
                 VStack {
-                    JoyPadView()
+                    JoyPadView2()
                 }
                 Spacer()
                 VStack {
-                    //Spacer()
-//                    Image("MiddleDK")
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .alignmentGuide(.bottom) { d in d[.bottom] - 42 }
-//                        .frame(width: 80, height: 80,alignment: .bottom)
                 }
                 
                 Spacer()
@@ -35,10 +29,8 @@ struct ControlsView: View {
                     } else if manager.gameState == .playing {
                         if manager.jumpMan.canJump() {
                             if manager.jumpMan.isWalkingLeft || manager.jumpMan.isWalkingRight {
-                                print("Jump activated")
-                                manager.jumpMan.willJump = true
+                                manager.jumpMan.isJumping = true
                             } else {
-                                print("Jump Now")
                                 manager.jumpMan.isJumpingUp = true
                             }
                         }
