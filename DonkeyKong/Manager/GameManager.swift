@@ -28,18 +28,20 @@ class GameManager: ObservableObject {
     @Published
     var lives = 3
     var score = 0
-    var level = 1
+    var level = 4
     @Published
     var bonus = 5000
     ///Sprites of sorts....
     @ObservedObject
     var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
     @ObservedObject
-    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: CGSize(width: 72, height:  72))
+    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: CGSize(width: 60, height:  60))
     var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: CGSize(width: 63, height:  36))
     let heartBeat = 0.6
     var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: CGSize(width: 24, height:  24))
     var collectibles:[Collectible] = []
+    @ObservedObject
+    var elevatorsArray:ElevatorArray = ElevatorArray()
     @ObservedObject
     var barrelArray:BarrelArray = BarrelArray()
     @ObservedObject
@@ -55,6 +57,7 @@ class GameManager: ObservableObject {
     @Published
     var hasPoints = false
     var pause = false
+    var hasElevators = false
     
     var moveDirection: JoyPad {
         didSet {
@@ -70,6 +73,7 @@ class GameManager: ObservableObject {
         ServiceLocator.shared.register(service: gameScreen)
         ServiceLocator.shared.register(service: fireBlobArray)
         ServiceLocator.shared.register(service: barrelArray)
+        ServiceLocator.shared.register(service: elevatorsArray)
         ServiceLocator.shared.register(service: soundFX)
 
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
@@ -169,6 +173,20 @@ class GameManager: ObservableObject {
                         checkFireBlobHit(fireBlob: fireBlob)
                     }
                 }
+                
+                if level == 4 {
+                    for fireBlob in fireBlobArray.fireblob {
+                        fireBlob.animate()
+                        fireBlob.move()
+                        checkFireBlobHit(fireBlob: fireBlob)
+                    }
+                    
+                    for elevator in elevatorsArray.elevators {
+                        elevator.move()
+                    }
+                    elevatorsArray.objectWillChange.send()
+                }
+                
                 if levelEnd {
                     kong.animateExit()
                     flames.animate()
@@ -202,8 +220,8 @@ class GameManager: ObservableObject {
         gameScreen.assetDimention = gameScreen.gameSize.width / Double(gameScreen.screenDimentionX - 1)
         gameScreen.assetOffset = gameScreen.assetDimention / 8.0
         gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        //setKongIntro()   // If we don't want the intro....
-        startPlaying()
+        setKongIntro()   // If we don't want the intro....
+        //startPlaying()
     }
     
     func startPlaying() {
@@ -220,6 +238,12 @@ class GameManager: ObservableObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
                 throwBarrelDown()
             }
+        } else if level == 2 {
+            
+        } else if level == 3 {
+            
+        } else if level == 4 {
+            kong.animateAngry()
         }
     }
     
@@ -227,7 +251,9 @@ class GameManager: ObservableObject {
         collectibles.removeAll()
         barrelArray.barrels.removeAll()
         fireBlobArray.fireblob.removeAll()
+        elevatorsArray.elevators.removeAll()
         gameScreen.screenData = Screens().getScreenData(level: self.level)
+        hasElevators = false
         jumpMan.facing = .right
         if level == 1 {
             jumpMan.setPosition(xPos: 6, yPos: 27)
@@ -268,10 +294,25 @@ class GameManager: ObservableObject {
             jumpMan.setPosition(xPos: 1, yPos: 25)
             pauline.setPosition(xPos: 14, yPos: 3)
             pauline.isShowing = true
-            kong.setPosition(xPos: 21, yPos: 7)
+            kong.setPosition(xPos: 5, yPos: 7)
             collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
             collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
             collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
+            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift, xPos: 4, yPos: 26))
+            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 20))
+            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 14))
+            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 14))
+            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 20))
+            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 26))
+            elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 4, yPos: 27))
+            elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 12, yPos: 27))
+            elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 4, yPos: 9))
+            elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 12, yPos: 9))
+
+            hasElevators = true
+            addFireBlob(xPos: 27, yPos: 9)
+            addFireBlob(xPos: 10, yPos: 13)
+
         }
     }
     

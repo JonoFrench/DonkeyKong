@@ -13,6 +13,7 @@ struct GameView: View {
     @ObservedObject var kong:Kong
     @ObservedObject var barrelArray:BarrelArray
     @ObservedObject var fireBlobArray:FireBlobArray
+    @ObservedObject var elevatorArray:ElevatorArray
     var body: some View {
         ZStack {
             ScreenView(gameScreen: manager.gameScreen)
@@ -65,7 +66,13 @@ struct GameView: View {
                         .zIndex(1.8)
                 }
             }
-            
+            if manager.hasElevators {
+                ForEach(elevatorArray.elevators, id: \.id) { elevator in
+                    ElevatorView(elevator: elevator)
+                        .position(elevator.position)
+                        .zIndex(1.85)
+                }
+            }
         }.zIndex(1.0)
     }
 }

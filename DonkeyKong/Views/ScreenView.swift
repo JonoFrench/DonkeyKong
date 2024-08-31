@@ -23,7 +23,7 @@ struct ScreenView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: gameScreen.assetDimention, height: gameScreen.assetDimention)
                             .position(x:Double(x) * gameScreen.assetDimention + (gameScreen.assetDimention / 2),y: Double(y) * gameScreen.assetDimention - (gameScreen.assetOffset * ir.assetOffset) + 80)
-                            .zIndex(ir.assetType == .ladder ? -0.20 : -0.10)
+                            .zIndex(ir.assetZOrder())
                     }
                 }
             }

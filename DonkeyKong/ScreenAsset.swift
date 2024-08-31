@@ -87,6 +87,64 @@ struct ScreenAsset {
         return ImageResource(name: "Lives", bundle: .main)
     }
     
+    func assetZOrder() -> Double {
+        switch assetType {
+        case .girder:
+            return 0.1
+        case .ladder:
+            return 0.1
+        case .blank:
+            return 0.0
+        case .oilBL:
+            return 0.1
+        case .oilBR:
+            return 0.1
+        case .oilTL:
+            return 0.1
+        case .oilTR:
+            return 0.1
+        case .barBL:
+            return 0.1
+        case .barBR:
+            return 0.1
+        case .barTL:
+            return 0.1
+        case .barTR:
+            return 0.1
+        case .girderPlug:
+            return 0.1
+        case .lineLeft:
+            return 0.1
+        case .lineRight:
+            return 0.1
+        case .conveyor:
+            return 0.1
+        case .pieCross:
+            return 0.1
+        case .LiftPoleL:
+            return 0.1
+        case .LiftPoleR:
+            return 0.1
+        case .LiftTopTL:
+            return 2.1
+        case .LiftTopTR:
+            return 2.1
+        case .LiftTopBL:
+            return 2.1
+        case .LiftTopBR:
+            return 2.1
+        case .LiftBotTL:
+            return 2.1
+        case .LiftBotTR:
+            return 2.1
+        case .LiftBotBL:
+            return 2.1
+        case .LiftBotBR:
+            return 2.1
+        }
+    }
+    
+    
     init(assetType: AssetType, assetOffset: Double) {
         self.assetType = assetType
         self.assetOffset = assetOffset
@@ -3627,7 +3685,7 @@ struct Screens {
          ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
          ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .blank, assetOffset: 0.0),
+         ScreenAsset(assetType: .girder, assetOffset: 0.0),
          ScreenAsset(assetType: .girder, assetOffset: 0.0),
          ScreenAsset(assetType: .girder, assetOffset: 0.0),
          ScreenAsset(assetType: .girder, assetOffset: 0.0),

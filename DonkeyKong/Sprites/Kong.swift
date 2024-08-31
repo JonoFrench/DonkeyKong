@@ -21,6 +21,9 @@ final class Kong:SwiftUISprite, ObservableObject {
     let kongLeft:ImageResource = ImageResource(name: "KongThrowLeft", bundle: .main)
     let kongRight:ImageResource = ImageResource(name: "KongThrowRight", bundle: .main)
     let kongDown:ImageResource = ImageResource(name: "KongThrowDown", bundle: .main)
+    let kongAngryLeft:ImageResource = ImageResource(name: "KongAngryL", bundle: .main)
+    let kongAngryRight:ImageResource = ImageResource(name: "KongAngryR", bundle: .main)
+
     var kongStep = false
     var jumpingPoints:[Int] = [11,10,9,8,7,8]
     var bouncingPoints = [[CGPoint]]()
@@ -39,7 +42,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     
     override func setPosition(xPos: Int, yPos: Int) {
         super.setPosition(xPos: xPos, yPos: yPos)
-        position.y += 7
+        //position.y += 7
     }
     
     func runIntro() {
@@ -55,7 +58,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     
     func adjustPosition() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            position.y += 9
+            //position.y += 9
             position.x += resolvedInstance.assetDimention / 2
         }
     }
@@ -158,6 +161,24 @@ final class Kong:SwiftUISprite, ObservableObject {
                     }
                 }
                 animationCounter = 0
+            }
+        }
+    }
+    
+    func animateAngry() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
+            currentFrame = kongAngryLeft
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                currentFrame = kongAngryRight
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                    currentFrame = kongAngryLeft
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                        currentFrame = kongFacing
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                            animateAngry()
+                        }
+                    }
+                }
             }
         }
     }

@@ -14,7 +14,7 @@ struct KongView: View {
                 if kong.state == .intro || kong.state == .jumpingup || kong.state == .bouncing || kong.state == .sitting {
                     Image(kong.currentFrame)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: kong.frameSize.width, height: kong.frameSize.height)
                         .background(.clear)
                 }

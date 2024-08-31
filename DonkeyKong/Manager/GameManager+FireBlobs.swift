@@ -19,6 +19,12 @@ extension GameManager {
         }
     }
     
+    func addFireBlob(xPos:Int, yPos: Int) {
+        let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 18, height:  18))
+        fireBlob.state = .moving
+        fireBlobArray.fireblob.append(fireBlob)
+    }
+    
     func explodeFireBlob(fireBlob:FireBlob){
         explosion.xPos = fireBlob.xPos
         explosion.yPos = fireBlob.yPos
