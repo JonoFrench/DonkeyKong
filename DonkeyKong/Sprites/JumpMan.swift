@@ -161,6 +161,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     isClimbing = false
                     isClimbingUp = false
                     ///Ok so this is just for level 1 Todo other level!
+                    ///
                     if xPos == 17 && yPos == 3  {
                         currentFrame = ImageResource(name: "JM1", bundle: .main)
                         facing = .left

@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct SpringView: View {
+    @ObservedObject var spring:Spring
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Image(spring.currentFrame)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: spring.frameSize.width, height: spring.frameSize.height)
+                .background(.clear)
+                .zIndex(2.1)
+        }.background(.clear)
+            .frame(width: 1,height: 1,alignment: .center)
     }
-}
-
-#Preview {
-    SpringView()
 }

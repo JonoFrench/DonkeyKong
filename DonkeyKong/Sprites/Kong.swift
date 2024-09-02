@@ -37,7 +37,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     
     override init(xPos: Int, yPos: Int, frameSize: CGSize) {
         super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
-        currentFrame = ImageResource(name: "KongClimbRight", bundle: .main)
+        currentFrame = kongClimbRight
     }
     
     override func setPosition(xPos: Int, yPos: Int) {
@@ -174,8 +174,8 @@ final class Kong:SwiftUISprite, ObservableObject {
                     currentFrame = kongAngryLeft
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
                         currentFrame = kongFacing
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-                            animateAngry()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            NotificationCenter.default.post(name: .notificationKongAngry, object: nil)
                         }
                     }
                 }

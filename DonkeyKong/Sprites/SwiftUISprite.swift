@@ -18,6 +18,8 @@ protocol Animatable {
 protocol Moveable {
     static var speed: Int { get }
     var speedCounter:Int {get set}
+    
+    func move()
 }
 
 
@@ -106,19 +108,16 @@ class SwiftUISprite {
  
     func isBlankRight() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            if resolvedInstance.screenData[yPos][xPos+1].assetType == .blank {
-                return true
-            }
+            guard xPos < resolvedInstance.screenDimentionX - 1 else { return true }
+            return resolvedInstance.screenData[yPos][xPos+1].assetBlank()
         }
         return false
     }
 
     func isBlankLeft() -> Bool {
-        guard xPos >= 1 else { return false }
+        guard xPos > 1 else { return true }
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            if resolvedInstance.screenData[yPos][xPos-1].assetType == .blank {
-                return true
-            }
+            return resolvedInstance.screenData[yPos][xPos-1].assetBlank()
         }
         return false
     }

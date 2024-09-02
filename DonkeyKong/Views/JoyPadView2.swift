@@ -61,12 +61,33 @@ struct JoyPadView2: View {
 
                 
                 Spacer()
-                
-                // Center Circle
-                Circle()
-                    .fill(Color.black)
-                    .frame(width: 30, height: 30)
-                
+                if manager.gameState == .intro {
+                    // Center Circle
+                    Circle()
+                        .fill(Color.black)
+                        .frame(width: 30, height: 30)
+                        .overlay(alignment: .center, content: {
+                            Text("\(manager.level)")
+                                .foregroundStyle(.white)
+                                .font(.custom("DonkeyKongClassicsNESExtended", size: 8))
+                            //.padding(.bottom, 6)
+                        })
+                        .onTapGesture(count: 2) {
+                            print("Double tapped!")
+                            manager.level += 1
+                            if manager.level == 5 {
+                                manager.level = 1
+                            }
+                        }
+                } else {
+                    Circle()
+                        .fill(Color.black)
+                        .frame(width: 30, height: 30)
+                        .onTapGesture(count: 3) {
+                            print("Triple tapped!")
+                            manager.gameState = .intro
+                        }
+                }
                 Spacer()
                 
                 Image("ControlDirection")

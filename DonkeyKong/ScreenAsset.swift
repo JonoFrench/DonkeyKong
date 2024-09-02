@@ -19,19 +19,19 @@ struct ScreenAsset {
     func assetImage(level:Int) -> ImageResource {
         switch assetType {
         case .girder:
-            if level == 1 || level == 4 {
+            if level == 1 || level == 3 {
                 return ImageResource(name: "Girder", bundle: .main)
-            } else if level == 2 {
+            } else if level == 4 {
                 return ImageResource(name: "GirderBlue", bundle: .main)
-            } else if level == 3 {
+            } else if level == 2 {
                 return ImageResource(name: "GirderYellow", bundle: .main)
             }
         case .ladder:
-            if level == 1 || level == 4 {
+            if level == 1 || level == 3 {
                 return ImageResource(name: "Ladder", bundle: .main)
-            } else if level == 2 {
+            } else if level == 4 {
                 return ImageResource(name: "LadderYellow", bundle: .main)
-            } else if level == 3 {
+            } else if level == 2 {
                 return ImageResource(name: "LadderWhite", bundle: .main)
             }
         case .blank:
@@ -141,6 +141,63 @@ struct ScreenAsset {
             return 2.1
         case .LiftBotBR:
             return 2.1
+        }
+    }
+    
+    func assetBlank() -> Bool {
+        switch assetType {
+        case .girder:
+            return false
+        case .ladder:
+            return false
+        case .blank:
+            return true
+        case .oilBL:
+            return false
+        case .oilBR:
+            return false
+        case .oilTL:
+            return false
+        case .oilTR:
+            return false
+        case .barBL:
+            return false
+        case .barBR:
+            return false
+        case .barTL:
+            return false
+        case .barTR:
+            return false
+        case .girderPlug:
+            return false
+        case .lineLeft:
+            return true
+        case .lineRight:
+            return true
+        case .conveyor:
+            return false
+        case .pieCross:
+            return false
+        case .LiftPoleL:
+            return true
+        case .LiftPoleR:
+            return true
+        case .LiftTopTL:
+            return false
+        case .LiftTopTR:
+            return false
+        case .LiftTopBL:
+            return false
+        case .LiftTopBR:
+            return false
+        case .LiftBotTL:
+            return false
+        case .LiftBotTR:
+            return false
+        case .LiftBotBL:
+            return false
+        case .LiftBotBR:
+            return false
         }
     }
     
@@ -1066,7 +1123,7 @@ struct Screens {
 
     ]
     
-    let screen2:[[ScreenAsset]] = [
+    let screen4:[[ScreenAsset]] = [
 
         ///Line1
         [ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -1967,7 +2024,7 @@ struct Screens {
         
     ]
     
-    let screen3:[[ScreenAsset]] = [
+    let screen2:[[ScreenAsset]] = [
         ///Line1
         [ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -2867,7 +2924,7 @@ struct Screens {
         
     ]
     
-    let screen4:[[ScreenAsset]] = [
+    let screen3:[[ScreenAsset]] = [
         ///Line1
         [ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),

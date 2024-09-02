@@ -14,6 +14,8 @@ struct GameView: View {
     @ObservedObject var barrelArray:BarrelArray
     @ObservedObject var fireBlobArray:FireBlobArray
     @ObservedObject var elevatorArray:ElevatorArray
+    @ObservedObject var springArray:SpringArray
+    @ObservedObject var conveyorArray:ConveyorArray
     var body: some View {
         ZStack {
             ScreenView(gameScreen: manager.gameScreen)
@@ -71,6 +73,20 @@ struct GameView: View {
                     ElevatorView(elevator: elevator)
                         .position(elevator.position)
                         .zIndex(1.85)
+                }
+            }
+            if manager.hasSprings {
+                ForEach(springArray.springs, id: \.id) { spring in
+                    SpringView(spring: spring)
+                        .position(spring.position)
+                        .zIndex(2.3)
+                }
+            }
+            if manager.hasConveyor {
+                ForEach(conveyorArray.conveyors, id: \.id) { conveyor in
+                    ConveyorView(conveyor: conveyor)
+                        .position(conveyor.position)
+                        .zIndex(1.8)
                 }
             }
         }.zIndex(1.0)

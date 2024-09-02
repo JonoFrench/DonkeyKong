@@ -16,7 +16,9 @@ extension Notification.Name {
     static let notificationNextLevel = Notification.Name("NotificationNextLevel")
     static let notificationHowHigh = Notification.Name("NotificationHowHigh")
     static let notificationLevelComplete = Notification.Name("NotificationLevelComplete")
-    
+    static let notificationKongAngry = Notification.Name("NotificationKongAngry")
+    static let notificationRemoveSpring = Notification.Name("NotificationRemoveSpring")
+
 }
 
 extension GameManager {
@@ -29,10 +31,27 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.nextLevel(notification:)), name: .notificationNextLevel, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.showHowHighView(notification:)), name: .notificationHowHigh, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.levelComplete(notification:)), name: .notificationLevelComplete, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.kongAngry(notification:)), name: .notificationKongAngry, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.removeSpring(notification:)), name: .notificationRemoveSpring, object: nil)
+
     }
     
     @objc func removeScore(notification: Notification) {
         hasPoints = false
+    }
+    
+    @objc func kongAngry(notification: Notification) {
+        if gameState == .playing {
+            kong.animateAngry()
+        }
+    }
+
+    @objc func removeSpring(notification: Notification) {
+        if let id = notification.userInfo?["id"] as? UUID {
+            if let index = springArray.springs.firstIndex(where: {$0.id == id}) {
+                springArray.springs.remove(at: index)
+            }
+        }
     }
     
     @objc func removeExplosion(notification: Notification) {

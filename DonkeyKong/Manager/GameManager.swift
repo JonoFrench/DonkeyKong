@@ -18,6 +18,13 @@ enum JoyPad {
     case left,right,up,down,stop
 }
 
+struct AppConstant {
+    static let Barrels = 1
+    static let PieFactory = 2
+    static let Elevators = 3
+    static let GirderPlugs = 4
+}
+
 class GameManager: ObservableObject {
     let soundFX:SoundFX = SoundFX()
     let hiScores:DonkeyKongHighScores = DonkeyKongHighScores()
@@ -28,7 +35,8 @@ class GameManager: ObservableObject {
     @Published
     var lives = 3
     var score = 0
-    var level = 4
+    @Published
+    var level = 1
     @Published
     var bonus = 5000
     ///Sprites of sorts....
@@ -46,7 +54,9 @@ class GameManager: ObservableObject {
     var barrelArray:BarrelArray = BarrelArray()
     @ObservedObject
     var fireBlobArray:FireBlobArray = FireBlobArray()
-    
+    @ObservedObject
+    var springArray:SpringArray = SpringArray()
+
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
     var levelEnd = false
     var hasFlames = false
@@ -58,7 +68,12 @@ class GameManager: ObservableObject {
     var hasPoints = false
     var pause = false
     var hasElevators = false
-    
+    var hasSprings = false
+    var springAdded = false
+    var hasConveyor = false
+    @ObservedObject
+    var conveyorArray:ConveyorArray = ConveyorArray()
+
     var moveDirection: JoyPad {
         didSet {
             if moveDirection != oldValue {
@@ -150,7 +165,7 @@ class GameManager: ObservableObject {
                 if hasFlames {
                     flames.animate()
                 }
-                if level == 1 {
+                if level == AppConstant.Barrels {
                     throwBarrel()
                     
                     for barrel in barrelArray.barrels {
@@ -174,7 +189,14 @@ class GameManager: ObservableObject {
                     }
                 }
                 
-                if level == 4 {
+                if level == AppConstant.PieFactory {
+                    for conveyor in conveyorArray.conveyors {
+                        conveyor.animate()
+                    }
+                }
+                
+                if level == AppConstant.Elevators {
+                    throwSpring()
                     for fireBlob in fireBlobArray.fireblob {
                         fireBlob.animate()
                         fireBlob.move()
@@ -185,8 +207,22 @@ class GameManager: ObservableObject {
                         elevator.move()
                     }
                     elevatorsArray.objectWillChange.send()
+                    
+                    for spring in springArray.springs {
+                        spring.animate()
+                        spring.move()
+                    }
                 }
                 
+                if level == AppConstant.GirderPlugs {
+                    for fireBlob in fireBlobArray.fireblob {
+                        fireBlob.animate()
+                        fireBlob.move()
+                        checkFireBlobHit(fireBlob: fireBlob)
+                        fireBlob.hasHammer = jumpMan.hasHammer
+                    }
+                }
+
                 if levelEnd {
                     kong.animateExit()
                     flames.animate()
@@ -220,8 +256,8 @@ class GameManager: ObservableObject {
         gameScreen.assetDimention = gameScreen.gameSize.width / Double(gameScreen.screenDimentionX - 1)
         gameScreen.assetOffset = gameScreen.assetDimention / 8.0
         gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        setKongIntro()   // If we don't want the intro....
-        //startPlaying()
+        //setKongIntro()   // If we don't want the intro....
+        startPlaying()
     }
     
     func startPlaying() {
@@ -233,17 +269,20 @@ class GameManager: ObservableObject {
         kong.currentFrame = kong.kongFacing
         kong.state = .sitting
         //startHeartBeat()
-        if level == 1 {
+        if level == AppConstant.Barrels {
             kong.isThrowing = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
                 throwBarrelDown()
             }
-        } else if level == 2 {
-            
-        } else if level == 3 {
-            
-        } else if level == 4 {
+        } else if level == AppConstant.PieFactory {
             kong.animateAngry()
+
+        } else if level == AppConstant.Elevators {
+            kong.animateAngry()
+
+        } else if level == AppConstant.GirderPlugs {
+            kong.animateAngry()
+            addLevel4FireBlobs()
         }
     }
     
@@ -252,83 +291,115 @@ class GameManager: ObservableObject {
         barrelArray.barrels.removeAll()
         fireBlobArray.fireblob.removeAll()
         elevatorsArray.elevators.removeAll()
+        springArray.springs.removeAll()
+        conveyorArray.conveyors.removeAll()
         gameScreen.screenData = Screens().getScreenData(level: self.level)
         hasElevators = false
+        hasSprings = false
+        hasFlames = false
         jumpMan.facing = .right
-        if level == 1 {
-            jumpMan.setPosition(xPos: 6, yPos: 27)
-            pauline.setPosition(xPos: 14, yPos: 3)
-            
-            kong.setPosition(xPos: 6, yPos: 7)
-            pauline.isShowing = true
-            flames.setPosition(xPos: 4, yPos: 25)
-            hasFlames = false
-            collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 9))
-            collectibles.append(Collectible(type: .hammer, xPos: 20, yPos: 21))
-        } else if level == 2 {
-            jumpMan.setPosition(xPos: 3, yPos: 27)
-            kong.setPosition(xPos: 14, yPos: 7)
-            pauline.setPosition(xPos: 15, yPos: 2)
-            pauline.isShowing = true
-            hasFlames = false
-            collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 10))
-            collectibles.append(Collectible(type: .hammer, xPos: 2, yPos: 15))
-            collectibles.append(Collectible(type: .umbrella, xPos: 4, yPos: 7))
-            collectibles.append(Collectible(type: .hat, xPos: 26, yPos: 22))
-            collectibles.append(Collectible(type: .phone, xPos: 17, yPos: 27))
-        } else if level == 3 {
-            jumpMan.setPosition(xPos: 3, yPos: 27)
-            kong.setPosition(xPos: 21, yPos: 7)
-            pauline.setPosition(xPos: 14, yPos: 3)
-            pauline.isShowing = true
-            
-            flames.setPosition(xPos: 15, yPos: 12)
-            hasFlames = true
-            
-            collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 20))
-            collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 15))
-            collectibles.append(Collectible(type: .umbrella, xPos: 24, yPos: 17))
-            collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 17))
-            collectibles.append(Collectible(type: .phone, xPos: 16, yPos: 27))
-        } else if level == 4 {
-            jumpMan.setPosition(xPos: 1, yPos: 25)
-            pauline.setPosition(xPos: 14, yPos: 3)
-            pauline.isShowing = true
-            kong.setPosition(xPos: 5, yPos: 7)
-            collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
-            collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
-            collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
-            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift, xPos: 4, yPos: 26))
-            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 20))
-            elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 14))
-            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 14))
-            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 20))
-            elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 26))
-            elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 4, yPos: 27))
-            elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 12, yPos: 27))
-            elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 4, yPos: 9))
-            elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 12, yPos: 9))
-
-            hasElevators = true
-            addFireBlob(xPos: 27, yPos: 9)
-            addFireBlob(xPos: 10, yPos: 13)
-
+        if level == AppConstant.Barrels {
+            setLevel1()
+        } else if level == AppConstant.PieFactory {
+            setLevel2()
+        } else if level == AppConstant.Elevators {
+            setLevel3()
+        } else if level == AppConstant.GirderPlugs {
+            setLevel4()
         }
+    }
+    ///Bent Girder Level 1
+    func setLevel1() {
+        jumpMan.setPosition(xPos: 6, yPos: 27)
+        pauline.setPosition(xPos: 14, yPos: 3)
+        kong.setPosition(xPos: 6, yPos: 7)
+        pauline.isShowing = true
+        flames.setPosition(xPos: 4, yPos: 25)
+        hasFlames = false
+        collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 9))
+        collectibles.append(Collectible(type: .hammer, xPos: 20, yPos: 21))
+    }
+    
+    ///Pie Factory Level 2
+    func setLevel2() {
+        jumpMan.setPosition(xPos: 3, yPos: 27)
+        kong.setPosition(xPos: 21, yPos: 7)
+        pauline.setPosition(xPos: 14, yPos: 3)
+        pauline.isShowing = true
+        
+        flames.setPosition(xPos: 15, yPos: 12)
+        hasFlames = true
+        
+        collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 20))
+        collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 15))
+        collectibles.append(Collectible(type: .umbrella, xPos: 24, yPos: 17))
+        collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 17))
+        collectibles.append(Collectible(type: .phone, xPos: 16, yPos: 27))
+        hasConveyor = true
+        conveyorArray.conveyors.append(Conveyor(xPos: 1, yPos: 8, direction: .left))
+        conveyorArray.conveyors.append(Conveyor(xPos: 27, yPos: 8, direction: .right))
+        conveyorArray.conveyors.append(Conveyor(xPos: 1, yPos: 13, direction: .left))
+        conveyorArray.conveyors.append(Conveyor(xPos: 27, yPos: 13, direction: .right))
+        conveyorArray.conveyors.append(Conveyor(xPos: 13, yPos: 13, direction: .right))
+        conveyorArray.conveyors.append(Conveyor(xPos: 16, yPos: 13, direction: .left))
+        conveyorArray.conveyors.append(Conveyor(xPos: 0, yPos: 23, direction: .left))
+        conveyorArray.conveyors.append(Conveyor(xPos: 28, yPos: 23, direction: .right))
+
+    }
+    
+    ///Lifts or Elevators Level 3
+    func setLevel3() {
+        hasSprings  = true
+        jumpMan.setPosition(xPos: 1, yPos: 25)
+        pauline.setPosition(xPos: 14, yPos: 3)
+        pauline.isShowing = true
+        kong.setPosition(xPos: 5, yPos: 7)
+        collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
+        collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
+        collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
+        elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift, xPos: 4, yPos: 26))
+        elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 20))
+        elevatorsArray.elevators.append(Elevator(direction: .up,part: .lift,xPos: 4, yPos: 14))
+        elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 14))
+        elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 20))
+        elevatorsArray.elevators.append(Elevator(direction: .down,part: .lift,xPos: 12, yPos: 26))
+        elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 4, yPos: 27))
+        elevatorsArray.elevators.append(Elevator(direction: .up,part: .control, xPos: 12, yPos: 27))
+        elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 4, yPos: 9))
+        elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 12, yPos: 9))
+
+        hasElevators = true
+        addFireBlob(xPos: 27, yPos: 9)
+        addFireBlob(xPos: 9, yPos: 13)
+    }
+    
+    ///Girder Plugs Level 4
+    func setLevel4() {
+        jumpMan.setPosition(xPos: 3, yPos: 27)
+        kong.setPosition(xPos: 14, yPos: 7)
+        pauline.setPosition(xPos: 15, yPos: 2)
+        pauline.isShowing = true
+        hasFlames = false
+        collectibles.append(Collectible(type: .hammer, xPos: 14, yPos: 10))
+        collectibles.append(Collectible(type: .hammer, xPos: 2, yPos: 15))
+        collectibles.append(Collectible(type: .umbrella, xPos: 4, yPos: 7))
+        collectibles.append(Collectible(type: .hat, xPos: 26, yPos: 22))
+        collectibles.append(Collectible(type: .phone, xPos: 17, yPos: 27))
     }
     
     func startBonusCountdown() {
         if !levelEnd {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
                 bonus -= 100
-                if bonus > 0 {
+                if bonus > 0 && gameState == .playing {
                     startBonusCountdown()
                 }
             }
         }
     }
-    /// todo change the time to 30 seconds
+    /// todo change the time to 20 seconds
     func startHammerCountdown() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 30) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 20) { [self] in
             jumpMan.removeHammer()
         }
     }

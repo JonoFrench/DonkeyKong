@@ -44,6 +44,15 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     var blueBlobs:[ImageResource] = [ImageResource(name: "FireBlue1", bundle: .main),ImageResource(name: "FireBlue2", bundle: .main),ImageResource(name: "FireBlue3", bundle: .main)]
     var hoppingPoints = [CGPoint]()
     var hoppingCount = 0
+    var hasHammer:Bool = false {
+        didSet {
+            if hasHammer == true {
+                color = .blue
+            } else {
+                color = .red
+            }
+        }
+    }
     
     override init(xPos: Int, yPos: Int, frameSize: CGSize) {
         super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
@@ -86,61 +95,86 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
         updateScreenArray()
     }
     
+    func moveFrame() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            ///Move left or right
+            if direction == .right {
+                position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
+            } else if direction == .left  {
+                position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
+            }
+            ///Move down
+            if direction == .down {
+                position.y += ladderStep / CGFloat(moveFrames)
+            }
+            ///Move up
+            if direction == .up {
+                position.y -= ladderStep / CGFloat(moveFrames)
+            }
+        }
+    }
+    
     func move() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             speedCounter += 1
             if speedCounter == speed {
                 speedCounter = 0
                 moveCounter += 1
-                
-                ///Move left or right
-                if direction == .right {
-                    position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
-                } else if direction == .left  {
-                    position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
-                }
-                ///Move down
-                if direction == .down {
-                    position.y += ladderStep / CGFloat(moveFrames)
-                }
-                
-                ///Move up
-                if direction == .up {
-                    position.y -= ladderStep / CGFloat(moveFrames)
-
-                }
+                moveFrame()
                 ///Next x/y position
                 if moveCounter == moveFrames {
                     moveCounter = 0
+                    print("FireBlob on \(resolvedInstance.screenData[yPos][xPos].assetType) xpos \(xPos) ypos \(yPos) going \(direction)")
+
+//                                        if Int.random(in: 0..<20) == 3 {
+//                                            if direction == .right && xPos > 1 {
+//                                                direction = .left
+//                                            } else if direction == .left && xPos < 28 {
+//                                                direction = .right
+//                                            }
+//                                        }
+
+
                     if direction == .right {
-                        if currentHeightOffset != resolvedInstance.screenData[yPos][xPos+1].assetOffset {
-                            if currentHeightOffset > resolvedInstance.screenData[yPos][xPos+1].assetOffset {
-                                position.y += resolvedInstance.assetOffset
-                            } else {
-                                position.y -= resolvedInstance.assetOffset
-                            }
-                        }
-                        xPos += 1
-                        currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                        
-                        if xPos == resolvedInstance.screenDimentionX - 1 || isBlankRight() {
+                        if isBlankRight() {
+                            print("FireBlob going \(direction)  xpos \(xPos)")
                             direction = .left
-                        }
-                    } else if direction == .left {
-                        
-                        if currentHeightOffset != resolvedInstance.screenData[yPos][xPos-1].assetOffset {
-                            if currentHeightOffset > resolvedInstance.screenData[yPos][xPos-1].assetOffset {
-                                position.y += resolvedInstance.assetOffset
-                            } else {
-                                position.y -= resolvedInstance.assetOffset
+                            //position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
+                            setPosition()
+                            //xPos -= 1
+                        } else {
+                            xPos += 1
+                            if currentHeightOffset != resolvedInstance.screenData[yPos][xPos].assetOffset {
+                                if currentHeightOffset > resolvedInstance.screenData[yPos][xPos].assetOffset {
+                                    position.y += resolvedInstance.assetOffset
+                                } else {
+                                    position.y -= resolvedInstance.assetOffset
+                                }
                             }
                         }
-                        
-                        xPos -= 1
                         currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                        if xPos == 1 || isBlankLeft() {
+
+                    } else if direction == .left {
+                        if isBlankLeft() {
+                            print("FireBlob going \(direction)  xpos \(xPos)")
                             direction = .right
+                            //position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                            setPosition()
+                            //xPos += 1
+                        } else {
+                            xPos -= 1
+                            if currentHeightOffset != resolvedInstance.screenData[yPos][xPos].assetOffset {
+                                if currentHeightOffset > resolvedInstance.screenData[yPos][xPos].assetOffset {
+                                    position.y += resolvedInstance.assetOffset
+                                } else {
+                                    position.y -= resolvedInstance.assetOffset
+                                }
+                            }
+
                         }
+                        currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+
+                        
                     } else if direction == .up {
                         if yPos != 0 {
                             yPos -= 1
@@ -165,16 +199,27 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                         if resolvedInstance.screenData[yPos][xPos].assetType == .girder {
                                 if Int.random(in: 0..<2) == 1 {
                                     direction = .left
+                                    if xPos > 1 {
+                                        if !isBlankLeft() {
+                                            direction = .right
+                                        }
+                                    }
                                 } else {
                                     direction = .right
+                                    if xPos < resolvedInstance.screenDimentionX {
+                                        if !isBlankRight() {
+                                            direction = .left
+                                        }
+                                    }
                                 }
-                            
+                            print("FireBlob going \(direction)  xpos \(xPos)")
+
                         }
                     }
                     
                     if isLadderAbove() && (direction == .left || direction == .right) {
                         if yPos > 10 {
-//                            print("FireBlob lets go up?")
+ //                           print("FireBlob lets go up?")
                             if Int.random(in: 0..<5) == 3 {
 //                                print("FireBlob going up")
                                 calculateLadderHeightUp()
@@ -192,13 +237,6 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                         }
                     }
 
-                    if Int.random(in: 0..<20) == 3 {
-                        if direction == .right && xPos > 1 {
-                            direction = .left
-                        } else if direction == .left && xPos < 28 {
-                            direction = .right
-                        }
-                    }
                 }
                 updateScreenArray()
             }
