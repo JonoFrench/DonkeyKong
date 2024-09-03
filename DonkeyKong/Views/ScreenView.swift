@@ -17,7 +17,7 @@ struct ScreenView: View {
             ForEach(0..<gameScreen.screenDimentionY, id: \.self) { y in
                 ForEach(0..<gameScreen.screenDimentionX, id: \.self) { x in
                     let ir = gameScreen.screenData[y][x]
-                    if ir.assetType != .blank {
+                    if ir.assetType != .blank && ir.assetType != .blankLadder {
                         Image(ir.assetImage(level: manager.level))
                             .resizable()
                             .aspectRatio(contentMode: .fit)

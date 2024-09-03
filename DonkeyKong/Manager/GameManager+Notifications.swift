@@ -10,7 +10,9 @@ import SwiftUI
 
 extension Notification.Name {
     static let notificationBarrelToFireblob = Notification.Name("NotificationBarrelToFireblob")
+    static let notificationPieToFireblob = Notification.Name("NotificationPieToFireblob")
     static let notificationRemoveBarrel = Notification.Name("NotificationRemoveBarrel")
+    static let notificationRemovePie = Notification.Name("NotificationRemovePie")
     static let notificationRemoveExplosion = Notification.Name("NotificationRemoveExplosion")
     static let notificationRemoveScore = Notification.Name("NotificationRemoveScore")
     static let notificationNextLevel = Notification.Name("NotificationNextLevel")
@@ -25,7 +27,10 @@ extension GameManager {
     
     func notificationObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.barrelToFireblob(notification:)), name: .notificationBarrelToFireblob, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.pieToFireblob(notification:)), name: .notificationPieToFireblob, object: nil)
+
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeBarrel(notification:)), name: .notificationRemoveBarrel, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.removePie(notification:)), name: .notificationRemovePie, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeExplosion(notification:)), name: .notificationRemoveExplosion, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeScore(notification:)), name: .notificationRemoveScore, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.nextLevel(notification:)), name: .notificationNextLevel, object: nil)
@@ -43,6 +48,12 @@ extension GameManager {
     @objc func kongAngry(notification: Notification) {
         if gameState == .playing {
             kong.animateAngry()
+        }
+    }
+    
+    @objc func removePie(notification: Notification) {
+        if let id = notification.userInfo?["id"] as? UUID {
+            removePie(id: id)
         }
     }
 
@@ -68,6 +79,13 @@ extension GameManager {
         addfireBlob()
         if let id = notification.userInfo?["id"] as? UUID {
             removeBarrel(id: id)
+        }
+    }
+    
+    @objc func pieToFireblob(notification: Notification) {
+        addFireBlob(xPos: 14 + Int.random(in: 0...1), yPos: 12,state: .sitting)
+        if let id = notification.userInfo?["id"] as? UUID {
+            removePie(id: id)
         }
     }
     

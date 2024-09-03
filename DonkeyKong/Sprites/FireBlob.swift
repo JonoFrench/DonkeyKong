@@ -44,6 +44,9 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     var blueBlobs:[ImageResource] = [ImageResource(name: "FireBlue1", bundle: .main),ImageResource(name: "FireBlue2", bundle: .main),ImageResource(name: "FireBlue3", bundle: .main)]
     var hoppingPoints = [CGPoint]()
     var hoppingCount = 0
+    var hoppingToX = 0
+    var hoppingToY = 0
+    var hoppingTodirection:FireBlobDirection = .still
     var hasHammer:Bool = false {
         didSet {
             if hasHammer == true {
@@ -57,11 +60,26 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     override init(xPos: Int, yPos: Int, frameSize: CGSize) {
         super.init(xPos: xPos, yPos: yPos, frameSize: frameSize)
         let finishHop = calcPositionFromScreen(xPos: 7,yPos: 27,frameSize: frameSize)
+        hoppingToX = 7
+        hoppingToY = 27
+        hoppingTodirection = .right
         hoppingPoints = generateHoppingPoints(from: position, to: finishHop)
         currentFrame = ImageResource(name: "FireBlob1", bundle: .main)
         color = .red
         state = .sitting
         isShowing = true
+    }
+    
+    func setHopping(xPos: Int, yPos: Int, direction:FireBlobDirection) {
+        hoppingCount = 0
+        hoppingToX = xPos
+        hoppingToY = yPos
+        hoppingTodirection = direction
+        let finishHop = calcPositionFromScreen(xPos: xPos,yPos: yPos,frameSize: frameSize)
+        let degrees: CGFloat = direction == .left ? -50 : 50
+        hoppingPoints = generateParabolicPoints(from: position, to: finishHop, angleInDegrees: degrees)
+        //hoppingPoints = generateHoppingPoints(from: position, to: finishHop)
+        state = .hopping
     }
     
     func animate() {
@@ -81,16 +99,14 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     }
     
     ///Fireblob hops out of oil drum
-    func hop(){
+    func hop(state:FireBlobState){
         position = hoppingPoints[hoppingCount]
         hoppingCount += 1
         if hoppingCount == hoppingPoints.count {
-            state = .sitting
+            self.state = .moving
             color = .blue
-            direction = .right
-            xPos = 7
-            yPos = 27
-            setPosition()
+            self.direction = hoppingTodirection
+            setPosition(xPos: hoppingToX, yPos: hoppingToY)
         }
         updateScreenArray()
     }
@@ -181,7 +197,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                             currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
                         }
 
-                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder {
+                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder || resolvedInstance.screenData[yPos][xPos].assetType == .conveyor {
                                 if Int.random(in: 0..<2) == 1 {
                                     direction = .left
                                 } else {
@@ -196,7 +212,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                             currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
                         }
 
-                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder {
+                        if resolvedInstance.screenData[yPos][xPos].assetType == .girder || resolvedInstance.screenData[yPos][xPos].assetType == .conveyor {
                                 if Int.random(in: 0..<2) == 1 {
                                     direction = .left
                                     if xPos > 1 {
@@ -244,9 +260,10 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     }
     
     override func isLadderAbove() -> Bool {
+        guard yPos > 10 else { return false }
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blank && resolvedInstance.screenData[yPos - 2][xPos].assetType == .ladder { return true }
-            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blank && (resolvedInstance.screenData[yPos - 2][xPos].assetType == .ladder || resolvedInstance.screenData[yPos - 2][xPos].assetType == .blankLadder) { return true }
+            if resolvedInstance.screenData[yPos - 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder || resolvedInstance.screenData[yPos - 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
                 return true
             }
         }
@@ -256,8 +273,8 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     override func isLadderBelow() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             guard yPos < resolvedInstance.screenDimentionY - 2 else { return false }
-            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blank && resolvedInstance.screenData[yPos + 2][xPos].assetType == .ladder { return true }
-            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
+            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blank && (resolvedInstance.screenData[yPos + 2][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 2][xPos].assetType == .blankLadder) { return true }
+            if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
                 return true
             }
         }

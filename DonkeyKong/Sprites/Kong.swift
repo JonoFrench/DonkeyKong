@@ -12,7 +12,18 @@ enum KongState {
     case waiting,intro,jumpingup,bouncing,sitting,throwing,howhigh,dead
 }
 
+enum KongDirection {
+    case left,right
+}
 final class Kong:SwiftUISprite, ObservableObject {
+    static var animateFrames: Int = 9
+    static var speed:Int = 4
+    static var moveFrames = 4
+
+    var animateCounter: Int = 0
+    var speedCounter:Int = 0
+    var moveCounter = 0
+    var direction:KongDirection = .left
     @Published
     var state:KongState = .waiting
     let kongClimbLeft:ImageResource = ImageResource(name: "KongClimbLeft", bundle: .main)
@@ -183,6 +194,35 @@ final class Kong:SwiftUISprite, ObservableObject {
         }
     }
     
+    func moveSlide() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            speedCounter += 1
+            if speedCounter == Kong.speed {
+                speedCounter = 0
+                moveCounter += 1
+                if direction == .left {
+                    position.x -= resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
+                    
+                } else {
+                    position.x += resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
+                }
+                if moveCounter == Kong.moveFrames {
+                    moveCounter = 0
+                    if direction == .left {
+                        xPos -= 1
+                        if xPos == 6 {
+                            direction = .right
+                        }
+                    } else {
+                        xPos += 1
+                        if xPos == 21 {
+                            direction = .left
+                        }
+                    }
+                }
+            }
+        }
+    }
     func generateBouncingPoints() {
         var c = 0
         for i in stride(from: 16, through: 8, by: -2) {

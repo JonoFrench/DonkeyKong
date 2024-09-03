@@ -19,11 +19,21 @@ extension GameManager {
         }
     }
     
-    func addFireBlob(xPos:Int, yPos: Int) {
+    func addFireBlob(xPos:Int, yPos: Int, state:FireBlobState) {
         let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  24))
-        fireBlob.state = .moving
+        fireBlob.state = state
         fireBlob.direction = .right
         fireBlobArray.fireblob.append(fireBlob)
+    }
+    
+    func startMovingFireBlob(fireBlob:FireBlob) {
+        if Int.random(in: 0..<300) == 3 {
+            if Int.random(in: 0...1) == 1 {
+                fireBlob.setHopping(xPos: fireBlob.xPos - 3, yPos: fireBlob.yPos,direction: .left)
+            } else {
+                fireBlob.setHopping(xPos: fireBlob.xPos + 3, yPos: fireBlob.yPos,direction: .right)
+            }
+        }
     }
     
     func addLevel4FireBlobs() {
@@ -57,6 +67,50 @@ extension GameManager {
                         fireBlob.direction = .left
                         fireBlobArray.fireblob.append(fireBlob)
                     }
+                }
+            }
+        }
+    }
+    
+    func addPiesLevel2() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [self] in
+            addRightSidePie(pos: .bottom)
+        }
+        swapConveyorDirection()
+    }
+    
+    func swapConveyorDirection() {
+        if gameState == .playing {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) { [self] in
+                if pieArray.direction == .left {
+                    pieArray.direction = .right
+                } else {
+                    pieArray.direction = .left
+                }
+                swapConveyorDirection()
+            }
+        }
+    }
+    func addLeftSidePie(pos:ConveyorPos){
+        pieArray.pies.append(Pie(xPos: 0, yPos: pos.rawValue, direction: .right))
+    }
+    func addRightSidePie(pos:ConveyorPos){
+        pieArray.pies.append(Pie(xPos: 29, yPos: pos.rawValue, direction: .left))
+    }
+
+    func addPies() {
+        if Int.random(in: 0...200) == 3 {
+            if Int.random(in: 0...10) <= 6 {
+                if pieArray.direction == .left {
+                    addRightSidePie(pos: .bottom)
+                } else {
+                    addLeftSidePie(pos: .bottom)
+                }
+            } else {
+                if Int.random(in: 0...1) == 1 {
+                    addRightSidePie(pos: .top)
+                } else {
+                    addLeftSidePie(pos: .top)
                 }
             }
         }
@@ -99,7 +153,7 @@ extension GameManager {
             fireBlobArray.fireblob.remove(at: index)
         }
     }
-    
+
     func addSpring() {
         let spring = Spring(xPos: 2 + Int.random(in: 0..<3), yPos: 7, frameSize: CGSize(width: 24, height:  24))
         springArray.springs.append(spring)

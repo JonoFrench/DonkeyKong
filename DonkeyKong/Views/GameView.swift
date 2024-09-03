@@ -16,6 +16,8 @@ struct GameView: View {
     @ObservedObject var elevatorArray:ElevatorArray
     @ObservedObject var springArray:SpringArray
     @ObservedObject var conveyorArray:ConveyorArray
+    @ObservedObject var pieArray:PieArray
+    @ObservedObject var loftLadders:Ladders
     var body: some View {
         ZStack {
             ScreenView(gameScreen: manager.gameScreen)
@@ -88,6 +90,20 @@ struct GameView: View {
                         .position(conveyor.position)
                         .zIndex(1.8)
                 }
+                ForEach(pieArray.pies, id: \.id) { pie in
+                    PieView(pie: pie)
+                        .position(pie.position)
+                        .zIndex(1.85)
+                }
+                
+            }
+            if manager.hasLoftLadders {
+                LoftLadderView(ladder: loftLadders.leftLadder)
+                    .position(loftLadders.leftLadder.position)
+                    .zIndex(1.81)
+                LoftLadderView(ladder: loftLadders.rightLadder)
+                    .position(loftLadders.rightLadder.position)
+                    .zIndex(1.81)
             }
         }.zIndex(1.0)
     }

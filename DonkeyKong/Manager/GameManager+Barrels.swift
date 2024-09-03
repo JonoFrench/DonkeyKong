@@ -72,7 +72,13 @@ extension GameManager {
             barrelArray.barrels.remove(at: index)
         }
     }
-    
+ 
+    func removePie(id:UUID) {
+        if let index = pieArray.pies.firstIndex(where: {$0.id == id}) {
+            pieArray.pies.remove(at: index)
+        }
+    }
+
     func checkBarrelHit(barrel:Barrel) {
         if jumpMan.hasHammer && jumpMan.hammerDown[jumpMan.animateHammerFrame] {
             print("checkBarrelHit frame \(jumpMan.animateHammerFrame)")

@@ -14,7 +14,7 @@ struct ConveyorView: View {
             if conveyor.direction == .left {
                 Image(conveyor.currentFrame)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: conveyor.frameSize.width, height: conveyor.frameSize.height)
                     .rotationEffect(Angle(degrees: 180))
                     .background(.clear)
@@ -22,7 +22,7 @@ struct ConveyorView: View {
             } else {
                 Image(conveyor.currentFrame)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .aspectRatio(contentMode: .fill)
                     .frame(width: conveyor.frameSize.width, height: conveyor.frameSize.height)
                     .background(.clear)
                 

@@ -56,6 +56,8 @@ class GameManager: ObservableObject {
     var fireBlobArray:FireBlobArray = FireBlobArray()
     @ObservedObject
     var springArray:SpringArray = SpringArray()
+    @ObservedObject
+    var pieArray:PieArray = PieArray()
 
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
     var levelEnd = false
@@ -73,7 +75,9 @@ class GameManager: ObservableObject {
     var hasConveyor = false
     @ObservedObject
     var conveyorArray:ConveyorArray = ConveyorArray()
-
+    @ObservedObject
+    var loftLadders = Ladders()
+    var hasLoftLadders = false
     var moveDirection: JoyPad {
         didSet {
             if moveDirection != oldValue {
@@ -181,7 +185,7 @@ class GameManager: ObservableObject {
                     for fireBlob in fireBlobArray.fireblob {
                         fireBlob.animate()
                         if fireBlob.state == .hopping {
-                            fireBlob.hop()
+                            fireBlob.hop(state: .moving)
                         } else {
                             fireBlob.move()
                         }
@@ -190,9 +194,27 @@ class GameManager: ObservableObject {
                 }
                 
                 if level == AppConstant.PieFactory {
+                    kong.moveSlide()
+                    addPies()
+                    for pie in pieArray.pies {
+                        pie.move()
+                    }
                     for conveyor in conveyorArray.conveyors {
                         conveyor.animate()
                     }
+                    for fireBlob in fireBlobArray.fireblob {
+                        fireBlob.animate()
+                        if fireBlob.state == .moving {
+                            fireBlob.move()
+                        } else if fireBlob.state == .sitting {
+                            startMovingFireBlob(fireBlob: fireBlob)
+                        } else if fireBlob.state == .hopping {
+                            fireBlob.hop(state: .moving)
+                        }
+                        checkFireBlobHit(fireBlob: fireBlob)
+                    }
+                    loftLadders.leftLadder.animate()
+                    loftLadders.rightLadder.animate()
                 }
                 
                 if level == AppConstant.Elevators {
@@ -276,7 +298,7 @@ class GameManager: ObservableObject {
             }
         } else if level == AppConstant.PieFactory {
             kong.animateAngry()
-
+            swapConveyorDirection()
         } else if level == AppConstant.Elevators {
             kong.animateAngry()
 
@@ -293,10 +315,12 @@ class GameManager: ObservableObject {
         elevatorsArray.elevators.removeAll()
         springArray.springs.removeAll()
         conveyorArray.conveyors.removeAll()
+        pieArray.pies.removeAll()
         gameScreen.screenData = Screens().getScreenData(level: self.level)
         hasElevators = false
         hasSprings = false
         hasFlames = false
+        hasLoftLadders = false
         jumpMan.facing = .right
         if level == AppConstant.Barrels {
             setLevel1()
@@ -324,6 +348,7 @@ class GameManager: ObservableObject {
     func setLevel2() {
         jumpMan.setPosition(xPos: 3, yPos: 27)
         kong.setPosition(xPos: 21, yPos: 7)
+        kong.direction = .left
         pauline.setPosition(xPos: 14, yPos: 3)
         pauline.isShowing = true
         
@@ -344,7 +369,11 @@ class GameManager: ObservableObject {
         conveyorArray.conveyors.append(Conveyor(xPos: 16, yPos: 13, direction: .left))
         conveyorArray.conveyors.append(Conveyor(xPos: 0, yPos: 23, direction: .left))
         conveyorArray.conveyors.append(Conveyor(xPos: 28, yPos: 23, direction: .right))
+        loftLadders.leftLadder = LoftLadder(xPos: 4, yPos: 10)
+        loftLadders.rightLadder = LoftLadder(xPos: 24, yPos: 10)
 
+        
+        hasLoftLadders = true
     }
     
     ///Lifts or Elevators Level 3
@@ -369,8 +398,8 @@ class GameManager: ObservableObject {
         elevatorsArray.elevators.append(Elevator(direction: .down,part: .control, xPos: 12, yPos: 9))
 
         hasElevators = true
-        addFireBlob(xPos: 27, yPos: 9)
-        addFireBlob(xPos: 9, yPos: 13)
+        addFireBlob(xPos: 27, yPos: 9,state: .moving)
+        addFireBlob(xPos: 9, yPos: 13,state: .moving)
     }
     
     ///Girder Plugs Level 4

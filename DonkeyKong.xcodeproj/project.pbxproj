@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		34169CFC2C85FB31009C56E0 /* ConveyorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169CFB2C85FB31009C56E0 /* ConveyorView.swift */; };
 		34169CFE2C85FB43009C56E0 /* Conveyor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169CFD2C85FB43009C56E0 /* Conveyor.swift */; };
+		34169D002C86F7EE009C56E0 /* Pie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169CFF2C86F7EE009C56E0 /* Pie.swift */; };
+		34169D022C86F7FD009C56E0 /* PieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D012C86F7FD009C56E0 /* PieView.swift */; };
+		34169D042C874AD9009C56E0 /* LoftLadderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D032C874AD9009C56E0 /* LoftLadderView.swift */; };
+		34169D062C874AEA009C56E0 /* LoftLadder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D052C874AEA009C56E0 /* LoftLadder.swift */; };
 		343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0D962C68D4D300F79DA0 /* DonkeyKongApp.swift */; };
 		343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0D982C68D4D300F79DA0 /* ContentView.swift */; };
 		343E0D9B2C68D4D500F79DA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343E0D9A2C68D4D500F79DA0 /* Assets.xcassets */; };
@@ -83,6 +87,10 @@
 /* Begin PBXFileReference section */
 		34169CFB2C85FB31009C56E0 /* ConveyorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConveyorView.swift; sourceTree = "<group>"; };
 		34169CFD2C85FB43009C56E0 /* Conveyor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conveyor.swift; sourceTree = "<group>"; };
+		34169CFF2C86F7EE009C56E0 /* Pie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pie.swift; sourceTree = "<group>"; };
+		34169D012C86F7FD009C56E0 /* PieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieView.swift; sourceTree = "<group>"; };
+		34169D032C874AD9009C56E0 /* LoftLadderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoftLadderView.swift; sourceTree = "<group>"; };
+		34169D052C874AEA009C56E0 /* LoftLadder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoftLadder.swift; sourceTree = "<group>"; };
 		343E0D932C68D4D300F79DA0 /* DonkeyKong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DonkeyKong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		343E0D962C68D4D300F79DA0 /* DonkeyKongApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonkeyKongApp.swift; sourceTree = "<group>"; };
 		343E0D982C68D4D300F79DA0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -314,6 +322,10 @@
 				34AE2C372C83BDB000656DBF /* SpringView.swift */,
 				34169CFB2C85FB31009C56E0 /* ConveyorView.swift */,
 				34169CFD2C85FB43009C56E0 /* Conveyor.swift */,
+				34169CFF2C86F7EE009C56E0 /* Pie.swift */,
+				34169D012C86F7FD009C56E0 /* PieView.swift */,
+				34169D032C874AD9009C56E0 /* LoftLadderView.swift */,
+				34169D052C874AEA009C56E0 /* LoftLadder.swift */,
 			);
 			path = Sprites;
 			sourceTree = "<group>";
@@ -413,7 +425,9 @@
 				347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */,
 				343E0DE42C6A10FC00F79DA0 /* GameView.swift in Sources */,
 				34AE2C1D2C7B404000656DBF /* Explode.swift in Sources */,
+				34169D062C874AEA009C56E0 /* LoftLadder.swift in Sources */,
 				343E0DFD2C6F73BE00F79DA0 /* Kong.swift in Sources */,
+				34169D022C86F7FD009C56E0 /* PieView.swift in Sources */,
 				343E0DB52C68D5E300F79DA0 /* GameManager.swift in Sources */,
 				347645782C7218D100E8AE5F /* FlamesView.swift in Sources */,
 				34169CFC2C85FB31009C56E0 /* ConveyorView.swift in Sources */,
@@ -422,6 +436,7 @@
 				343E0DEC2C6A8AFA00F79DA0 /* BonusBoxView.swift in Sources */,
 				34AE2C292C7F638000656DBF /* GameManager+Notifications.swift in Sources */,
 				3476458A2C75EFC100E8AE5F /* GameManager+Barrels.swift in Sources */,
+				34169D002C86F7EE009C56E0 /* Pie.swift in Sources */,
 				343E0DC22C68E2E600F79DA0 /* ControlsView.swift in Sources */,
 				343E0DAF2C68D55200F79DA0 /* HighScores+CoreDataProperties.swift in Sources */,
 				343E0DC62C68F50B00F79DA0 /* SoundFX.swift in Sources */,
@@ -430,6 +445,7 @@
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
 				34AE2C322C82732D00656DBF /* ElevatorView.swift in Sources */,
+				34169D042C874AD9009C56E0 /* LoftLadderView.swift in Sources */,
 				343E0DFB2C6F720F00F79DA0 /* KongView.swift in Sources */,
 				34169CFE2C85FB43009C56E0 /* Conveyor.swift in Sources */,
 				34AE2C252C7E54A800656DBF /* SwiftUISprite.swift in Sources */,

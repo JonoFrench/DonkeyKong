@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 enum AssetType {
-    case girder,ladder,blank,oilBL,oilBR,oilTL,oilTR,barBL,barBR,barTL,barTR,girderPlug,lineLeft,lineRight,conveyor,pieCross,LiftPoleL,LiftPoleR,LiftTopTL,LiftTopTR,LiftTopBL,LiftTopBR,LiftBotTL,LiftBotTR,LiftBotBL,LiftBotBR
+    case girder,ladder,blank,oilBL,oilBR,oilTL,oilTR,barBL,barBR,barTL,barTR,girderPlug,lineLeft,lineRight,conveyor,pieCross,LiftPoleL,LiftPoleR,LiftTopTL,LiftTopTR,LiftTopBL,LiftTopBR,LiftBotTL,LiftBotTR,LiftBotBL,LiftBotBR,blankLadder
 }
 
 struct ScreenAsset {
@@ -35,6 +35,8 @@ struct ScreenAsset {
                 return ImageResource(name: "LadderWhite", bundle: .main)
             }
         case .blank:
+            return ImageResource(name: "Lives", bundle: .main)
+        case .blankLadder:
             return ImageResource(name: "Lives", bundle: .main)
         case .oilBL:
             return ImageResource(name: "oilBL", bundle: .main)
@@ -95,6 +97,8 @@ struct ScreenAsset {
             return 0.1
         case .blank:
             return 0.0
+        case .blankLadder:
+            return 0.0
         case .oilBL:
             return 0.1
         case .oilBR:
@@ -149,6 +153,8 @@ struct ScreenAsset {
         case .girder:
             return false
         case .ladder:
+            return false
+        case .blankLadder:
             return false
         case .blank:
             return true
@@ -2286,6 +2292,7 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
+         ScreenAsset(assetType: .blankLadder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -2305,8 +2312,7 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .blank, assetOffset: 0.0),
+         ScreenAsset(assetType: .blankLadder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -2318,6 +2324,7 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
+         ScreenAsset(assetType: .blankLadder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -2337,8 +2344,7 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .blank, assetOffset: 0.0),
+         ScreenAsset(assetType: .blankLadder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),

@@ -16,6 +16,10 @@ enum ConveyorSide {
     case leftSide,rightSide
 }
 
+enum ConveyorPos:Int {
+    case top = 12,bottom = 22
+}
+
 
 final class ConveyorArray: ObservableObject {
     @Published var conveyors: [Conveyor] = []
@@ -34,17 +38,12 @@ final class Conveyor:SwiftUISprite, Animatable, ObservableObject {
         var frame = CGSize()
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             frame.width = resolvedInstance.assetDimention
-            frame.height = resolvedInstance.assetDimention + 8
+            frame.height = resolvedInstance.assetDimention + 2
         }
         super.init(xPos: xPos, yPos: yPos, frameSize: frame)
         self.direction = direction
         currentFrame = ImageResource(name: "Conveyor1", bundle: .main)
         setPosition()
-    }
-    
-    override func setPosition() {
-        super.setPosition()
-        position.y += 2
     }
     
     func animate() {

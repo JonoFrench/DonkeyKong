@@ -28,8 +28,7 @@ struct ContentView: View {
                         .zIndex(1.0)
                 }  
                 else if manager.gameState == .playing {
-                    GameView(jumpMan: manager.jumpMan,kong:manager.kong, barrelArray:manager.barrelArray,fireBlobArray:manager.fireBlobArray,elevatorArray:manager.elevatorsArray,springArray:manager.springArray,conveyorArray:manager.conveyorArray)
-//                    GameView(manager: manager)
+                    GameView(jumpMan: manager.jumpMan,kong:manager.kong, barrelArray:manager.barrelArray,fireBlobArray:manager.fireBlobArray,elevatorArray:manager.elevatorsArray,springArray:manager.springArray,conveyorArray:manager.conveyorArray,pieArray:manager.pieArray,loftLadders:manager.loftLadders)
                             .zIndex(1.0)
                 } 
                     else if manager.gameState == .howhigh {

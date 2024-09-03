@@ -49,7 +49,6 @@ final class Spring:SwiftUISprite,Animatable, Moveable, ObservableObject {
                         moveCounter = 0
                         yPos += 1
                         if yPos == 28 {
-                            print("Remove Spring")
                             let springID:[String: UUID] = ["id": self.id]
                             NotificationCenter.default.post(name: .notificationRemoveSpring, object: nil, userInfo: springID)
 
@@ -67,12 +66,12 @@ final class Spring:SwiftUISprite,Animatable, Moveable, ObservableObject {
                 position = bouncingPoints[bouncePos][bounceYPos]
                 bounceYPos += 1
                 if bounceYPos == bouncingPoints[bouncePos].count {
-                    currentFrame = springClosed
                     bouncePos += 1
                     bounceYPos = 0
                 }
-                currentFrame = springOpen
+                currentFrame = bounceYPos < 3 ? springClosed : springOpen
                 if bouncePos == bouncingPoints.count {
+                    currentFrame = springOpen
                     state = .falling
                 }
                 animateCounter = 0
