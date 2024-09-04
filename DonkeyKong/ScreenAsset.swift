@@ -92,7 +92,7 @@ struct ScreenAsset {
     func assetZOrder() -> Double {
         switch assetType {
         case .girder:
-            return 0.1
+            return 0.11
         case .ladder:
             return 0.1
         case .blank:

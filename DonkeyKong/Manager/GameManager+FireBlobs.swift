@@ -148,6 +148,18 @@ extension GameManager {
         }
     }
     
+    func checkFireBlobJumped(fireBlob:FireBlob) {
+        guard !hasPoints && jumpMan.isJumping  else { return }
+        var fireblobPos = fireBlob.position
+        fireblobPos.y -= fireBlob.frameSize.height
+
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: fireblobPos, diameter2: fireBlob.frameSize.width / 2) {
+            addPoints(value: 100, position: fireBlob.position)
+            soundFX.barrelJumpSound()
+        }
+    }
+
+    
     func removeFireBlob(fireBlob:FireBlob) {
         if let index = fireBlobArray.fireblob.firstIndex(where: {$0.id == fireBlob.id}) {
             fireBlobArray.fireblob.remove(at: index)

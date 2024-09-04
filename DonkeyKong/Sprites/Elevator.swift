@@ -17,6 +17,12 @@ enum ElevatorPart {
 final class ElevatorArray: ObservableObject {
     @Published 
     var elevators: [Elevator] = []
+    
+    func move() {
+        for elevator in elevators {
+            elevator.move()
+        }
+    }
 }
 
 

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 enum KongState {
-    case waiting,intro,jumpingup,bouncing,sitting,throwing,howhigh,dead
+    case waiting,intro,jumpingup,bouncing,sitting,throwing,howhigh,dying,dead,angry
 }
 
 enum KongDirection {
@@ -34,6 +34,8 @@ final class Kong:SwiftUISprite, ObservableObject {
     let kongDown:ImageResource = ImageResource(name: "KongThrowDown", bundle: .main)
     let kongAngryLeft:ImageResource = ImageResource(name: "KongAngryL", bundle: .main)
     let kongAngryRight:ImageResource = ImageResource(name: "KongAngryR", bundle: .main)
+    let kongCrashLeft:ImageResource = ImageResource(name: "KongCrashL", bundle: .main)
+    let kongCrashRight:ImageResource = ImageResource(name: "KongCrashR", bundle: .main)
 
     var kongStep = false
     var jumpingPoints:[Int] = [11,10,9,8,7,8]
@@ -86,33 +88,57 @@ final class Kong:SwiftUISprite, ObservableObject {
         adjustPosition()
     }
     
-    func animateExit() {
+    func animateExit(level:Int) {
         animationCounter += 1
         if animationCounter == 14 {
             introCounter -= 1
-            if introCounter > 0 {
-                nextStepUp()
-            } else {
-                NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
-            }
+            introCounter > 0 ? nextStepUp() : NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
+//            if introCounter > 0 {
+//                nextStepUp()
+//            } else {
+//                NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
+//            }
             animationCounter = 0
         }
     }
     
-    func exitLevel() {
-        setPosition(xPos: 10, yPos: 7)
-        introCounter = 8
-        animationCounter = 0
-        kongStep = false
-        currentFrame = kongClimbLeft
-        animateExit()
+    func exitLevel(level:Int) {
+        
+        if level != 4 {
+            setPosition(xPos: 10, yPos: 7)
+            introCounter = 8
+            animationCounter = 0
+            kongStep = false
+            currentFrame = kongClimbLeft
+            animateExit(level: level)
+            
+        } else {
+            introCounter = 0
+            animationCounter = 0
+            kongStep = false
+            currentFrame = kongAngryRight
+            state = .dying
+        }
+    }
+    
+    func animateFinalExit() {
+            animationCounter += 1
+            if animationCounter == 8 {
+                print("animateFinalExit \(introCounter)")
+                animationCounter = 0
+                currentFrame = introCounter % 2 == 0 ? kongAngryLeft : kongAngryRight
+                introCounter += 1
+                if introCounter == 20 {
+                    state = .dead
+                    currentFrame = kongCrashLeft
+                }
+            }
     }
     
     func animateIntro() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             animationCounter += 1
             if animationCounter == 14 {
-                
                 introCounter -= 1
                 if introCounter > 10 {
                     resolvedInstance.clearLadder(line: introCounter)
@@ -120,7 +146,6 @@ final class Kong:SwiftUISprite, ObservableObject {
                 } else {
                     state = .jumpingup
                     introCounter = 0
-                    
                 }
                 animationCounter = 0
             }
@@ -178,15 +203,46 @@ final class Kong:SwiftUISprite, ObservableObject {
     
     func animateAngry() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
-            currentFrame = kongAngryLeft
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-                currentFrame = kongAngryRight
+            if self.state == KongState.sitting {
+                currentFrame = kongAngryLeft
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-                    currentFrame = kongAngryLeft
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-                        currentFrame = kongFacing
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            NotificationCenter.default.post(name: .notificationKongAngry, object: nil)
+                    if self.state == KongState.sitting {
+                        currentFrame = kongAngryRight
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                            if self.state == KongState.sitting {
+                                currentFrame = kongAngryLeft
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                                    if self.state == KongState.sitting {
+                                        currentFrame = kongFacing
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            NotificationCenter.default.post(name: .notificationKongAngry, object: nil)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func moveFall() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            speedCounter += 1
+            if speedCounter == Kong.speed / 2 {
+                speedCounter = 0
+                moveCounter += 1
+                position.y += resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
+                if moveCounter == Kong.moveFrames {
+                    print("moveFall \(yPos)")
+                    moveCounter = 0
+                    yPos += 1
+                    if yPos == 23 {
+                        currentFrame = kongCrashRight
+                        state = .waiting
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) {
+                            NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
                         }
                     }
                 }
@@ -200,12 +256,7 @@ final class Kong:SwiftUISprite, ObservableObject {
             if speedCounter == Kong.speed {
                 speedCounter = 0
                 moveCounter += 1
-                if direction == .left {
-                    position.x -= resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
-                    
-                } else {
-                    position.x += resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
-                }
+                position.x += direction == .left ? -resolvedInstance.assetDimention / CGFloat(Kong.moveFrames) : resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
                 if moveCounter == Kong.moveFrames {
                     moveCounter = 0
                     if direction == .left {

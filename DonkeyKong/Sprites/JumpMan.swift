@@ -29,16 +29,14 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     var startedClimbing = false
     var isJumping:Bool {
         didSet {
-            if isJumping == true {
+            if isJumping {
                 jump()
             }
         }
     }
     var isJumpingUp:Bool {
         didSet {
-            if isJumpingUp == true {
-                isJumping = true
-            }
+            isJumping = isJumpingUp
         }
     }
     var isJumpingLeft = false
@@ -77,13 +75,15 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
         if speedCounter == JumpMan.speed {
             if isWalking  && !isJumping {
                 startedClimbing = false
-                if facing == .right {
-                    animateRight()
-                } else {
-                    animateLeft()
-                }
+                facing == .right ? animateRight() : animateLeft()
             } else if isClimbing {
+//                                if !startedClimbing {
+//                                    startedClimbing = true
+//                                }
+//                isClimbingUp ? animateUp() : animateDown()
                 if isClimbingUp {
+//                    startedClimbing = true
+                    
                     if !startedClimbing {
                         startedClimbing = true
                     }
@@ -94,6 +94,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     }
                     animateDown()
                 }
+                
             } else if isJumping {
                 animateJumping()
             }
@@ -118,6 +119,10 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 if xPos < resolvedInstance.screenDimentionX {
                     xPos += 1
                 }
+                if resolvedInstance.screenData[yPos][xPos-1].assetType == .girderPlug {
+                    resolvedInstance.screenData[yPos][xPos-1].assetType = .blank
+                    NotificationCenter.default.post(name: .notificationGirderPlug, object: nil)
+                }
             }
         }
     }
@@ -135,6 +140,11 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 if xPos > 0 {
                     xPos -= 1
                 }
+                
+                if resolvedInstance.screenData[yPos][xPos+1].assetType == .girderPlug {
+                    resolvedInstance.screenData[yPos][xPos+1].assetType = .blank
+                    NotificationCenter.default.post(name: .notificationGirderPlug, object: nil)
+                }
             }
         }
     }
@@ -144,11 +154,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             position.y -= ladderStep / 4.0
             currentFrame = climbing[animateFrame]
             animateFrame += 1
-            if facing == .left {
-                facing = .right
-            } else {
-                facing = .left
-            }
+            facing = facing == .left ? .right : .left
             if animateFrame == 4 {
                 animateFrame = 0
                 isClimbing = false
@@ -177,11 +183,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             position.y += ladderStep / 4.0
             currentFrame = climbing[animateFrame]
             animateFrame += 1
-            if facing == .left {
-                facing = .right
-            } else {
-                facing = .left
-            }
+            facing = facing == .left ? .right : .left
             if animateFrame == 4 {
                 animateFrame = 0
                 isClimbing = false
@@ -355,10 +357,8 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 currentFrame = ImageResource(name: "JM1", bundle: .main)
                 
             }
-//            setPosition()
         }
     }
-    
     
     func canJump()-> Bool {
         if jumpingPoints.isEmpty && !hasHammer { return true }

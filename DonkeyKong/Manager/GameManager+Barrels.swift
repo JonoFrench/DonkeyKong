@@ -79,6 +79,17 @@ extension GameManager {
         }
     }
 
+    func checkBarrelJumped(barrel:Barrel) {
+        guard !hasPoints && jumpMan.isJumping  else { return }
+        var barrelPos = barrel.position
+        barrelPos.y -= barrel.frameSize.height
+
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: barrelPos, diameter2: barrel.frameSize.width / 2) {
+            addPoints(value: 100, position: barrel.position)
+            soundFX.barrelJumpSound()
+        }
+    }
+    
     func checkBarrelHit(barrel:Barrel) {
         if jumpMan.hasHammer && jumpMan.hammerDown[jumpMan.animateHammerFrame] {
             print("checkBarrelHit frame \(jumpMan.animateHammerFrame)")

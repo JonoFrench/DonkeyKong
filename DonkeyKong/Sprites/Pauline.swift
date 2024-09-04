@@ -8,10 +8,17 @@
 import Foundation
 import SwiftUI
 
+enum PaulineDirection {
+    case left,right
+}
+
 final class Pauline:SwiftUISprite, Animatable, ObservableObject {
     static var animateFrames:Int = 20
     var animateCounter: Int = 0
     
+    @Published
+    var facing:PaulineDirection = .right
+
     var standing:[ImageResource] = [ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline2", bundle: .main),ImageResource(name: "Pauline3", bundle: .main),ImageResource(name: "Pauline4", bundle: .main)]
     //var frameSize: CGSize = CGSize(width: 63, height:  36)
     var isRescued = false

@@ -20,6 +20,7 @@ extension Notification.Name {
     static let notificationLevelComplete = Notification.Name("NotificationLevelComplete")
     static let notificationKongAngry = Notification.Name("NotificationKongAngry")
     static let notificationRemoveSpring = Notification.Name("NotificationRemoveSpring")
+    static let notificationGirderPlug = Notification.Name("NotificationGirderPlug")
 
 }
 
@@ -38,6 +39,7 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.levelComplete(notification:)), name: .notificationLevelComplete, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.kongAngry(notification:)), name: .notificationKongAngry, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeSpring(notification:)), name: .notificationRemoveSpring, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.girderPlug(notification:)), name: .notificationGirderPlug, object: nil)
 
     }
     
@@ -46,11 +48,33 @@ extension GameManager {
     }
     
     @objc func kongAngry(notification: Notification) {
-        if gameState == .playing {
+        if gameState == .playing && !levelEnd {
             kong.animateAngry()
         }
     }
     
+    @objc func girderPlug(notification: Notification) {
+        girderPlugs += 1
+        soundFX.getItemSound()
+        if girderPlugs == 8 {
+            ///End of level 4!
+            levelEnd = true
+            fireBlobArray.fireblob.removeAll()
+            collectibles.removeAll()
+            gameScreen.clearFinalLevel()
+            collectibles.append(heart)
+            pauline.isRescued = true
+            jumpMan.facing = .right
+            jumpMan.setPosition(xPos: 12, yPos: 2)
+            pauline.setPosition(xPos: 15, yPos: 2)
+            pauline.facing = .left
+            heart.setPosition(xPos: 14, yPos: 0)
+            score += bonus
+            soundFX.win1Sound()
+            kong.exitLevel(level: level)
+        }
+    }
+
     @objc func removePie(notification: Notification) {
         if let id = notification.userInfo?["id"] as? UUID {
             removePie(id: id)
@@ -99,6 +123,9 @@ extension GameManager {
     
     @objc func nextLevel(notification: Notification) {
         level += 1
+        if level == 5 {
+            level = 1
+        }
         soundFX.howHighSound()
         showHowHighView(notification: notification)
     }
@@ -123,7 +150,7 @@ extension GameManager {
             score += bonus
             heart.type = .heartbreak
             self.heart.objectWillChange.send()
-            kong.exitLevel()
+            kong.exitLevel(level: level)
             pauline.isShowing = false
         }
     }

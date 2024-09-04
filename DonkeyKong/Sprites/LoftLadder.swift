@@ -15,6 +15,11 @@ enum LadderState {
 final class Ladders: ObservableObject {
     @Published var leftLadder = LoftLadder(xPos: 4, yPos: 12)
     @Published var rightLadder = LoftLadder(xPos: 26, yPos: 12)
+    
+    func animate() {
+        leftLadder.animate()
+        rightLadder.animate()
+    }
 }
 
 final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
@@ -44,11 +49,7 @@ final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
         if animateCounter == LoftLadder.animateFrames {
             animateCounter = 0
             if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-                if state == .opening {
-                    offset -= resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames)
-                } else {
-                    offset += resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames)
-                }
+                offset += state == .opening ? -resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames) : +resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames)
                 moveCounter += 1
                 if moveCounter == LoftLadder.moveFrames {
                     moveCounter = 0

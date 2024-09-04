@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-class ScreenData:ObservableObject {
+final class ScreenData:ObservableObject {
     @Published
     var screenData:[[ScreenAsset]] = [[]]
     let screenDimentionX:Int = 30
@@ -41,6 +41,19 @@ class ScreenData:ObservableObject {
         assetLine.indices.forEach{ assetLine[$0].assetOffset -= 4 }
         screenData[line] = assetLine
         self.objectWillChange.send()
+    }
+    
+    func clearFinalLevel() {
+        for y in 7...26 {
+            for x in 7...21 {
+                screenData[y][x].assetType = .blank
+            }
+        }
+        for y in 23...26 {
+            for x in 8...20 {
+                screenData[y][x].assetType = .girder
+            }
+        }
     }
 }
 

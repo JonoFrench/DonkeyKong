@@ -17,6 +17,12 @@ final class PieArray: ObservableObject {
             }
         }
     }
+    
+    func movePies() {
+        for pie in pies {
+            pie.move()
+        }
+    }
 }
 
 final class Pie:SwiftUISprite, Moveable, ObservableObject {

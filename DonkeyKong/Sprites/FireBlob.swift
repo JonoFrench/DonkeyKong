@@ -49,11 +49,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     var hoppingTodirection:FireBlobDirection = .still
     var hasHammer:Bool = false {
         didSet {
-            if hasHammer == true {
-                color = .blue
-            } else {
-                color = .red
-            }
+            color = hasHammer ? .blue : .red
         }
     }
     
@@ -140,7 +136,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                 ///Next x/y position
                 if moveCounter == moveFrames {
                     moveCounter = 0
-                    print("FireBlob on \(resolvedInstance.screenData[yPos][xPos].assetType) xpos \(xPos) ypos \(yPos) going \(direction)")
+//                    print("FireBlob on \(resolvedInstance.screenData[yPos][xPos].assetType) xpos \(xPos) ypos \(yPos) going \(direction)")
 
 //                                        if Int.random(in: 0..<20) == 3 {
 //                                            if direction == .right && xPos > 1 {
@@ -153,7 +149,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
 
                     if direction == .right {
                         if isBlankRight() {
-                            print("FireBlob going \(direction)  xpos \(xPos)")
+ //                           print("FireBlob going \(direction)  xpos \(xPos)")
                             direction = .left
                             //position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
                             setPosition()

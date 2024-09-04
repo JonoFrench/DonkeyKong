@@ -10,6 +10,14 @@ import SwiftUI
 
 final class SpringArray: ObservableObject {
     @Published var springs: [Spring] = []
+    
+    func move(){
+        for spring in springs {
+            spring.animate()
+            spring.move()
+        }
+
+    }
 }
 enum SpringState {
     case bouncing, falling

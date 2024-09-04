@@ -23,6 +23,12 @@ enum ConveyorPos:Int {
 
 final class ConveyorArray: ObservableObject {
     @Published var conveyors: [Conveyor] = []
+    
+    func moveConveyors() {
+        for conveyor in conveyors {
+            conveyor.animate()
+        }
+    }
 }
 
 final class Conveyor:SwiftUISprite, Animatable, ObservableObject {
