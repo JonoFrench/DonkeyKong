@@ -369,12 +369,12 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
         guard xPos > 0 else {
             return false
         }
-        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            if resolvedInstance.screenData[yPos][xPos - 1].assetType != .blank {
-                return true
-            }
-        }
-        return false
+//        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+//            if resolvedInstance.screenData[yPos][xPos - 1].assetType != .blank {
+//                return true
+//            }
+//        }
+        return true
     }
     
     func canMoveRight() -> Bool {
@@ -382,11 +382,11 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             guard xPos < resolvedInstance.screenDimentionX - 2 else {
                 return false
             }
-            if resolvedInstance.screenData[yPos][xPos + 1].assetType != .blank {
-                return true
-            }
+//            if resolvedInstance.screenData[yPos][xPos + 1].assetType != .blank {
+//                return true
+//            }
         }
-        return false
+        return true
     }
     
     func canClimbLadder() -> Bool {

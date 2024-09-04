@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 enum LadderState {
-    case opening, closing
+    case opening, closing, open, closed
 }
 
 final class Ladders: ObservableObject {
@@ -45,6 +45,7 @@ final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
     }
 
     func animate() {
+        guard state == .opening || state == .closing else {return}
         animateCounter += 1
         if animateCounter == LoftLadder.animateFrames {
             animateCounter = 0
@@ -53,7 +54,11 @@ final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
                 moveCounter += 1
                 if moveCounter == LoftLadder.moveFrames {
                     moveCounter = 0
-                    state = state == .opening ? .closing : .opening
+                    state = state == .opening ? .open : .closed
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [self] in
+                        state = state == .open ? .closing : .opening
+                    }
+
                 }
             }
         }

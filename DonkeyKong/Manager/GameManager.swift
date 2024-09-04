@@ -94,6 +94,7 @@ class GameManager: ObservableObject {
         ServiceLocator.shared.register(service: fireBlobArray)
         ServiceLocator.shared.register(service: barrelArray)
         ServiceLocator.shared.register(service: elevatorsArray)
+        ServiceLocator.shared.register(service: loftLadders)
         ServiceLocator.shared.register(service: soundFX)
         
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
@@ -176,11 +177,7 @@ class GameManager: ObservableObject {
                         
                         for barrel in barrelArray.barrels {
                             barrel.animate()
-                            if !barrel.isThrown {
-                                barrel.move()
-                            } else {
-                                barrel.moveThrown()
-                            }
+                            barrel.isThrown ? barrel.moveThrown() : barrel.move()
                             checkBarrelHit(barrel: barrel)
                             checkBarrelJumped(barrel: barrel)
                         }
@@ -222,6 +219,7 @@ class GameManager: ObservableObject {
                         fireBlob.animate()
                         fireBlob.move()
                         checkFireBlobHit(fireBlob: fireBlob)
+                        checkFireBlobJumped(fireBlob: fireBlob)
                     }
                     elevatorsArray.move()
                     springArray.move()
@@ -274,8 +272,8 @@ class GameManager: ObservableObject {
         gameScreen.assetDimention = gameScreen.gameSize.width / Double(gameScreen.screenDimentionX - 1)
         gameScreen.assetOffset = gameScreen.assetDimention / 8.0
         gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        setKongIntro()   // If we don't want the intro....
-        //startPlaying()
+        //setKongIntro()   // If we don't want the intro....
+        startPlaying()
     }
     
     func startPlaying() {

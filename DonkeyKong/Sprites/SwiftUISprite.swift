@@ -129,6 +129,13 @@ class SwiftUISprite {
             if resolvedInstance.screenData[yPos - 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
                 return true
             }
+            if let resolvedLadders: Ladders = ServiceLocator.shared.resolve() {
+                if resolvedLadders.leftLadder.state == .open {
+                    if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
+                        return true
+                    }
+                }
+            }
         }
         return false
     }
@@ -140,9 +147,13 @@ class SwiftUISprite {
             if yPos <= resolvedInstance.screenDimentionY - 2 {
                 if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 1][xPos].assetType == .girder {
                     return true
-                } else {
-                    if resolvedInstance.screenData[yPos + 1][xPos].assetType == .girder {
-                        return true
+                } else if resolvedInstance.screenData[yPos + 1][xPos].assetType == .girder {
+                    return true
+                } else if let resolvedLadders: Ladders = ServiceLocator.shared.resolve() {
+                    if resolvedLadders.leftLadder.state == .open {
+                        if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
+                            return true
+                        }
                     }
                 }
             }
