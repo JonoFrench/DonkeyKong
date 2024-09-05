@@ -13,7 +13,7 @@ struct BonusBoxView: View {
         ZStack {
             VStack {
                 //Spacer()
-                Text("L=\(String(format: "%02d", manager.level))")
+                Text("L=\(String(format: "%02d", manager.gameScreen.level))")
                     .foregroundStyle(.blue)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
                     .frame(maxWidth: 100, alignment: .leading)

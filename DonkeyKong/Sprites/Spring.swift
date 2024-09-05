@@ -10,14 +10,31 @@ import SwiftUI
 
 final class SpringArray: ObservableObject {
     @Published var springs: [Spring] = []
-    
+    static let springX = 2
+    static let springY = 7
+    var springAdded = false
+
     func move(){
         for spring in springs {
             spring.animate()
             spring.move()
         }
-
     }
+    func remove(id:UUID) {
+        if let index = springs.firstIndex(where: {$0.id == id}) {
+            springs.remove(at: index)
+        }
+    }
+    
+    func add() {
+        let spring = Spring(xPos: SpringArray.springX + Int.random(in: 0..<3), yPos: SpringArray.springY, frameSize: CGSize(width: 24, height:  24))
+        springs.append(spring)
+        springAdded = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+            springAdded = false
+        }
+    }
+
 }
 enum SpringState {
     case bouncing, falling

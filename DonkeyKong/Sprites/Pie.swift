@@ -10,6 +10,9 @@ import SwiftUI
 
 final class PieArray: ObservableObject {
     @Published var pies: [Pie] = []
+    static let rightXpos = 29
+    static let leftXpos = 0
+    
     var direction:ConveyorDirection = .left {
         didSet {
             for pie in pies where pie.yPos == ConveyorPos.bottom.rawValue {
@@ -23,11 +26,23 @@ final class PieArray: ObservableObject {
             pie.move()
         }
     }
+    
+    func remove(id:UUID) {
+        if let index = pies.firstIndex(where: {$0.id == id}) {
+            pies.remove(at: index)
+        }
+    }
+    
+    func add(direction: ConveyorDirection,pos: ConveyorPos) {
+        let x = direction == .left ? PieArray.rightXpos : PieArray.leftXpos
+        pies.append(Pie(xPos: x, yPos: pos.rawValue, direction: direction))
+    }
+    
 }
 
 final class Pie:SwiftUISprite, Moveable, ObservableObject {
     static var animateFrames: Int = 2
-    static var speed: Int = 1
+    static var speed: Int = AppConstant.pieSpeed
     static var moveFrames = 4
     static var fireConveyor = 12
     static var oilDrumLeft = 14
@@ -49,7 +64,7 @@ final class Pie:SwiftUISprite, Moveable, ObservableObject {
     func move() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             speedCounter += 1
-            if speedCounter == Kong.speed {
+            if speedCounter == Pie.speed {
                 speedCounter = 0
                 moveCounter += 1
                 if direction == .left {

@@ -11,21 +11,6 @@ import Foundation
 
 extension GameManager {
     
-    func addfireBlob() {
-        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: CGSize(width: 24, height:  24))
-        fireBlobArray.fireblob.append(fireBlob)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [fireBlob] in
-            fireBlob.state = .hopping
-        }
-    }
-    
-    func addFireBlob(xPos:Int, yPos: Int, state:FireBlobState) {
-        let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  24))
-        fireBlob.state = state
-        fireBlob.direction = .right
-        fireBlobArray.fireblob.append(fireBlob)
-    }
-    
     func startMovingFireBlob(fireBlob:FireBlob) {
         if Int.random(in: 0..<300) == 3 {
             if Int.random(in: 0...1) == 1 {
@@ -72,57 +57,41 @@ extension GameManager {
         }
     }
     
-    func addPiesLevel2() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [self] in
-            addRightSidePie(pos: .bottom)
-        }
-        swapConveyorDirection()
-    }
-    
     func swapConveyorDirection() {
         if gameState == .playing {
             DispatchQueue.main.asyncAfter(deadline: .now() + 7.0) { [self] in
-                if pieArray.direction == .left {
-                    pieArray.direction = .right
-                } else {
-                    pieArray.direction = .left
-                }
+                pieArray.direction = pieArray.direction == .right ? .left : .right
                 swapConveyorDirection()
             }
         }
     }
-    func addLeftSidePie(pos:ConveyorPos){
-        pieArray.pies.append(Pie(xPos: 0, yPos: pos.rawValue, direction: .right))
-    }
-    func addRightSidePie(pos:ConveyorPos){
-        pieArray.pies.append(Pie(xPos: 29, yPos: pos.rawValue, direction: .left))
-    }
-
+    
     func addPies() {
+        guard pieArray.pies.count < 10 else {return} /// don't want too many
         if Int.random(in: 0...200) == 3 {
             if Int.random(in: 0...10) <= 6 {
-                if pieArray.direction == .left {
-                    addRightSidePie(pos: .bottom)
+                if pieArray.direction == .right {
+                    pieArray.add(direction: .right, pos: .bottom)
                 } else {
-                    addLeftSidePie(pos: .bottom)
+                    pieArray.add(direction: .left, pos: .bottom)
                 }
             } else {
                 if Int.random(in: 0...1) == 1 {
-                    addRightSidePie(pos: .top)
+                    pieArray.add(direction: .left, pos: .top)
                 } else {
-                    addLeftSidePie(pos: .top)
+                    pieArray.add(direction: .right, pos: .bottom)
                 }
             }
         }
     }
-    
-    func explodeFireBlob(fireBlob:FireBlob){
-        explosion.xPos = fireBlob.xPos
-        explosion.yPos = fireBlob.yPos
-        explosion.position = fireBlob.position
+     
+    func explode(sprite:SwiftUISprite){
+        explosion.xPos = sprite.xPos
+        explosion.yPos = sprite.yPos
+        explosion.position = sprite.position
         explosion.currentFrame = explosion.explosions[0]
         explosion.animateCounter = 0
-        hasExplosion = true
+        gameScreen.hasExplosion = true
     }
     
     func checkFireBlobHit(fireBlob:FireBlob) {
@@ -138,56 +107,65 @@ extension GameManager {
             
             if circlesIntersect(center1: hammerPos, diameter1: jumpMan.frameSize.width / 4, center2: fireBlob.position, diameter2: fireBlob.frameSize.width / 2) {
                 soundFX.hammerSound()
-                explodeFireBlob(fireBlob: fireBlob)
-                removeFireBlob(fireBlob: fireBlob)
-                pause = true
+                explode(sprite: fireBlob)
+                fireBlobArray.remove(id: fireBlob.id)
+                gameScreen.pause = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
-                    pause = false
+                    gameScreen.pause = false
                 }
             }
         }
     }
     
     func checkFireBlobJumped(fireBlob:FireBlob) {
-        guard !hasPoints && jumpMan.isJumping  else { return }
+        guard !gameScreen.hasPoints && jumpMan.isJumping  else { return }
         var fireblobPos = fireBlob.position
         fireblobPos.y -= fireBlob.frameSize.height
-
+        
         if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: fireblobPos, diameter2: fireBlob.frameSize.width / 2) {
             addPoints(value: 100, position: fireBlob.position)
             soundFX.barrelJumpSound()
         }
     }
-
-    
-    func removeFireBlob(fireBlob:FireBlob) {
-        if let index = fireBlobArray.fireblob.firstIndex(where: {$0.id == fireBlob.id}) {
-            fireBlobArray.fireblob.remove(at: index)
-        }
-    }
-
-    func addSpring() {
-        let spring = Spring(xPos: 2 + Int.random(in: 0..<3), yPos: 7, frameSize: CGSize(width: 24, height:  24))
-        springArray.springs.append(spring)
-        springAdded = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
-            springAdded = false
-        }
-    }
-
-    func removeSpring(spring:Spring) {
-        if let index = springArray.springs.firstIndex(where: {$0.id == spring.id}) {
-            springArray.springs.remove(at: index)
-        }
-    }
-
-    func throwSpring(){
-        guard springAdded == false else {return}
-        if Int.random(in: 0..<100) == 25 {
-            if springArray.springs.count < 3 {
-                print("Adding Spring")
-                addSpring()
+      
+    func checkPieHit(pie:Pie) {
+        if jumpMan.hasHammer {
+            let hammerOffset = jumpMan.frameSize.width / 4
+            var hammerPos = jumpMan.position
+            hammerPos.y += hammerOffset
+            if jumpMan.facing == .left {
+                hammerPos.x -= hammerOffset
+            } else {
+                hammerPos.x += hammerOffset
             }
+            
+            if circlesIntersect(center1: hammerPos, diameter1: jumpMan.frameSize.width / 4, center2: pie.position, diameter2: pie.frameSize.width / 2) {
+                soundFX.hammerSound()
+                explode(sprite: pie)
+                pieArray.remove(id: pie.id)
+                gameScreen.pause = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
+                    gameScreen.pause = false
+                }
+            }
+        }
+    }
+    
+    func checkPieJumped(pie:Pie) {
+        guard !gameScreen.hasPoints && jumpMan.isJumping  else { return }
+        var piePos = pie.position
+        piePos.y -= pie.frameSize.height
+        
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: piePos, diameter2: pie.frameSize.width / 2) {
+            addPoints(value: 300, position: pie.position)
+            soundFX.barrelJumpSound()
+        }
+    }
+    
+    func throwSpring(){
+        guard springArray.springAdded == false && springArray.springs.count < 3 else {return}
+        if Int.random(in: 0..<100) == 25 {
+            springArray.add()
         }
     }
 }

@@ -18,7 +18,25 @@ final class ScreenData:ObservableObject {
     var verticalOffset = 0.0
     var gameSize = CGSize()
     var screenSize = CGSize()
-    
+    @Published
+    var level:Int = 1 {
+        didSet {
+            if level > 4 {
+                level = 1
+            }
+        }
+    }
+    var levelEnd = false
+    var hasFlames = false
+    var hasExplosion = false
+    var hasPoints = false
+    var hasElevators = false
+    var hasSprings = false
+    var hasConveyor = false
+    var hasLoftLadders = false
+    var girderPlugs = 0
+    var pause = false
+
     /// Set Ladders for intro
     func setLadders() {
         for i in 8..<27 {
@@ -36,13 +54,14 @@ final class ScreenData:ObservableObject {
             screenData[line][17] = ScreenAsset(assetType: .blank, assetOffset: 0.0)
         }
     }
+    /// Bent line as kong leaves intro
     func bendLine(line:Int,assets:[ScreenAsset]) {
         var assetLine = assets
         assetLine.indices.forEach{ assetLine[$0].assetOffset -= 4 }
         screenData[line] = assetLine
         self.objectWillChange.send()
     }
-    
+    /// Level 4 finish clear screen and set girders to bottom
     func clearFinalLevel() {
         for y in 7...26 {
             for x in 7...21 {
@@ -56,7 +75,6 @@ final class ScreenData:ObservableObject {
         }
     }
 }
-
 
 class ServiceLocator {
     static let shared = ServiceLocator()

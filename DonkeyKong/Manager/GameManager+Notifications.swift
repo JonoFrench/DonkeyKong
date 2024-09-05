@@ -21,7 +21,7 @@ extension Notification.Name {
     static let notificationKongAngry = Notification.Name("NotificationKongAngry")
     static let notificationRemoveSpring = Notification.Name("NotificationRemoveSpring")
     static let notificationGirderPlug = Notification.Name("NotificationGirderPlug")
-
+    
 }
 
 extension GameManager {
@@ -29,7 +29,7 @@ extension GameManager {
     func notificationObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.barrelToFireblob(notification:)), name: .notificationBarrelToFireblob, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.pieToFireblob(notification:)), name: .notificationPieToFireblob, object: nil)
-
+        
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeBarrel(notification:)), name: .notificationRemoveBarrel, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removePie(notification:)), name: .notificationRemovePie, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeExplosion(notification:)), name: .notificationRemoveExplosion, object: nil)
@@ -40,25 +40,25 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.kongAngry(notification:)), name: .notificationKongAngry, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeSpring(notification:)), name: .notificationRemoveSpring, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.girderPlug(notification:)), name: .notificationGirderPlug, object: nil)
-
+        
     }
     
     @objc func removeScore(notification: Notification) {
-        hasPoints = false
+        gameScreen.hasPoints = false
     }
     
     @objc func kongAngry(notification: Notification) {
-        if gameState == .playing && !levelEnd {
+        if gameState == .playing && !gameScreen.levelEnd {
             kong.animateAngry()
         }
     }
     
     @objc func girderPlug(notification: Notification) {
-        girderPlugs += 1
+        gameScreen.girderPlugs += 1
         soundFX.getItemSound()
-        if girderPlugs == 8 {
+        if gameScreen.girderPlugs == 8 {
             ///End of level 4!
-            levelEnd = true
+            gameScreen.levelEnd = true
             fireBlobArray.fireblob.removeAll()
             collectibles.removeAll()
             gameScreen.clearFinalLevel()
@@ -71,61 +71,54 @@ extension GameManager {
             heart.setPosition(xPos: 14, yPos: 0)
             score += bonus
             soundFX.win1Sound()
-            kong.exitLevel(level: level)
+            kong.exitLevel(level: gameScreen.level)
         }
     }
-
+    
     @objc func removePie(notification: Notification) {
         if let id = notification.userInfo?["id"] as? UUID {
-            removePie(id: id)
+            barrelArray.remove(id: id)
         }
     }
-
+    
     @objc func removeSpring(notification: Notification) {
         if let id = notification.userInfo?["id"] as? UUID {
-            if let index = springArray.springs.firstIndex(where: {$0.id == id}) {
-                springArray.springs.remove(at: index)
-            }
+            springArray.remove(id: id)
         }
     }
     
     @objc func removeExplosion(notification: Notification) {
         if let position = notification.userInfo?["pos"] as? CGPoint {
-            hasExplosion = false
-            if !hasPoints {
+            gameScreen.hasExplosion = false
+            if !gameScreen.hasPoints {
                 addPoints(value: 100, position: position)
             }
         }
     }
     
     @objc func barrelToFireblob(notification: Notification) {
-        hasFlames = true
-        addfireBlob()
+        gameScreen.hasFlames = true
+        fireBlobArray.add()
         if let id = notification.userInfo?["id"] as? UUID {
-            removeBarrel(id: id)
+            barrelArray.remove(id: id)
         }
     }
     
     @objc func pieToFireblob(notification: Notification) {
-        addFireBlob(xPos: 14 + Int.random(in: 0...1), yPos: 12,state: .sitting)
+        fireBlobArray.add(xPos: 14 + Int.random(in: 0...1), yPos: 12,state: .sitting)
         if let id = notification.userInfo?["id"] as? UUID {
-            removePie(id: id)
+            pieArray.remove(id: id)
         }
     }
     
     @objc func removeBarrel(notification: Notification) {
         if let id = notification.userInfo?["id"] as? UUID {
-            if let index = barrelArray.barrels.firstIndex(where: {$0.id == id}) {
-                barrelArray.barrels.remove(at: index)
-            }
+            barrelArray.remove(id: id)
         }
     }
     
     @objc func nextLevel(notification: Notification) {
-        level += 1
-        if level == 5 {
-            level = 1
-        }
+        gameScreen.level += 1
         soundFX.howHighSound()
         showHowHighView(notification: notification)
     }
@@ -143,14 +136,15 @@ extension GameManager {
         collectibles.append(heart)
         barrelArray.barrels.removeAll()
         fireBlobArray.fireblob.removeAll()
+        pieArray.pies.removeAll()
         kong.isThrowing = true
         pauline.isRescued = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-            levelEnd = true
+            gameScreen.levelEnd = true
             score += bonus
             heart.type = .heartbreak
             self.heart.objectWillChange.send()
-            kong.exitLevel(level: level)
+            kong.exitLevel(level: gameScreen.level)
             pauline.isShowing = false
         }
     }

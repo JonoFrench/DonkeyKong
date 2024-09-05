@@ -23,15 +23,36 @@ enum FireBlobDirection {
 
 final class FireBlobArray: ObservableObject {
     @Published var fireblob: [FireBlob] = []
-}
+    
+    func remove(id:UUID) {
+        if let index = fireblob.firstIndex(where: {$0.id == id}) {
+            fireblob.remove(at: index)
+        }
+    }
+    
+    func add(xPos:Int, yPos: Int, state:FireBlobState) {
+        let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  24))
+        fireBlob.state = state
+        fireBlob.direction = .right
+        fireblob.append(fireBlob)
+    }
+    /// Initial fireblobs hopping out of level 1
+    func add() {
+        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: CGSize(width: 24, height:  24))
+        fireblob.append(fireBlob)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [fireBlob] in
+            fireBlob.state = .hopping
+        }
+    }
 
+}
 
 final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     static var animateFrames: Int = 9
     var animateCounter: Int = 0
     
     let moveFrames = 4
-    var speed = 4
+    var speed = AppConstant.fireBlobSpeed
     var moveCounter = 0
     var speedCounter = 0
     var dropHeight = 0.0

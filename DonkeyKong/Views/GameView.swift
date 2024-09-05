@@ -34,17 +34,17 @@ struct GameView: View {
             PaulineView(pauline: manager.pauline)
                 .position(manager.pauline.position)
                 .zIndex(1.7)
-            if manager.hasFlames {
+            if manager.gameScreen.hasFlames {
                 FlamesView(flames: manager.flames)
                     .position(manager.flames.position)
                     .zIndex(1.9)
             }
-            if manager.hasExplosion {
+            if manager.gameScreen.hasExplosion {
                 ExplodeView(explode: manager.explosion)
                     .position(manager.explosion.position)
                     .zIndex(2.9)
             }
-            if manager.hasPoints {
+            if manager.gameScreen.hasPoints {
                 PointsView(points: manager.pointsShow)
                     .position(manager.pointsShow.position)
                     .zIndex(2.9)
@@ -70,21 +70,21 @@ struct GameView: View {
                         .zIndex(1.8)
                 }
             }
-            if manager.hasElevators {
+            if manager.gameScreen.hasElevators {
                 ForEach(elevatorArray.elevators, id: \.id) { elevator in
                     ElevatorView(elevator: elevator)
                         .position(elevator.position)
                         .zIndex(1.85)
                 }
             }
-            if manager.hasSprings {
+            if manager.gameScreen.hasSprings {
                 ForEach(springArray.springs, id: \.id) { spring in
                     SpringView(spring: spring)
                         .position(spring.position)
                         .zIndex(2.3)
                 }
             }
-            if manager.hasConveyor {
+            if manager.gameScreen.hasConveyor {
                 ForEach(conveyorArray.conveyors, id: \.id) { conveyor in
                     ConveyorView(conveyor: conveyor)
                         .position(conveyor.position)
@@ -97,7 +97,7 @@ struct GameView: View {
                 }
                 
             }
-            if manager.hasLoftLadders {
+            if manager.gameScreen.hasLoftLadders {
                 LoftLadderView(ladder: loftLadders.leftLadder)
                     .position(loftLadders.leftLadder.position)
                     .zIndex(1.81)

@@ -17,9 +17,9 @@ enum KongDirection {
 }
 final class Kong:SwiftUISprite, ObservableObject {
     static var animateFrames: Int = 9
-    static var speed:Int = 4
+    static var speed:Int = AppConstant.kongSpeed
     static var moveFrames = 4
-
+    
     var animateCounter: Int = 0
     var speedCounter:Int = 0
     var moveCounter = 0
@@ -36,7 +36,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     let kongAngryRight:ImageResource = ImageResource(name: "KongAngryR", bundle: .main)
     let kongCrashLeft:ImageResource = ImageResource(name: "KongCrashL", bundle: .main)
     let kongCrashRight:ImageResource = ImageResource(name: "KongCrashR", bundle: .main)
-
+    
     var kongStep = false
     var jumpingPoints:[Int] = [11,10,9,8,7,8]
     var bouncingPoints = [[CGPoint]]()
@@ -93,17 +93,11 @@ final class Kong:SwiftUISprite, ObservableObject {
         if animationCounter == 14 {
             introCounter -= 1
             introCounter > 0 ? nextStepUp() : NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
-//            if introCounter > 0 {
-//                nextStepUp()
-//            } else {
-//                NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
-//            }
             animationCounter = 0
         }
     }
     
     func exitLevel(level:Int) {
-        
         if level != 4 {
             setPosition(xPos: 10, yPos: 7)
             introCounter = 8
@@ -122,17 +116,16 @@ final class Kong:SwiftUISprite, ObservableObject {
     }
     
     func animateFinalExit() {
-            animationCounter += 1
-            if animationCounter == 8 {
-                print("animateFinalExit \(introCounter)")
-                animationCounter = 0
-                currentFrame = introCounter % 2 == 0 ? kongAngryLeft : kongAngryRight
-                introCounter += 1
-                if introCounter == 20 {
-                    state = .dead
-                    currentFrame = kongCrashLeft
-                }
+        animationCounter += 1
+        if animationCounter == 8 {
+            animationCounter = 0
+            currentFrame = introCounter % 2 == 0 ? kongAngryLeft : kongAngryRight
+            introCounter += 1
+            if introCounter == 20 {
+                state = .dead
+                currentFrame = kongCrashLeft
             }
+        }
     }
     
     func animateIntro() {
@@ -274,6 +267,7 @@ final class Kong:SwiftUISprite, ObservableObject {
             }
         }
     }
+    
     func generateBouncingPoints() {
         var c = 0
         for i in stride(from: 16, through: 8, by: -2) {

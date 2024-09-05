@@ -23,11 +23,13 @@ final class ElevatorArray: ObservableObject {
             elevator.move()
         }
     }
+    func add(direction:ElevatorDirection,part:ElevatorPart, xPos: Int, yPos:Int) {
+        elevators.append(Elevator(direction: direction,part: part, xPos: xPos, yPos: yPos))
+    }
 }
 
-
 final class Elevator:SwiftUISprite,Moveable, ObservableObject {
-    static var speed: Int = 6
+    static var speed: Int = AppConstant.elevatorSpeed
     
     var speedCounter: Int = 0
     var direction: ElevatorDirection = .up

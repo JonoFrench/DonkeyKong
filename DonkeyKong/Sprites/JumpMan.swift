@@ -9,18 +9,20 @@ import Foundation
 import SwiftUI
 
 enum JMState {
-    case still,walking,climbingUp,climbingDown,hammer,dead
+    case still,walking,climbingUp,climbingDown,hammer,dead, falling
 }
 enum JMDirection {
     case left,right
 }
 final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     static var animateFrames: Int = 0
-    static var speed: Int = 3
+    static var speed: Int = AppConstant.jumpmanSpeed
     var speedCounter: Int = 0
     var animateCounter: Int = 0
     
     var isWalking = false
+    var isfalling = false
+    var fallingCount = 0
     var isWalkingRight = false
     var isWalkingLeft = false
     var isClimbing = false
@@ -69,7 +71,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     
     func animate(){
-        guard isWalking || isClimbing || isJumping || hasHammer else {
+        guard isWalking || isClimbing || isJumping || hasHammer || isfalling else {
             return
         }
         if speedCounter == JumpMan.speed {
@@ -77,13 +79,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 startedClimbing = false
                 facing == .right ? animateRight() : animateLeft()
             } else if isClimbing {
-//                                if !startedClimbing {
-//                                    startedClimbing = true
-//                                }
-//                isClimbingUp ? animateUp() : animateDown()
                 if isClimbingUp {
-//                    startedClimbing = true
-                    
                     if !startedClimbing {
                         startedClimbing = true
                     }
@@ -97,6 +93,8 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 
             } else if isJumping {
                 animateJumping()
+            } else if isfalling {
+                fall()
             }
             if hasHammer {
                 animateHammer()
@@ -116,12 +114,18 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             if animateFrame == 3 {
                 animateFrame = 0
                 isWalking = false
-                if xPos < resolvedInstance.screenDimentionX {
+                if xPos < resolvedInstance.screenDimentionX-1 {
                     xPos += 1
                 }
+                /// Level 4 with the Girder plugs
                 if resolvedInstance.screenData[yPos][xPos-1].assetType == .girderPlug {
                     resolvedInstance.screenData[yPos][xPos-1].assetType = .blank
                     NotificationCenter.default.post(name: .notificationGirderPlug, object: nil)
+                }
+                /// On empty space?
+                if resolvedInstance.screenData[yPos][xPos].assetType == .blank {
+                    isfalling = true
+                    isWalking = false
                 }
             }
         }
@@ -140,15 +144,42 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 if xPos > 0 {
                     xPos -= 1
                 }
-                
+                /// Level 4 with the Girder plugs
                 if resolvedInstance.screenData[yPos][xPos+1].assetType == .girderPlug {
                     resolvedInstance.screenData[yPos][xPos+1].assetType = .blank
                     NotificationCenter.default.post(name: .notificationGirderPlug, object: nil)
+                }
+                /// On empty space?
+                if resolvedInstance.screenData[yPos][xPos].assetType == .blank {
+                    isfalling = true
+                    isWalking = false
                 }
             }
         }
     }
     
+    func fall() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            position.y += resolvedInstance.assetDimention / 3.0
+            animateFrame += 1
+            if animateFrame == 3 {
+                fallingCount += 1
+                animateFrame = 0
+                if yPos < resolvedInstance.screenDimentionY - 1 {
+                    yPos += 1
+                    currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+                }
+                if resolvedInstance.screenData[yPos][xPos].assetType == .blank {
+                    isfalling = true
+                    isWalking = false
+                } else {
+                    isfalling = false
+                    setPosition()
+                }
+            }
+        }
+    }
+
     func animateUp(){
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             position.y -= ladderStep / 4.0
@@ -202,11 +233,12 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func animateHammer(){
         guard !isJumping else { return }
-        if isWalking {
-            currentFrame = hammerWalking[animateHammerFrame]
-        } else {
-            currentFrame = hammer1[animateHammerFrame]
-        }
+        currentFrame = isWalking ? hammerWalking[animateHammerFrame] : hammer1[animateHammerFrame]
+//        if isWalking {
+//            currentFrame = hammerWalking[animateHammerFrame]
+//        } else {
+//            currentFrame = hammer1[animateHammerFrame]
+//        }
         frameSize = hammerFrameSize
         animateHammerFrame += 1
         if animateHammerFrame == 16 {
@@ -215,7 +247,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     
     func move() {
-        if !isWalking && !isJumping {
+        if !isWalking && !isJumping && !isfalling {
             if isWalkingRight {
                 walkRight()
             } else if isWalkingLeft {
@@ -293,7 +325,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             var pointB = CGPoint()
             // todo jump distance should be asset dimention * 2
             var points = [CGPoint]()
-            if isJumpingLeft {
+            if isJumpingLeft || xPos > resolvedInstance.screenDimentionX - 3 {
 //                if animateFrame > 0 {
 //                    jumpOffset = (3.0 - Double(animateFrame)) * (resolvedInstance.assetDimention / 3.0)
 //                    pointB = calcPositionFromScreen(xPos: xPos - 3,yPos: yPos,frameSize: frameSize)
@@ -355,18 +387,17 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 setPosition()
             } else {
                 currentFrame = ImageResource(name: "JM1", bundle: .main)
-                
             }
         }
     }
     
     func canJump()-> Bool {
-        if jumpingPoints.isEmpty && !hasHammer { return true }
+        if jumpingPoints.isEmpty && !hasHammer && !isfalling && !isClimbing { return true }
         return false
     }
     
     func canMoveLeft() -> Bool {
-        guard xPos > 0 else {
+        guard xPos > 0 && !isfalling else {
             return false
         }
 //        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
@@ -379,7 +410,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func canMoveRight() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            guard xPos < resolvedInstance.screenDimentionX - 2 else {
+            guard xPos < resolvedInstance.screenDimentionX - 2 && !isfalling else {
                 return false
             }
 //            if resolvedInstance.screenData[yPos][xPos + 1].assetType != .blank {
