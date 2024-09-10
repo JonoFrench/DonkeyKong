@@ -23,7 +23,13 @@ enum FireBlobDirection {
 
 final class FireBlobArray: ObservableObject {
     @Published var fireblob: [FireBlob] = []
-    
+#if os(iOS)
+    static let fireblobSize = CGSize(width: 24, height:  24)
+#elseif os(tvOS)
+    static let fireblobSize = CGSize(width: 48, height:  48)
+
+    #endif
+
     func remove(id:UUID) {
         if let index = fireblob.firstIndex(where: {$0.id == id}) {
             fireblob.remove(at: index)
@@ -31,14 +37,14 @@ final class FireBlobArray: ObservableObject {
     }
     
     func add(xPos:Int, yPos: Int, state:FireBlobState) {
-        let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  24))
+        let fireBlob = FireBlob(xPos: xPos, yPos: yPos, frameSize: FireBlobArray.fireblobSize)
         fireBlob.state = state
         fireBlob.direction = .right
         fireblob.append(fireBlob)
     }
     /// Initial fireblobs hopping out of level 1
     func add() {
-        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: CGSize(width: 24, height:  24))
+        let fireBlob = FireBlob(xPos: 4, yPos: 25, frameSize: FireBlobArray.fireblobSize)
         fireblob.append(fireBlob)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [fireBlob] in
             fireBlob.state = .hopping
@@ -132,9 +138,9 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             ///Move left or right
             if direction == .right {
-                position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                position.x += resolvedInstance.assetDimension / CGFloat(moveFrames)
             } else if direction == .left  {
-                position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
+                position.x -= resolvedInstance.assetDimension / CGFloat(moveFrames)
             }
             ///Move down
             if direction == .down {
@@ -179,9 +185,9 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                             xPos += 1
                             if currentHeightOffset != resolvedInstance.screenData[yPos][xPos].assetOffset {
                                 if currentHeightOffset > resolvedInstance.screenData[yPos][xPos].assetOffset {
-                                    position.y += resolvedInstance.assetOffset
+                                    position.y += resolvedInstance.assetDimensionStep
                                 } else {
-                                    position.y -= resolvedInstance.assetOffset
+                                    position.y -= resolvedInstance.assetDimensionStep
                                 }
                             }
                         }
@@ -189,7 +195,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
 
                     } else if direction == .left {
                         if isBlankLeft() {
-                            print("FireBlob going \(direction)  xpos \(xPos)")
+                            //print("FireBlob going \(direction)  xpos \(xPos)")
                             direction = .right
                             //position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
                             setPosition()
@@ -198,9 +204,9 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                             xPos -= 1
                             if currentHeightOffset != resolvedInstance.screenData[yPos][xPos].assetOffset {
                                 if currentHeightOffset > resolvedInstance.screenData[yPos][xPos].assetOffset {
-                                    position.y += resolvedInstance.assetOffset
+                                    position.y += resolvedInstance.assetDimensionStep
                                 } else {
-                                    position.y -= resolvedInstance.assetOffset
+                                    position.y -= resolvedInstance.assetDimensionStep
                                 }
                             }
 
@@ -224,7 +230,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                         }
  
                     } else if direction == .down {
-                        if yPos < resolvedInstance.screenDimentionY - 1 {
+                        if yPos < resolvedInstance.screenDimensionY - 1 {
                             yPos += 1
                             currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
                         }
@@ -239,13 +245,13 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                                     }
                                 } else {
                                     direction = .right
-                                    if xPos < resolvedInstance.screenDimentionX {
+                                    if xPos < resolvedInstance.screenDimensionX {
                                         if !isBlankRight() {
                                             direction = .left
                                         }
                                     }
                                 }
-                            print("FireBlob going \(direction)  xpos \(xPos)")
+                            //print("FireBlob going \(direction)  xpos \(xPos)")
 
                         }
                     }
@@ -289,7 +295,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
 
     override func isLadderBelow() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            guard yPos < resolvedInstance.screenDimentionY - 2 else { return false }
+            guard yPos < resolvedInstance.screenDimensionY - 2 else { return false }
             if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blank && (resolvedInstance.screenData[yPos + 2][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 2][xPos].assetType == .blankLadder) { return true }
             if resolvedInstance.screenData[yPos + 1][xPos].assetType == .ladder || resolvedInstance.screenData[yPos][xPos].assetType == .ladder || resolvedInstance.screenData[yPos + 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
                 return true

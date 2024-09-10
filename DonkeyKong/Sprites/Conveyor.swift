@@ -43,8 +43,8 @@ final class Conveyor:SwiftUISprite, Animatable, ObservableObject {
     init(xPos: Int, yPos: Int, direction:ConveyorDirection) {
         var frame = CGSize()
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            frame.width = resolvedInstance.assetDimention
-            frame.height = resolvedInstance.assetDimention + 2
+            frame.width = resolvedInstance.assetDimension
+            frame.height = resolvedInstance.assetDimension + 2
         }
         super.init(xPos: xPos, yPos: yPos, frameSize: frame)
         self.direction = direction

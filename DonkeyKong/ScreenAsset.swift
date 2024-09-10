@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 enum AssetType {
-    case girder,ladder,blank,oilBL,oilBR,oilTL,oilTR,barBL,barBR,barTL,barTR,girderPlug,lineLeft,lineRight,conveyor,pieCross,LiftPoleL,LiftPoleR,LiftTopTL,LiftTopTR,LiftTopBL,LiftTopBR,LiftBotTL,LiftBotTR,LiftBotBL,LiftBotBR,blankLadder
+    case girder,ladder,blank,oilBL,oilBR,oilTL,oilTR,barBL,barBR,barTL,barTR,girderPlug,lineLeft,lineRight,conveyor,pieCross,LiftPoleL,LiftPoleR,LiftTopTL,LiftTopTR,LiftTopBL,LiftTopBR,LiftBotTL,LiftBotTR,LiftBotBL,LiftBotBR,blankLadder,liftGirder
 }
 
 struct ScreenAsset {
@@ -34,6 +34,8 @@ struct ScreenAsset {
             } else if level == 2 {
                 return ImageResource(name: "LadderWhite", bundle: .main)
             }
+        case .liftGirder:
+            return ImageResource(name: "Girder", bundle: .main)
         case .blank:
             return ImageResource(name: "Lives", bundle: .main)
         case .blankLadder:
@@ -93,6 +95,8 @@ struct ScreenAsset {
         switch assetType {
         case .girder:
             return 0.11
+        case .liftGirder:
+            return 0.11
         case .ladder:
             return 0.1
         case .blank:
@@ -151,6 +155,8 @@ struct ScreenAsset {
     func assetBlank() -> Bool {
         switch assetType {
         case .girder:
+            return false
+        case .liftGirder:
             return false
         case .ladder:
             return false
@@ -1124,7 +1130,7 @@ struct Screens {
          ScreenAsset(assetType: .girder, assetOffset: 5.0),
          ScreenAsset(assetType: .girder, assetOffset: 6.0),
          ScreenAsset(assetType: .girder, assetOffset: 6.0),
-         ScreenAsset(assetType: .girder, assetOffset: 7.0)
+         ScreenAsset(assetType: .blank, assetOffset: 0.0)
         ]
 
     ]
@@ -3192,16 +3198,16 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftTopBL, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftTopBR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftTopBL, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftTopBR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -3321,16 +3327,16 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -3513,16 +3519,16 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .ladder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .ladder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .ladder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -3705,16 +3711,16 @@ struct Screens {
          ScreenAsset(assetType: .ladder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
+         ScreenAsset(assetType: .liftGirder, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
@@ -3769,16 +3775,16 @@ struct Screens {
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftBotTL, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftBotTR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftBotTL, assetOffset: 0.0),
-         ScreenAsset(assetType: .LiftBotTR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleR, assetOffset: 0.0),
+         ScreenAsset(assetType: .LiftPoleL, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),
          ScreenAsset(assetType: .blank, assetOffset: 0.0),

@@ -72,7 +72,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     func adjustPosition() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             //position.y += 9
-            position.x += resolvedInstance.assetDimention / 2
+            position.x += resolvedInstance.assetDimension / 2
         }
     }
     
@@ -226,7 +226,7 @@ final class Kong:SwiftUISprite, ObservableObject {
             if speedCounter == Kong.speed / 2 {
                 speedCounter = 0
                 moveCounter += 1
-                position.y += resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
+                position.y += resolvedInstance.assetDimension / CGFloat(Kong.moveFrames)
                 if moveCounter == Kong.moveFrames {
                     print("moveFall \(yPos)")
                     moveCounter = 0
@@ -249,7 +249,7 @@ final class Kong:SwiftUISprite, ObservableObject {
             if speedCounter == Kong.speed {
                 speedCounter = 0
                 moveCounter += 1
-                position.x += direction == .left ? -resolvedInstance.assetDimention / CGFloat(Kong.moveFrames) : resolvedInstance.assetDimention / CGFloat(Kong.moveFrames)
+                position.x += direction == .left ? -resolvedInstance.assetDimension / CGFloat(Kong.moveFrames) : resolvedInstance.assetDimension / CGFloat(Kong.moveFrames)
                 if moveCounter == Kong.moveFrames {
                     moveCounter = 0
                     if direction == .left {

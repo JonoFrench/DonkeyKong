@@ -9,6 +9,12 @@ import Foundation
 import SwiftUI
 
 final class SpringArray: ObservableObject {
+#if os(iOS)
+    static let springSize = CGSize(width: 24, height:  24)
+#elseif os(tvOS)
+    static let springSize = CGSize(width: 48, height:  48)
+#endif
+
     @Published var springs: [Spring] = []
     static let springX = 2
     static let springY = 7
@@ -27,7 +33,7 @@ final class SpringArray: ObservableObject {
     }
     
     func add() {
-        let spring = Spring(xPos: SpringArray.springX + Int.random(in: 0..<3), yPos: SpringArray.springY, frameSize: CGSize(width: 24, height:  24))
+        let spring = Spring(xPos: SpringArray.springX + Int.random(in: 0..<3), yPos: SpringArray.springY, frameSize: SpringArray.springSize)
         springs.append(spring)
         springAdded = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
@@ -68,7 +74,7 @@ final class Spring:SwiftUISprite,Animatable, Moveable, ObservableObject {
                 speedCounter += 1
                 if speedCounter == Spring.speed {
                     speedCounter = 0
-                    position.y += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                    position.y += resolvedInstance.assetDimension / CGFloat(moveFrames)
                     moveCounter += 1
                     if moveCounter == moveFrames {
                         moveCounter = 0
@@ -107,7 +113,6 @@ final class Spring:SwiftUISprite,Animatable, Moveable, ObservableObject {
         super .init(xPos: xPos, yPos: yPos, frameSize: frameSize)
         currentFrame = springOpen
         generateBouncingPoints()
-        print("Spring bounce num \(bouncingPoints.count)")
     }
     
     func generateBouncingPoints() {

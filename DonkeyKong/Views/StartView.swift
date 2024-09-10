@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct StartView: View {
-    @EnvironmentObject var manager: GameManager
+#if os(iOS)
+    static var starttextSize:CGFloat = 14
+    static var copyTextSize:CGFloat = 12
+#elseif os(tvOS)
+    static var starttextSize:CGFloat = 24
+    static var copyTextSize:CGFloat = 28
+#endif
+
     var body: some View {
         GeometryReader { proxy in
             VStack {
@@ -18,22 +25,18 @@ struct StartView: View {
                 Spacer()
                 Text("Jonathan French 2024")
                     .foregroundStyle(.white)
-                    .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
+                    .font(.custom("DonkeyKongClassicsNESExtended", size: StartView.starttextSize))
                 Spacer()
                 Text("(C) 1981 Nintendo")
                     .foregroundStyle(.white)
-                    .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
+                    .font(.custom("DonkeyKongClassicsNESExtended", size: StartView.copyTextSize))
                 Spacer()
-                Text("Press Jump to Start")
+                Text(AppConstant.startText)
                     .foregroundStyle(.red)
-                    .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
+                    .font(.custom("DonkeyKongClassicsNESExtended", size: StartView.starttextSize))
                 //Spacer()
             }
-                .onAppear {
-                    print("game size \(proxy.size)")
-                    manager.gameScreen.gameSize = proxy.size
-                }
-        }.background(.introBackground)
+        }.background(.black)
     }
 }
 

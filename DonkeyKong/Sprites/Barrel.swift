@@ -18,8 +18,13 @@ enum BarrelColor {
 
 final class BarrelArray: ObservableObject {
     @Published var barrels: [Barrel] = []
+#if os(iOS)
     static let rollingSize = CGSize(width: 16, height:  16)
     static let thrownSize = CGSize(width: 24, height:  24)
+#elseif os(tvOS)
+    static let rollingSize = CGSize(width: 32, height:  32)
+    static let thrownSize = CGSize(width: 48, height:  48)
+#endif
     static let rollingX = 9
     static let rollingY = 7
     static let thrownX = 6
@@ -110,9 +115,9 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
             if speedCounter == Barrel.speed {
                 speedCounter = 0
                 moveCounter += 1
-/// Thrown Barrel
+                /// Thrown Barrel
                 if isThrown {
-                    position.y += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                    position.y += resolvedInstance.assetDimension / CGFloat(moveFrames)
                     
                     if moveCounter == moveFrames {
                         moveCounter = 0
@@ -124,12 +129,12 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                         wasThrown = true
                     }
                 } else {
-/// Rolled barrel.
+                    /// Rolled barrel.
                     ///Move left or right
                     if direction == .right || direction == .rightDown {
-                        position.x += resolvedInstance.assetDimention / CGFloat(moveFrames)
+                        position.x += resolvedInstance.assetDimension / CGFloat(moveFrames)
                     } else if direction == .left || direction == .leftDown {
-                        position.x -= resolvedInstance.assetDimention / CGFloat(moveFrames)
+                        position.x -= resolvedInstance.assetDimension / CGFloat(moveFrames)
                     }
                     ///Move down
                     if direction == .down || direction == .rightDown || direction == .leftDown {
@@ -140,12 +145,12 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                         moveCounter = 0
                         if direction == .left {
                             if currentHeightOffset != resolvedInstance.screenData[yPos][xPos-1].assetOffset {
-                                position.y += resolvedInstance.assetOffset
+                                position.y += resolvedInstance.assetDimensionStep
                                 currentHeightOffset = resolvedInstance.screenData[yPos][xPos-1].assetOffset
                             }
                         } else if direction == .right {
                             if currentHeightOffset != resolvedInstance.screenData[yPos][xPos+1].assetOffset {
-                                position.y += resolvedInstance.assetOffset
+                                position.y += resolvedInstance.assetDimensionStep
                                 currentHeightOffset = resolvedInstance.screenData[yPos][xPos+1].assetOffset
                             }
                         }
@@ -213,7 +218,7 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
             }
         }
     }
-      
+    
     private func updateScreenArray() {
         if let resolvedInstance: BarrelArray = ServiceLocator.shared.resolve() {
             resolvedInstance.objectWillChange.send()

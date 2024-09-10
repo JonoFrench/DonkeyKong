@@ -9,8 +9,8 @@ import SwiftUI
 
 struct JoyPadView: View {
     @EnvironmentObject var manager: GameManager
-    
     var body: some View {
+#if os(iOS)
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Spacer()
@@ -47,13 +47,13 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.jumpMan.canMoveLeft() {
-                                        manager.jumpMan.isWalkingLeft = true
+                                        manager.jumpMan.isWalking = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                    manager.jumpMan.isWalkingLeft = false
+                                    manager.jumpMan.isWalking = false
                                 }
                             }
                     )
@@ -77,13 +77,13 @@ struct JoyPadView: View {
                             .onChanged { _ in
                                 if manager.gameState == .playing {
                                     if manager.jumpMan.canMoveRight() {
-                                        manager.jumpMan.isWalkingRight = true
+                                        manager.jumpMan.isWalking = true
                                     }
                                 }
                             }
                             .onEnded { _ in
                                 if manager.gameState == .playing {
-                                    manager.jumpMan.isWalkingRight = false
+                                    manager.jumpMan.isWalking = false
                                 }
                             }
                     )
@@ -115,6 +115,7 @@ struct JoyPadView: View {
             }
         }
         .frame(width: 180, height: 180)
+#endif
     }
 }
 

@@ -20,7 +20,3 @@ struct PointsView: View {
             }
     }
 }
-
-//#Preview {
-//    PointsView()
-//}

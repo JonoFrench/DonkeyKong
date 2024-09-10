@@ -79,7 +79,7 @@ extension GameManager {
                 if Int.random(in: 0...1) == 1 {
                     pieArray.add(direction: .left, pos: .top)
                 } else {
-                    pieArray.add(direction: .right, pos: .bottom)
+                    pieArray.add(direction: .right, pos: .top)
                 }
             }
         }

@@ -7,7 +7,9 @@
 
 import Foundation
 import SwiftUI
-
+#if os(tvOS)
+import GameController
+#endif
 extension Notification.Name {
     static let notificationBarrelToFireblob = Notification.Name("NotificationBarrelToFireblob")
     static let notificationPieToFireblob = Notification.Name("NotificationPieToFireblob")
@@ -40,6 +42,23 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.kongAngry(notification:)), name: .notificationKongAngry, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeSpring(notification:)), name: .notificationRemoveSpring, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.girderPlug(notification:)), name: .notificationGirderPlug, object: nil)
+        
+#if os(tvOS)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(controllerDidConnect),
+            name: .GCControllerDidConnect,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(controllerDidDisconnect),
+            name: .GCControllerDidDisconnect,
+            object: nil
+        )
+#endif
         
     }
     
@@ -148,4 +167,17 @@ extension GameManager {
             pauline.isShowing = false
         }
     }
+    
+#if os(tvOS)
+    @objc func controllerDidConnect(notification: Notification) {
+        if let controller = notification.object as? GCController {
+            // Set up your controller
+            setupController(controller)
+        }
+    }
+
+    @objc func controllerDidDisconnect(notification: Notification) {
+        // Handle controller disconnection if needed
+    }
+    #endif
 }

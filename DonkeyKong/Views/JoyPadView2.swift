@@ -20,7 +20,7 @@ struct JoyPadView2: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(90))
-                    .gesture(LongPressGesture(minimumDuration: 0.1)
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
                         .updating($_isPressingDown) { value, state, transaction in
                             switch value {
@@ -43,7 +43,7 @@ struct JoyPadView2: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
-                    .gesture(LongPressGesture(minimumDuration: 0.1)
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
                         .updating($_isPressingDown) { value, state, transaction in
                             switch value {
@@ -94,7 +94,7 @@ struct JoyPadView2: View {
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(180))
                 
-                    .gesture(LongPressGesture(minimumDuration: 0.1)
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
                         .updating($_isPressingDown) { value, state, transaction in
                             switch value {
@@ -118,7 +118,7 @@ struct JoyPadView2: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(270))
-                    .gesture(LongPressGesture(minimumDuration: 0.1)
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
                         .updating($_isPressingDown) { value, state, transaction in
                             switch value {

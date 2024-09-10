@@ -13,6 +13,9 @@
 		34169D022C86F7FD009C56E0 /* PieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D012C86F7FD009C56E0 /* PieView.swift */; };
 		34169D042C874AD9009C56E0 /* LoftLadderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D032C874AD9009C56E0 /* LoftLadderView.swift */; };
 		34169D062C874AEA009C56E0 /* LoftLadder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D052C874AEA009C56E0 /* LoftLadder.swift */; };
+		34169D972C8A77CC009C56E0 /* ContentViewTV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D962C8A77CC009C56E0 /* ContentViewTV.swift */; };
+		34169D9A2C8BAD1D009C56E0 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34169D992C8BAD1D009C56E0 /* GameController.framework */; platformFilters = (tvos, ); };
+		34169D9C2C8BAD64009C56E0 /* GameManager+TV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34169D9B2C8BAD64009C56E0 /* GameManager+TV.swift */; };
 		343E0D972C68D4D300F79DA0 /* DonkeyKongApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0D962C68D4D300F79DA0 /* DonkeyKongApp.swift */; };
 		343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 343E0D982C68D4D300F79DA0 /* ContentView.swift */; };
 		343E0D9B2C68D4D500F79DA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343E0D9A2C68D4D500F79DA0 /* Assets.xcassets */; };
@@ -91,6 +94,9 @@
 		34169D012C86F7FD009C56E0 /* PieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PieView.swift; sourceTree = "<group>"; };
 		34169D032C874AD9009C56E0 /* LoftLadderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoftLadderView.swift; sourceTree = "<group>"; };
 		34169D052C874AEA009C56E0 /* LoftLadder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoftLadder.swift; sourceTree = "<group>"; };
+		34169D962C8A77CC009C56E0 /* ContentViewTV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewTV.swift; sourceTree = "<group>"; };
+		34169D992C8BAD1D009C56E0 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS17.5.sdk/System/Library/Frameworks/GameController.framework; sourceTree = DEVELOPER_DIR; };
+		34169D9B2C8BAD64009C56E0 /* GameManager+TV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameManager+TV.swift"; sourceTree = "<group>"; };
 		343E0D932C68D4D300F79DA0 /* DonkeyKong.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DonkeyKong.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		343E0D962C68D4D300F79DA0 /* DonkeyKongApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonkeyKongApp.swift; sourceTree = "<group>"; };
 		343E0D982C68D4D300F79DA0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -169,17 +175,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34169D9A2C8BAD1D009C56E0 /* GameController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		34169D982C8BAD1D009C56E0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				34169D992C8BAD1D009C56E0 /* GameController.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		343E0D8A2C68D4D300F79DA0 = {
 			isa = PBXGroup;
 			children = (
 				343E0D952C68D4D300F79DA0 /* DonkeyKong */,
 				343E0D942C68D4D300F79DA0 /* Products */,
+				34169D982C8BAD1D009C56E0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -203,6 +219,7 @@
 				343E0DA42C68D4E800F79DA0 /* Manager */,
 				343E0D962C68D4D300F79DA0 /* DonkeyKongApp.swift */,
 				343E0D982C68D4D300F79DA0 /* ContentView.swift */,
+				34169D962C8A77CC009C56E0 /* ContentViewTV.swift */,
 				343E0D9A2C68D4D500F79DA0 /* Assets.xcassets */,
 				343E0D9C2C68D4D500F79DA0 /* Preview Content */,
 				343E0DE92C6A126600F79DA0 /* ScreenAsset.swift */,
@@ -227,6 +244,7 @@
 				347645892C75EFC100E8AE5F /* GameManager+Barrels.swift */,
 				34AE2C222C7DD43A00656DBF /* GameManager+FireBlobs.swift */,
 				34AE2C282C7F638000656DBF /* GameManager+Notifications.swift */,
+				34169D9B2C8BAD64009C56E0 /* GameManager+TV.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -297,6 +315,7 @@
 		343E0DED2C6AAA9A00F79DA0 /* Sprites */ = {
 			isa = PBXGroup;
 			children = (
+				34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */,
 				343E0DEE2C6AB1F100F79DA0 /* JumpMan.swift */,
 				343E0DF02C6AB74300F79DA0 /* JumpManView.swift */,
 				343E0DFA2C6F720F00F79DA0 /* KongView.swift */,
@@ -315,7 +334,6 @@
 				34AE2C1C2C7B404000656DBF /* Explode.swift */,
 				34AE2C1E2C7B495200656DBF /* Points.swift */,
 				34AE2C202C7B496100656DBF /* PointsView.swift */,
-				34AE2C242C7E54A700656DBF /* SwiftUISprite.swift */,
 				34AE2C312C82732D00656DBF /* ElevatorView.swift */,
 				34AE2C332C82734000656DBF /* Elevator.swift */,
 				34AE2C352C83BD8C00656DBF /* Spring.swift */,
@@ -443,6 +461,7 @@
 				34AE2C1F2C7B495200656DBF /* Points.swift in Sources */,
 				343E0DC02C68E24000F79DA0 /* IntroView.swift in Sources */,
 				343E0D992C68D4D300F79DA0 /* ContentView.swift in Sources */,
+				34169D972C8A77CC009C56E0 /* ContentViewTV.swift in Sources */,
 				343E0DB32C68D57300F79DA0 /* DonkeyKongHighScores.swift in Sources */,
 				34AE2C322C82732D00656DBF /* ElevatorView.swift in Sources */,
 				34169D042C874AD9009C56E0 /* LoftLadderView.swift in Sources */,
@@ -457,6 +476,7 @@
 				343E0DE62C6A111800F79DA0 /* ScreenView.swift in Sources */,
 				34AE2C362C83BD8C00656DBF /* Spring.swift in Sources */,
 				347645862C752C3F00E8AE5F /* FireBlobView.swift in Sources */,
+				34169D9C2C8BAD64009C56E0 /* GameManager+TV.swift in Sources */,
 				347645762C7218BD00E8AE5F /* Flames.swift in Sources */,
 				343E0DBA2C68DB1600F79DA0 /* HiScoreView.swift in Sources */,
 				343E0DBC2C68DF1800F79DA0 /* InfoView.swift in Sources */,
@@ -617,7 +637,6 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -625,9 +644,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jaypeeff.DonkeyKong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Debug;
 		};
@@ -650,7 +671,6 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -658,9 +678,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jaypeeff.DonkeyKong;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3";
 			};
 			name = Release;
 		};

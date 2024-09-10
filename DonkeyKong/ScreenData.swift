@@ -11,10 +11,10 @@ import SwiftUI
 final class ScreenData:ObservableObject {
     @Published
     var screenData:[[ScreenAsset]] = [[]]
-    let screenDimentionX:Int = 30
-    let screenDimentionY:Int = 28
-    var assetDimention = 0.0
-    var assetOffset = 0.0
+    let screenDimensionX:Int = 30
+    let screenDimensionY:Int = 28
+    var assetDimension = 0.0
+    var assetDimensionStep = 0.0
     var verticalOffset = 0.0
     var gameSize = CGSize()
     var screenSize = CGSize()

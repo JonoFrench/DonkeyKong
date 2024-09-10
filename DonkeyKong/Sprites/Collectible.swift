@@ -20,7 +20,11 @@ final class Collectible:SwiftUISprite, ObservableObject {
     var collected = false
     
     init(type: CollectibleType, xPos: Int, yPos:Int) {
+#if os(iOS)
         super.init(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 24, height:  18))
+#elseif os(tvOS)
+        super.init(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 48, height:  36))
+        #endif
         self.type = type
         currentFrame = collectibleImage()
     }

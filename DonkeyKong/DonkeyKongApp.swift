@@ -11,8 +11,15 @@ import SwiftUI
 struct DonkeyKongApp: App {
     @StateObject private var manager = GameManager()
     var body: some Scene {
+#if os(iOS)
         WindowGroup {
             ContentView().environmentObject(manager)
         }
+#elseif os(tvOS)
+        WindowGroup {
+            ContentViewTV().environmentObject(manager)
+                .background(.black)
+        }
+#endif
     }
 }

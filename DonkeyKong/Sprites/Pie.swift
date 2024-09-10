@@ -37,10 +37,14 @@ final class PieArray: ObservableObject {
         let x = direction == .left ? PieArray.rightXpos : PieArray.leftXpos
         pies.append(Pie(xPos: x, yPos: pos.rawValue, direction: direction))
     }
-    
 }
 
 final class Pie:SwiftUISprite, Moveable, ObservableObject {
+#if os(iOS)
+    static let pieSize = CGSize(width: 32, height:  18)
+#elseif os(tvOS)
+    static let pieSize = CGSize(width: 64, height:  36)
+#endif
     static var animateFrames: Int = 2
     static var speed: Int = AppConstant.pieSpeed
     static var moveFrames = 4
@@ -55,7 +59,7 @@ final class Pie:SwiftUISprite, Moveable, ObservableObject {
     var direction:ConveyorDirection = .left
     
     init(xPos: Int, yPos: Int, direction:ConveyorDirection) {
-        super.init(xPos: xPos, yPos: yPos, frameSize: CGSize(width: 32, height: 18))
+        super.init(xPos: xPos, yPos: yPos, frameSize: Pie.pieSize)
         self.direction = direction
         currentFrame = ImageResource(name: "Pie", bundle: .main)
         setPosition()
@@ -68,9 +72,9 @@ final class Pie:SwiftUISprite, Moveable, ObservableObject {
                 speedCounter = 0
                 moveCounter += 1
                 if direction == .left {
-                    position.x -= resolvedInstance.assetDimention / CGFloat(Pie.moveFrames)
+                    position.x -= resolvedInstance.assetDimension / CGFloat(Pie.moveFrames)
                 } else {
-                    position.x += resolvedInstance.assetDimention / CGFloat(Pie.moveFrames)
+                    position.x += resolvedInstance.assetDimension / CGFloat(Pie.moveFrames)
                 }
                 if moveCounter == Pie.moveFrames {
                     moveCounter = 0

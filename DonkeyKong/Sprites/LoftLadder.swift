@@ -36,8 +36,8 @@ final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
     init(xPos: Int, yPos: Int) {
         var frame = CGSize()
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            frame.width = resolvedInstance.assetDimention + 4
-            frame.height = resolvedInstance.assetDimention
+            frame.width = resolvedInstance.assetDimension + 4
+            frame.height = resolvedInstance.assetDimension
         }
         super.init(xPos: xPos, yPos: yPos, frameSize: frame)
         currentFrame = ImageResource(name: "LadderWhite", bundle: .main)
@@ -50,7 +50,7 @@ final class LoftLadder:SwiftUISprite, Animatable, ObservableObject {
         if animateCounter == LoftLadder.animateFrames {
             animateCounter = 0
             if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-                offset += state == .opening ? -resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames) : +resolvedInstance.assetDimention / CGFloat(LoftLadder.moveFrames)
+                offset += state == .opening ? -resolvedInstance.assetDimension / CGFloat(LoftLadder.moveFrames) : +resolvedInstance.assetDimension / CGFloat(LoftLadder.moveFrames)
                 moveCounter += 1
                 if moveCounter == LoftLadder.moveFrames {
                     moveCounter = 0

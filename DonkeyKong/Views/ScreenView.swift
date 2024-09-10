@@ -13,21 +13,22 @@ struct ScreenView: View {
     @EnvironmentObject var manager: GameManager
     @ObservedObject var gameScreen: ScreenData
     var body: some View {
-        ZStack {
-            ForEach(0..<gameScreen.screenDimentionY, id: \.self) { y in
-                ForEach(0..<gameScreen.screenDimentionX, id: \.self) { x in
+        ZStack(alignment: .center)  {
+            ForEach(0..<gameScreen.screenDimensionY, id: \.self) { y in
+                ForEach(0..<gameScreen.screenDimensionX, id: \.self) { x in
                     let ir = gameScreen.screenData[y][x]
                     if ir.assetType != .blank && ir.assetType != .blankLadder {
                         Image(ir.assetImage(level: gameScreen.level))
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: gameScreen.assetDimention, height: gameScreen.assetDimention)
-                            .position(x:Double(x) * gameScreen.assetDimention + (gameScreen.assetDimention / 2),y: Double(y) * gameScreen.assetDimention - (gameScreen.assetOffset * ir.assetOffset) + 80)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: gameScreen.assetDimension, height: gameScreen.assetDimension)
+                            .position(x:Double(x) * gameScreen.assetDimension + (gameScreen.assetDimension / 2),y: Double(y) * gameScreen.assetDimension - (gameScreen.assetDimensionStep * ir.assetOffset) + 80)
                             .zIndex(ir.assetZOrder())
                     }
                 }
             }
         }.zIndex(0.1)
+            .background(.black)
         ///Always at the back
         
     }

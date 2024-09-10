@@ -19,12 +19,19 @@ struct GameView: View {
     @ObservedObject var pieArray:PieArray
     @ObservedObject var loftLadders:Ladders
     var body: some View {
-        ZStack {
+        ZStack(alignment: .center) {
             ScreenView(gameScreen: manager.gameScreen)
                 .position(x:manager.gameScreen.gameSize.width / 2,y:manager.gameScreen.gameSize.height / 2)
                 .zIndex(0.1)
+#if os(iOS)
             BonusBoxView()
                 .position(x:manager.gameScreen.gameSize.width - 70,y:50)
+                .zIndex(1.94)
+#elseif os(tvOS)
+            BonusBoxView()
+                .position(x:manager.gameScreen.gameSize.width - 140,y:100)
+                .zIndex(1.94)
+#endif
             JumpManView(jumpMan: jumpMan)
                 .position(jumpMan.position)
                 .zIndex(2.0)
@@ -108,9 +115,3 @@ struct GameView: View {
         }.zIndex(1.0)
     }
 }
-
-//#Preview {
-//    let previewEnvObject = GameManager()
-//    return GameView()
-//        .environmentObject(previewEnvObject)
-//}

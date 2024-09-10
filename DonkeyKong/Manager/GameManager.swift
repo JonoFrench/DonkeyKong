@@ -10,6 +10,7 @@ import QuartzCore
 import SwiftUI
 import Combine
 
+
 enum GameState {
     case intro,kongintro,howhigh,playing,ended,highscore,levelend
 }
@@ -28,9 +29,27 @@ struct AppConstant {
     static let springSpeed = 1
     static let barrelSpeed = 2
     static let fireBlobSpeed = 5
-    static let jumpmanSpeed = 3
+    static let jumpmanSpeed = 2
     static let kongSpeed = 4
-    static let elevatorSpeed = 6
+    static let elevatorSpeed = 4
+    
+#if os(iOS)
+    static var startText = "PRESS JUMP TO START"
+    static var paulineSize = CGSize(width: 63, height: 36)
+    static var kongSize = CGSize(width: 60, height: 60)
+    static var jumpmanSize = CGSize(width: 32, height: 32)
+    static var flamesSize = CGSize(width: 24, height: 24)
+    static var pointsSize = CGSize(width: 32, height: 32)
+    static var explodeSize = CGSize(width: 32, height: 32)
+#elseif os(tvOS)
+    static var startText = "PRESS A TO START"
+    static var paulineSize = CGSize(width: 126, height: 72)
+    static var kongSize = CGSize(width: 120, height: 120)
+    static var jumpmanSize = CGSize(width: 64, height: 64)
+    static var flamesSize = CGSize(width: 48, height: 48)
+    static var pointsSize = CGSize(width: 64, height: 64)
+    static var explodeSize = CGSize(width: 64, height: 64)
+#endif
 }
 
 class GameManager: ObservableObject {
@@ -47,15 +66,16 @@ class GameManager: ObservableObject {
     var bonus = 5000
     ///Sprites of sorts....
     @ObservedObject
-    var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
+    var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: AppConstant.jumpmanSize)
     @ObservedObject
-    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: CGSize(width: 60, height:  60))
-    var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: CGSize(width: 63, height:  36))
+    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: AppConstant.kongSize)
+    var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: AppConstant.paulineSize)
     let heartBeat = 0.6
-    var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: CGSize(width: 24, height:  24))
+    var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: AppConstant.flamesSize)
     var collectibles:[Collectible] = []
-    @ObservedObject
     var elevatorsArray:ElevatorArray = ElevatorArray()
+    var lift:Lift = Lift()
+
     @ObservedObject
     var barrelArray:BarrelArray = BarrelArray()
     @ObservedObject
@@ -66,8 +86,8 @@ class GameManager: ObservableObject {
     var pieArray:PieArray = PieArray()
     
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
-    var explosion:Explode = Explode(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
-    var pointsShow:Points = Points(xPos: 0, yPos: 0, frameSize: CGSize(width: 32, height:  32))
+    var explosion:Explode = Explode(xPos: 0, yPos: 0, frameSize: AppConstant.explodeSize)
+    var pointsShow:Points = Points(xPos: 0, yPos: 0, frameSize: AppConstant.pointsSize)
     @ObservedObject
     var conveyorArray:ConveyorArray = ConveyorArray()
     @ObservedObject
@@ -89,7 +109,8 @@ class GameManager: ObservableObject {
         ServiceLocator.shared.register(service: elevatorsArray)
         ServiceLocator.shared.register(service: loftLadders)
         ServiceLocator.shared.register(service: soundFX)
-        
+        ServiceLocator.shared.register(service: jumpMan)
+
         ///Here we go, lets have a nice DisplayLink to update our model with the screen refresh.
         let displayLink:CADisplayLink = CADisplayLink(target: self, selector: #selector(refreshModel))
         displayLink.add(to: .main, forMode:.common)
@@ -108,35 +129,44 @@ class GameManager: ObservableObject {
         switch moveDirection {
         case .down:
             if gameState == .playing {
-                if jumpMan.canDecendLadder() {
-                    jumpMan.calculateLadderHeightDown()
+                if jumpMan.isClimbingDown || jumpMan.isClimbingUp {
+                    jumpMan.isClimbing = true
                     jumpMan.isClimbingDown = true
+                    jumpMan.isClimbingUp = false
+                } else if jumpMan.canDecendLadder() {
+                    jumpMan.decendStart()
                 }
-            }
+        }
         case .left:
             if gameState == .playing {
                 if jumpMan.canMoveLeft() {
-                    jumpMan.isWalkingLeft = true
+                    jumpMan.animateFrame = 0
+                    jumpMan.facing = .left
+                    jumpMan.isWalking = true
+                    jumpMan.wasWalking = true
                 }
             }
         case .right:
             if gameState == .playing {
                 if jumpMan.canMoveRight() {
-                    jumpMan.isWalkingRight = true
+                    jumpMan.animateFrame = 0
+                    jumpMan.isWalking = true
+                    jumpMan.facing = .right
+                    jumpMan.wasWalking = true
                 }
             }
         case .up:
             if gameState == .playing {
-                if jumpMan.canClimbLadder() {
-                    jumpMan.calculateLadderHeightUp()
+                if jumpMan.isClimbingUp || jumpMan.isClimbingDown {
+                    jumpMan.isClimbing = true
+                    jumpMan.isClimbingDown = false
                     jumpMan.isClimbingUp = true
+                } else if jumpMan.canClimbLadder() {
+                    jumpMan.asendStart()
                 }
             }
         case.stop:
-            jumpMan.isWalkingLeft = false
-            jumpMan.isWalkingRight = false
-            jumpMan.isClimbingDown = false
-            jumpMan.isClimbingUp = false
+            jumpMan.stop()
         }
     }
     
@@ -157,7 +187,7 @@ class GameManager: ObservableObject {
         if gameState == .playing {
             if !gameScreen.pause {
                 if !gameScreen.levelEnd {
-                    jumpMan.move()
+                    //jumpMan.move()
                     jumpMan.animate()
                 }
                 pauline.animate()
@@ -196,6 +226,7 @@ class GameManager: ObservableObject {
                             checkPieJumped(pie: pie)
                         }
                         conveyorArray.moveConveyors()
+                        jumpMan.conveyor(direction: pieArray.direction)
                         for fireBlob in fireBlobArray.fireblob {
                             fireBlob.animate()
                             if fireBlob.state == .moving {
@@ -222,7 +253,7 @@ class GameManager: ObservableObject {
                         checkFireBlobHit(fireBlob: fireBlob)
                         checkFireBlobJumped(fireBlob: fireBlob)
                     }
-                    elevatorsArray.move()
+                    lift.move()
                     springArray.move()
                 }
                 
@@ -270,9 +301,10 @@ class GameManager: ObservableObject {
     }
     
     func startGame() {
-        gameScreen.assetDimention = gameScreen.gameSize.width / Double(gameScreen.screenDimentionX - 1)
-        gameScreen.assetOffset = gameScreen.assetDimention / 8.0
+        gameScreen.assetDimension = gameScreen.gameSize.width / Double(gameScreen.screenDimensionX - 1)
+        gameScreen.assetDimensionStep = gameScreen.assetDimension / 8.0
         gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
+        jumpMan.setupJumpman()
         //setKongIntro()   // If we don't want the intro....
         startPlaying()
     }
@@ -317,6 +349,8 @@ class GameManager: ObservableObject {
         gameScreen.hasFlames = false
         gameScreen.hasLoftLadders = false
         jumpMan.facing = .right
+        jumpMan.gridOffsetX = 0
+        jumpMan.gridOffsetY = 0
         pauline.facing = .right
         pauline.isRescued = false
         switch gameScreen.level {
@@ -334,7 +368,7 @@ class GameManager: ObservableObject {
     }
     ///Bent Girder Level 1
     func setLevel1() {
-        jumpMan.setPosition(xPos: 6, yPos: 27)
+        jumpMan.setPosition(xPos: 0, yPos: 27)
         pauline.setPosition(xPos: 14, yPos: 3)
         kong.setPosition(xPos: 6, yPos: 7)
         pauline.isShowing = true
@@ -342,6 +376,7 @@ class GameManager: ObservableObject {
         gameScreen.hasFlames = false
         collectibles.append(Collectible(type: .hammer, xPos: 3, yPos: 9))
         collectibles.append(Collectible(type: .hammer, xPos: 20, yPos: 21))
+        jumpMan.calcFromPosition()
     }
     
     ///Pie Factory Level 2
@@ -382,12 +417,13 @@ class GameManager: ObservableObject {
         collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
         collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
         collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
-        elevatorsArray.add(direction: .up,part: .lift, xPos: 4, yPos: 26)
-        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 20)
-        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 14)
-        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 14)
-        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 20)
-        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 26)
+//        elevatorsArray.add(direction: .up,part: .lift, xPos: 4, yPos: 26)
+//        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 20)
+//        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 14)
+//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 14)
+//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 20)
+//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 26)
+//        
         elevatorsArray.add(direction: .up,part: .control, xPos: 4, yPos: 27)
         elevatorsArray.add(direction: .up,part: .control, xPos: 12, yPos: 27)
         elevatorsArray.add(direction: .down,part: .control, xPos: 4, yPos: 9)
@@ -475,32 +511,31 @@ class GameManager: ObservableObject {
         return distanceSquared <= radiusSumSquared
     }
     
-    //    func whatsAround() {
-    //        return
-    //        print("JumpMan Current position is X \(jumpMan.xPos) Y \(jumpMan.yPos)")
-    //        print("JumpMan Current screen position is \(jumpMan.position)")
-    //        print("JumpMan Current height offset is \(jumpMan.currentHeightOffset)")
-    //        print("Current Standing on is \(screenData[jumpMan.yPos][jumpMan.xPos].assetType)")
-    //        if jumpMan.xPos == 0 {
-    //            print("Nothing Behind")
-    //        } else {
-    //            print("Behind is \(screenData[jumpMan.yPos-1][jumpMan.xPos - 1].assetType)")
-    //        }
-    //        if jumpMan.xPos > gameScreen.screenDimentionX {
-    //            print("Nothing In front")
-    //        } else {
-    //            print("In front is \(screenData[jumpMan.yPos-1][jumpMan.xPos + 1].assetType)")
-    //        }
-    //        if jumpMan.yPos == 0 {
-    //            print("Nothing above")
-    //        } else {
-    //            print("Above is \(screenData[jumpMan.yPos - 1][jumpMan.xPos].assetType)")
-    //        }
-    //        if jumpMan.yPos == 27 {
-    //            print("Nothing Below")
-    //        } else {
-    //            print("Below is \(screenData[jumpMan.yPos + 1][jumpMan.xPos].assetType)")
-    //        }
-    //    }
+//        func whatsAround() {
+//             print("JumpMan Current position is X \(jumpMan.xPos) Y \(jumpMan.yPos)")
+//            print("JumpMan Current screen position is \(jumpMan.position)")
+//            print("JumpMan Current height offset is \(jumpMan.currentHeightOffset)")
+//            print("Current Standing on is \(screenData[jumpMan.yPos][jumpMan.xPos].assetType)")
+//            if jumpMan.xPos == 0 {
+//                print("Nothing Behind")
+//            } else {
+//                print("Behind is \(screenData[jumpMan.yPos-1][jumpMan.xPos - 1].assetType)")
+//            }
+//            if jumpMan.xPos > gameScreen.screenDimentionX {
+//                print("Nothing In front")
+//            } else {
+//                print("In front is \(screenData[jumpMan.yPos-1][jumpMan.xPos + 1].assetType)")
+//            }
+//            if jumpMan.yPos == 0 {
+//                print("Nothing above")
+//            } else {
+//                print("Above is \(screenData[jumpMan.yPos - 1][jumpMan.xPos].assetType)")
+//            }
+//            if jumpMan.yPos == 27 {
+//                print("Nothing Below")
+//            } else {
+//                print("Below is \(screenData[jumpMan.yPos + 1][jumpMan.xPos].assetType)")
+//            }
+//        }
     
 }

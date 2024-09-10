@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct InfoView: View {
+#if os(iOS)
+    static var starttextSize:CGFloat = 14
+#elseif os(tvOS)
+    static var starttextSize:CGFloat = 28
+#endif
     var body: some View {
         VStack {
 //            Spacer()
@@ -17,11 +22,11 @@ struct InfoView: View {
 //                .frame(width: 50, height: 50)
 //                .rotationEffect(.degrees(90))
             Spacer()
-            Text("Press Jump to Start")
+            Text(AppConstant.startText)
                 .foregroundStyle(.red)
-                .font(.custom("DonkeyKongClassicsNESExtended", size: 14))
+                .font(.custom("DonkeyKongClassicsNESExtended", size: InfoView.starttextSize))
 //            Spacer()
-        }.background(.introBackground)
+        }.background(.black)
     }
 }
 #Preview {

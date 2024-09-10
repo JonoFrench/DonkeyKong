@@ -19,8 +19,7 @@ final class Pauline:SwiftUISprite, Animatable, ObservableObject {
     @Published
     var facing:PaulineDirection = .right
 
-    var standing:[ImageResource] = [ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline2", bundle: .main),ImageResource(name: "Pauline3", bundle: .main),ImageResource(name: "Pauline4", bundle: .main)]
-    //var frameSize: CGSize = CGSize(width: 63, height:  36)
+    var standing:[ImageResource] = [ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline2", bundle: .main),ImageResource(name: "Pauline1", bundle: .main),ImageResource(name: "Pauline4", bundle: .main)]
     var isRescued = false
 
     override init(xPos: Int, yPos: Int, frameSize: CGSize) {

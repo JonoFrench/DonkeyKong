@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct HowHighView: View {
+#if os(iOS)
+    static var textSize:CGFloat = 12
+#elseif os(tvOS)
+    static var textSize:CGFloat = 24
+#endif
+
     var level:Int
     var body: some View {
         VStack {
@@ -26,7 +32,7 @@ struct HowHighView: View {
             }
             Text("How high can you get ?")
                 .foregroundStyle(.white)
-                .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
+                .font(.custom("DonkeyKongClassicsNESExtended", size: HowHighView.textSize))
         }.background(.black)
     }
 }
