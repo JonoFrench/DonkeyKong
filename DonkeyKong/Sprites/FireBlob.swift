@@ -58,7 +58,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
     var animateCounter: Int = 0
     
     let moveFrames = 4
-    var speed = AppConstant.fireBlobSpeed
+    var speed = GameConstants.fireBlobSpeed
     var moveCounter = 0
     var speedCounter = 0
     var dropHeight = 0.0

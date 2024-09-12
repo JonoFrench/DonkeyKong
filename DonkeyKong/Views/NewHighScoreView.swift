@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct NewHighScoreView: View {
-    @EnvironmentObject var manager: GameManager
-    @State private var initialIndex = 0
+    @ObservedObject var hiScores:DonkeyKongHighScores
     var body: some View {
         VStack {
             Spacer()
@@ -20,27 +19,26 @@ struct NewHighScoreView: View {
             Text("Enter your initials")
                 .foregroundStyle(.white)
                 .font(.custom("DonkeyKongClassicsNESExtended", size: 16))
-            //Spacer()
 
             HStack {
                 Spacer()
-                Text(String(manager.hiScores.letterArray[0]))
+                Text(String(hiScores.letterArray[0]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.hiScores.letterIndex == 0 ? Color.red : Color.white , width: 2)
+                    .border(hiScores.letterIndex == 0 ? Color.red : Color.white , width: 2)
                 Spacer()
-                Text(String(manager.hiScores.letterArray[1]))
+                Text(String(hiScores.letterArray[1]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.hiScores.letterIndex == 1 ? Color.red : Color.white, width: 2)
+                    .border(hiScores.letterIndex == 1 ? Color.red : Color.white, width: 2)
                 Spacer()
-                Text(String(manager.hiScores.letterArray[2]))
+                Text(String(hiScores.letterArray[2]))
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: 38))
                     .padding() // Add some padding around the letter
-                    .border(manager.hiScores.letterIndex == 2 ? Color.red : Color.white, width: 2)
+                    .border(hiScores.letterIndex == 2 ? Color.red : Color.white, width: 2)
                 Spacer()
                 
             }
@@ -48,6 +46,7 @@ struct NewHighScoreView: View {
             Text("Press Up / Down")
                 .foregroundStyle(.red)
                 .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
+            Spacer()
             Text("Jump to select")
                 .foregroundStyle(.red)
                 .font(.custom("DonkeyKongClassicsNESExtended", size: 12))
@@ -57,9 +56,3 @@ struct NewHighScoreView: View {
     }
 }
 
-#Preview {
-    let previewEnvObject = GameManager()
-    return NewHighScoreView()
-        .environmentObject(previewEnvObject)
-    
-}

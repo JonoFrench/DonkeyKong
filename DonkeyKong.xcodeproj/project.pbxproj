@@ -85,6 +85,7 @@
 		34AE2C342C82734000656DBF /* Elevator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C332C82734000656DBF /* Elevator.swift */; };
 		34AE2C362C83BD8C00656DBF /* Spring.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C352C83BD8C00656DBF /* Spring.swift */; };
 		34AE2C382C83BDB000656DBF /* SpringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AE2C372C83BDB000656DBF /* SpringView.swift */; };
+		34DF5E7E2C9320B600BB79D6 /* GameOverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34DF5E7D2C9320B600BB79D6 /* GameOverView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -168,6 +169,7 @@
 		34AE2C332C82734000656DBF /* Elevator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elevator.swift; sourceTree = "<group>"; };
 		34AE2C352C83BD8C00656DBF /* Spring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spring.swift; sourceTree = "<group>"; };
 		34AE2C372C83BDB000656DBF /* SpringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpringView.swift; sourceTree = "<group>"; };
+		34DF5E7D2C9320B600BB79D6 /* GameOverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOverView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +270,7 @@
 				343E0DF62C6F66A800F79DA0 /* HowHighView.swift */,
 				3476458B2C788D7F00E8AE5F /* HowHighLineView.swift */,
 				34AE2C2A2C80919500656DBF /* JoyPadView2.swift */,
+				34DF5E7D2C9320B600BB79D6 /* GameOverView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -438,6 +441,7 @@
 				343E0DB12C68D55200F79DA0 /* HighScores+CoreDataClass.swift in Sources */,
 				343E0DBE2C68DF3200F79DA0 /* StartView.swift in Sources */,
 				34AE2C2B2C80919500656DBF /* JoyPadView2.swift in Sources */,
+				34DF5E7E2C9320B600BB79D6 /* GameOverView.swift in Sources */,
 				343E0DE22C6A01B400F79DA0 /* ImageView.swift in Sources */,
 				34AE2C212C7B496100656DBF /* PointsView.swift in Sources */,
 				347645722C70DAA900E8AE5F /* PaulineView.swift in Sources */,

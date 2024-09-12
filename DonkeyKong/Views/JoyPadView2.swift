@@ -9,7 +9,10 @@ import SwiftUI
 
 struct JoyPadView2: View {
     @EnvironmentObject var manager: GameManager
+    @GestureState private var _isPressingUp: Bool = false
     @GestureState private var _isPressingDown: Bool = false
+    @GestureState private var _isPressingLeft: Bool = false
+    @GestureState private var _isPressingRight: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,17 +25,22 @@ struct JoyPadView2: View {
                     .rotationEffect(.degrees(90))
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
-                        .updating($_isPressingDown) { value, state, transaction in
+                        .updating($_isPressingUp) { value, state, transaction in
                             switch value {
                             case .second(true, nil): //This means the first Gesture completed
                                 state = true
-                                manager.moveDirection = .up
+                                if manager.gameState == .playing {                                
+                                    manager.moveDirection = .up
+                                }
                             default: break
                             }
                         })
-                    .onChange(of: _isPressingDown) {oldValue, value in
+                    .onChange(of: _isPressingUp) {oldValue, value in
                         if !value {
-                            manager.moveDirection = .stop
+                            if manager.gameState == .playing {                            manager.moveDirection = .stop
+                            } else if manager.gameState == .highscore {
+                                manager.hiScores.letterUp()
+                            }
                         }
                     }
                 Spacer()
@@ -45,7 +53,7 @@ struct JoyPadView2: View {
                     .frame(width: 60, height: 60)
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
-                        .updating($_isPressingDown) { value, state, transaction in
+                        .updating($_isPressingLeft) { value, state, transaction in
                             switch value {
                             case .second(true, nil): //This means the first Gesture completed
                                 state = true
@@ -53,12 +61,12 @@ struct JoyPadView2: View {
                             default: break
                             }
                         })
-                    .onChange(of: _isPressingDown) {oldValue, value in
+                    .onChange(of: _isPressingLeft) {oldValue, value in
                         if !value {
                             manager.moveDirection = .stop
                         }
                     }
-
+                
                 
                 Spacer()
                 if manager.gameState == .intro {
@@ -96,7 +104,7 @@ struct JoyPadView2: View {
                 
                     .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
                         .sequenced(before: LongPressGesture(minimumDuration: .infinity))
-                        .updating($_isPressingDown) { value, state, transaction in
+                        .updating($_isPressingRight) { value, state, transaction in
                             switch value {
                             case .second(true, nil): //This means the first Gesture completed
                                 state = true
@@ -104,7 +112,7 @@ struct JoyPadView2: View {
                             default: break
                             }
                         })
-                    .onChange(of: _isPressingDown) {oldValue, value in
+                    .onChange(of: _isPressingRight) {oldValue, value in
                         if !value {
                             manager.moveDirection = .stop
                         }
@@ -124,13 +132,18 @@ struct JoyPadView2: View {
                             switch value {
                             case .second(true, nil): //This means the first Gesture completed
                                 state = true
-                                manager.moveDirection = .down
+                                if manager.gameState == .playing {
+                                    manager.moveDirection = .down
+                                }
                             default: break
                             }
                         })
                     .onChange(of: _isPressingDown) {oldValue, value in
                         if !value {
-                            manager.moveDirection = .stop
+                            if manager.gameState == .playing {                            manager.moveDirection = .stop
+                            } else if manager.gameState == .highscore {
+                                manager.hiScores.letterDown()
+                            }
                         }
                     }
                 Spacer()

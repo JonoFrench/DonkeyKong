@@ -23,7 +23,6 @@ struct ContentViewTV: View {
                         .background(.black)
                     if manager.gameState == .intro {
                         IntroView()
-                        //.frame(maxWidth: .infinity)
                             .background(.clear)
                     }
                     else if manager.gameState == .kongintro {
@@ -40,18 +39,16 @@ struct ContentViewTV: View {
                             .background(.clear)
                             .zIndex(1.0)
                     }
-                    //                else if manager.gameState == .highscore {
-                    //                    NewHighScoreView()
-                    //                        .background(.clear)
-                    //                        .zIndex(1.0)
-                    //                }
+                    else if manager.gameState == .highscore {
+                        NewHighScoreView(hiScores: manager.hiScores)
+                            .background(.clear)
+                            .zIndex(1.0)
+                    }
                     Spacer()
                     Spacer()
                     HStack {
                         Spacer()
-
                     }
-
                 }.background(.black)
                 
             }.frame(width: (UIScreen.main.bounds.width / 2) - 120 , height: UIScreen.main.bounds.height,alignment: .center)

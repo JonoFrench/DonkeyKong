@@ -30,13 +30,15 @@ struct ControlsView: View {
                             manager.startGame()
                         } else if manager.gameState == .playing {
                             if manager.jumpMan.canJump() {
-                                if manager.jumpMan.isWalking  {
+                                if manager.jumpMan.isWalking || manager.jumpMan.onLiftUp || manager.jumpMan.onLiftDown  {
                                     manager.jumpMan.isWalking = false
                                     manager.jumpMan.isJumping = true
                                 } else {
                                     manager.jumpMan.isJumpingUp = true
                                 }
                             }
+                        } else if manager.gameState == .highscore {
+                            manager.hiScores.nextLetter()
                         }
                     }
 //                    .simultaneousGesture(TapGesture()

@@ -17,7 +17,7 @@ enum KongDirection {
 }
 final class Kong:SwiftUISprite, ObservableObject {
     static var animateFrames: Int = 9
-    static var speed:Int = AppConstant.kongSpeed
+    static var speed:Int = GameConstants.kongSpeed
     static var moveFrames = 4
     
     var animateCounter: Int = 0
@@ -195,20 +195,32 @@ final class Kong:SwiftUISprite, ObservableObject {
     }
     
     func animateAngry() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
-            if self.state == KongState.sitting {
-                currentFrame = kongAngryLeft
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if !resolvedInstance.levelEnd && !resolvedInstance.gameOver {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [self] in
                     if self.state == KongState.sitting {
-                        currentFrame = kongAngryRight
+                        currentFrame = kongAngryLeft
+                    }
+                    if !resolvedInstance.levelEnd {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
                             if self.state == KongState.sitting {
-                                currentFrame = kongAngryLeft
+                                currentFrame = kongAngryRight
+                            }
+                            if !resolvedInstance.levelEnd {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
                                     if self.state == KongState.sitting {
-                                        currentFrame = kongFacing
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            NotificationCenter.default.post(name: .notificationKongAngry, object: nil)
+                                        currentFrame = kongAngryLeft
+                                    }
+                                    if !resolvedInstance.levelEnd {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+                                            if self.state == KongState.sitting {
+                                                currentFrame = kongFacing
+                                            }
+                                            if !resolvedInstance.levelEnd {
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                    NotificationCenter.default.post(name: .notificationKongAngry, object: nil)
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -29,7 +29,7 @@ final class ElevatorArray: ObservableObject {
 }
 
 final class Elevator:SwiftUISprite,Moveable, ObservableObject {
-    static var speed: Int = AppConstant.elevatorSpeed
+    static var speed: Int = GameConstants.elevatorSpeed
     
     var speedCounter: Int = 0
     var direction: ElevatorDirection = .up
@@ -108,18 +108,18 @@ final class Elevator:SwiftUISprite,Moveable, ObservableObject {
 }
 
 final class Lift {
-    static var speed: Int = AppConstant.elevatorSpeed
+    static var speed: Int = GameConstants.elevatorSpeed
     
     var speedCounter: Int = 0
     var direction: ElevatorDirection = .up
     let moveFrames = 8
     var moveCounter = 0
-
     func move() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve(), let jumpManInstance: JumpMan = ServiceLocator.shared.resolve() {
             let moveDistance = resolvedInstance.assetDimension / 8
             speedCounter += 1
             if speedCounter == Elevator.speed {
+                resolvedInstance.farCount += 1
                 speedCounter = 0
                 moveCounter += 1
                 if moveCounter == moveFrames {
@@ -128,11 +128,11 @@ final class Lift {
                     movedown()
                     if jumpManInstance.onLiftUp {
                         jumpManInstance.yPos -= 1
-                        jumpManInstance.setPositionY()
+                        jumpManInstance.position.y -= moveDistance
                     }
                     if jumpManInstance.onLiftDown {
                         jumpManInstance.yPos += 1
-                        jumpManInstance.setPositionY()
+                        jumpManInstance.position.y += moveDistance
                     }
                 } else {
                     if jumpManInstance.onLiftUp {

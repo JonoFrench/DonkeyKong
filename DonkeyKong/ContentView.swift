@@ -36,11 +36,11 @@ struct ContentView: View {
                         .background(.clear)
                         .zIndex(1.0)
                 }
-//                else if manager.gameState == .highscore {
-//                    NewHighScoreView()
-//                        .background(.clear)
-//                        .zIndex(1.0)
-//                }
+                else if manager.gameState == .highscore {
+                    NewHighScoreView(hiScores: manager.hiScores)
+                        .background(.clear)
+                        .zIndex(1.0)
+                }
                 Spacer()
                 Spacer()
                 Spacer()

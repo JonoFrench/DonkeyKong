@@ -112,6 +112,12 @@ struct GameView: View {
                     .position(loftLadders.rightLadder.position)
                     .zIndex(1.81)
             }
+            if manager.gameScreen.gameOver {
+                GameOverView(manager: _manager)
+                    .position(x:manager.gameScreen.gameSize.width / 2,y: manager.gameScreen.gameSize.height / 2)
+                    .zIndex(5)
+
+            }
         }.zIndex(1.0)
     }
 }

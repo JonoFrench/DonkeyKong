@@ -19,10 +19,10 @@ enum BarrelColor {
 final class BarrelArray: ObservableObject {
     @Published var barrels: [Barrel] = []
 #if os(iOS)
-    static let rollingSize = CGSize(width: 16, height:  16)
+    static let rollingSize = CGSize(width: 20, height:  20)
     static let thrownSize = CGSize(width: 24, height:  24)
 #elseif os(tvOS)
-    static let rollingSize = CGSize(width: 32, height:  32)
+    static let rollingSize = CGSize(width: 40, height:  40)
     static let thrownSize = CGSize(width: 48, height:  48)
 #endif
     static let rollingX = 9
@@ -53,7 +53,7 @@ final class BarrelArray: ObservableObject {
 
 final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
     static var animateFrames: Int = 9
-    static var speed:Int = AppConstant.barrelSpeed
+    static var speed:Int = GameConstants.barrelSpeed
     var animateCounter: Int = 0
     var speedCounter:Int = 0
     

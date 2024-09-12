@@ -27,6 +27,7 @@ final class ScreenData:ObservableObject {
         }
     }
     var levelEnd = false
+    var gameOver = false
     var hasFlames = false
     var hasExplosion = false
     var hasPoints = false
@@ -36,6 +37,7 @@ final class ScreenData:ObservableObject {
     var hasLoftLadders = false
     var girderPlugs = 0
     var pause = false
+    var farCount = 0
 
     /// Set Ladders for intro
     func setLadders() {

@@ -190,7 +190,7 @@ class SwiftUISprite {
                 return true
             }
             
-            if resolvedInstance.level == AppConstant.PieFactory {
+            if resolvedInstance.level == GameConstants.PieFactory {
                 if let resolvedLadders: Ladders = ServiceLocator.shared.resolve() {
                     if resolvedLadders.leftLadder.state == .open {
                         if resolvedInstance.screenData[yPos - 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {
@@ -218,7 +218,7 @@ class SwiftUISprite {
                     return true
                 }
                 
-                if resolvedInstance.level == AppConstant.PieFactory {
+                if resolvedInstance.level == GameConstants.PieFactory {
                     if let resolvedLadders: Ladders = ServiceLocator.shared.resolve() {
                         if resolvedLadders.leftLadder.state == .open {
                             if resolvedInstance.screenData[yPos + 1][xPos].assetType == .blankLadder || resolvedInstance.screenData[yPos][xPos].assetType == .blankLadder {

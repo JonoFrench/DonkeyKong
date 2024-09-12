@@ -19,7 +19,7 @@ enum JoyPad {
     case left,right,up,down,stop
 }
 
-struct AppConstant {
+struct GameConstants {
     static let Barrels = 1
     static let PieFactory = 2
     static let Elevators = 3
@@ -66,12 +66,12 @@ class GameManager: ObservableObject {
     var bonus = 5000
     ///Sprites of sorts....
     @ObservedObject
-    var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: AppConstant.jumpmanSize)
+    var jumpMan:JumpMan = JumpMan(xPos: 0, yPos: 0, frameSize: GameConstants.jumpmanSize)
     @ObservedObject
-    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: AppConstant.kongSize)
-    var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: AppConstant.paulineSize)
+    var kong:Kong = Kong(xPos: 0, yPos: 0, frameSize: GameConstants.kongSize)
+    var pauline:Pauline = Pauline(xPos: 0, yPos: 0, frameSize: GameConstants.paulineSize)
     let heartBeat = 0.6
-    var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: AppConstant.flamesSize)
+    var flames:Flames = Flames(xPos: 0, yPos: 0, frameSize: GameConstants.flamesSize)
     var collectibles:[Collectible] = []
     var elevatorsArray:ElevatorArray = ElevatorArray()
     var lift:Lift = Lift()
@@ -86,8 +86,8 @@ class GameManager: ObservableObject {
     var pieArray:PieArray = PieArray()
     
     let heart = Collectible(type: .heart, xPos: 15, yPos: 2)
-    var explosion:Explode = Explode(xPos: 0, yPos: 0, frameSize: AppConstant.explodeSize)
-    var pointsShow:Points = Points(xPos: 0, yPos: 0, frameSize: AppConstant.pointsSize)
+    var explosion:Explode = Explode(xPos: 0, yPos: 0, frameSize: GameConstants.explodeSize)
+    var pointsShow:Points = Points(xPos: 0, yPos: 0, frameSize: GameConstants.pointsSize)
     @ObservedObject
     var conveyorArray:ConveyorArray = ConveyorArray()
     @ObservedObject
@@ -99,6 +99,8 @@ class GameManager: ObservableObject {
             }
         }
     }
+    /// So we can turn off Jumpman collisions to test
+    var testKilled = false
     
     init() {
         moveDirection = .stop
@@ -115,6 +117,16 @@ class GameManager: ObservableObject {
         let displayLink:CADisplayLink = CADisplayLink(target: self, selector: #selector(refreshModel))
         displayLink.add(to: .main, forMode:.common)
         notificationObservers()
+    }
+    
+    func startGame() {
+        gameScreen.assetDimension = gameScreen.gameSize.width / Double(gameScreen.screenDimensionX - 1)
+        gameScreen.assetDimensionStep = gameScreen.assetDimension / 8.0
+        gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
+        jumpMan.setupJumpman()
+        testKilled = false
+        //setKongIntro()   // If we don't want the intro....
+        startPlaying()
     }
     
     func addPoints(value:Int,position:CGPoint) {
@@ -184,25 +196,24 @@ class GameManager: ObservableObject {
             }
         }
         
-        if gameState == .playing {
+        if gameState == .playing  && !gameScreen.gameOver {
             if !gameScreen.pause {
                 if !gameScreen.levelEnd {
-                    //jumpMan.move()
                     jumpMan.animate()
                 }
                 pauline.animate()
                 if gameScreen.hasFlames {
                     flames.animate()
                 }
-                if gameScreen.level == AppConstant.Barrels {
+                if gameScreen.level == GameConstants.Barrels {
                     if !gameScreen.levelEnd {
                         throwBarrel()
-                        
                         for barrel in barrelArray.barrels {
                             barrel.animate()
                             barrel.move()
                             checkBarrelHit(barrel: barrel)
                             checkBarrelJumped(barrel: barrel)
+                            checkJumpManHit(barrel: barrel)
                         }
                         
                         for fireBlob in fireBlobArray.fireblob {
@@ -210,13 +221,14 @@ class GameManager: ObservableObject {
                             fireBlob.state == .hopping ? fireBlob.hop(state: .moving) : fireBlob.move()
                             checkFireBlobHit(fireBlob: fireBlob)
                             checkFireBlobJumped(fireBlob: fireBlob)
+                            checkJumpManHit(fireBlob: fireBlob)
                         }
                     } else {
                         kong.animateExit(level: gameScreen.level)
                     }
                 }
                 
-                if gameScreen.level == AppConstant.PieFactory {
+                if gameScreen.level == GameConstants.PieFactory {
                     if !gameScreen.levelEnd {
                         kong.moveSlide()
                         addPies()
@@ -224,6 +236,7 @@ class GameManager: ObservableObject {
                         for pie in pieArray.pies {
                             checkPieHit(pie: pie)
                             checkPieJumped(pie: pie)
+                            checkJumpManHit(pie: pie)
                         }
                         conveyorArray.moveConveyors()
                         jumpMan.conveyor(direction: pieArray.direction)
@@ -238,6 +251,7 @@ class GameManager: ObservableObject {
                             }
                             checkFireBlobHit(fireBlob: fireBlob)
                             checkFireBlobJumped(fireBlob: fireBlob)
+                            checkJumpManHit(fireBlob: fireBlob)
                         }
                         loftLadders.animate()
                     } else {
@@ -245,25 +259,35 @@ class GameManager: ObservableObject {
                     }
                 }
                 
-                if gameScreen.level == AppConstant.Elevators {
-                    throwSpring()
-                    for fireBlob in fireBlobArray.fireblob {
-                        fireBlob.animate()
-                        fireBlob.move()
-                        checkFireBlobHit(fireBlob: fireBlob)
-                        checkFireBlobJumped(fireBlob: fireBlob)
+                if gameScreen.level == GameConstants.Elevators {
+                    if !gameScreen.levelEnd {
+                        throwSpring()
+                        for fireBlob in fireBlobArray.fireblob {
+                            fireBlob.animate()
+                            fireBlob.move()
+                            checkFireBlobHit(fireBlob: fireBlob)
+                            checkFireBlobJumped(fireBlob: fireBlob)
+                            checkJumpManHit(fireBlob: fireBlob)
+                        }
+                        springArray.move()
+                        for spring in springArray.springs {
+                            checkJumpManHit(spring: spring)
+                        }
+                        lift.move()
                     }
-                    lift.move()
-                    springArray.move()
+                    else {
+                        kong.animateExit(level: gameScreen.level)
+                    }
                 }
                 
-                if gameScreen.level == AppConstant.GirderPlugs {
+                if gameScreen.level == GameConstants.GirderPlugs {
                     if !gameScreen.levelEnd {
                         for fireBlob in fireBlobArray.fireblob {
                             fireBlob.animate()
                             fireBlob.move()
                             checkFireBlobHit(fireBlob: fireBlob)
                             checkFireBlobJumped(fireBlob: fireBlob)
+                            checkJumpManHit(fireBlob: fireBlob)
                             fireBlob.hasHammer = jumpMan.hasHammer
                         }
                     } else {
@@ -300,17 +324,10 @@ class GameManager: ObservableObject {
         kong.runIntro()
     }
     
-    func startGame() {
-        gameScreen.assetDimension = gameScreen.gameSize.width / Double(gameScreen.screenDimensionX - 1)
-        gameScreen.assetDimensionStep = gameScreen.assetDimension / 8.0
-        gameScreen.verticalOffset =  -50.0 //(gameSize.height - (assetDimention * 25.0))
-        jumpMan.setupJumpman()
-        //setKongIntro()   // If we don't want the intro....
-        startPlaying()
-    }
-    
     func startPlaying() {
+        gameScreen.pause = false
         gameScreen.levelEnd = false
+        gameScreen.gameOver = false
         bonus = 4000
         setDataForLevel()
         gameState = .playing
@@ -318,18 +335,18 @@ class GameManager: ObservableObject {
         kong.currentFrame = kong.kongFacing
         kong.state = .sitting
         //startHeartBeat()
-        if gameScreen.level == AppConstant.Barrels {
+        if gameScreen.level == GameConstants.Barrels {
             kong.isThrowing = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [self] in
                 throwBarrelDown()
             }
-        } else if gameScreen.level == AppConstant.PieFactory {
+        } else if gameScreen.level == GameConstants.PieFactory {
             kong.animateAngry()
             swapConveyorDirection()
-        } else if gameScreen.level == AppConstant.Elevators {
+        } else if gameScreen.level == GameConstants.Elevators {
             kong.animateAngry()
             
-        } else if gameScreen.level == AppConstant.GirderPlugs {
+        } else if gameScreen.level == GameConstants.GirderPlugs {
             kong.animateAngry()
             addLevel4FireBlobs()
         }
@@ -348,19 +365,17 @@ class GameManager: ObservableObject {
         gameScreen.hasSprings = false
         gameScreen.hasFlames = false
         gameScreen.hasLoftLadders = false
-        jumpMan.facing = .right
-        jumpMan.gridOffsetX = 0
-        jumpMan.gridOffsetY = 0
+        jumpMan.reset()
         pauline.facing = .right
         pauline.isRescued = false
         switch gameScreen.level {
-        case AppConstant.Barrels:
+        case GameConstants.Barrels:
             setLevel1()
-        case AppConstant.PieFactory:
+        case GameConstants.PieFactory:
             setLevel2()
-        case AppConstant.Elevators:
+        case GameConstants.Elevators:
             setLevel3()
-        case AppConstant.GirderPlugs:
+        case GameConstants.GirderPlugs:
             setLevel4()
         default:
             setLevel1()
@@ -368,7 +383,7 @@ class GameManager: ObservableObject {
     }
     ///Bent Girder Level 1
     func setLevel1() {
-        jumpMan.setPosition(xPos: 0, yPos: 27)
+        jumpMan.setPosition(xPos: 7, yPos: 27)
         pauline.setPosition(xPos: 14, yPos: 3)
         kong.setPosition(xPos: 6, yPos: 7)
         pauline.isShowing = true
@@ -410,20 +425,14 @@ class GameManager: ObservableObject {
     ///Lifts or Elevators Level 3
     func setLevel3() {
         gameScreen.hasSprings  = true
-        jumpMan.setPosition(xPos: 1, yPos: 25)
+//        jumpMan.setPosition(xPos: 1, yPos: 25)
+        jumpMan.setPosition(xPos: 7, yPos: 13)
         pauline.setPosition(xPos: 14, yPos: 3)
         pauline.isShowing = true
         kong.setPosition(xPos: 5, yPos: 7)
         collectibles.append(Collectible(type: .phone, xPos: 27, yPos: 9))
         collectibles.append(Collectible(type: .umbrella, xPos: 1, yPos: 13))
         collectibles.append(Collectible(type: .hat, xPos: 9, yPos: 22))
-//        elevatorsArray.add(direction: .up,part: .lift, xPos: 4, yPos: 26)
-//        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 20)
-//        elevatorsArray.add(direction: .up,part: .lift,xPos: 4, yPos: 14)
-//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 14)
-//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 20)
-//        elevatorsArray.add(direction: .down,part: .lift,xPos: 12, yPos: 26)
-//        
         elevatorsArray.add(direction: .up,part: .control, xPos: 4, yPos: 27)
         elevatorsArray.add(direction: .up,part: .control, xPos: 12, yPos: 27)
         elevatorsArray.add(direction: .down,part: .control, xPos: 4, yPos: 9)
@@ -449,7 +458,7 @@ class GameManager: ObservableObject {
     }
     
     func startBonusCountdown() {
-        if !gameScreen.levelEnd {
+        if !gameScreen.levelEnd && !gameScreen.gameOver {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
                 bonus -= 100
                 if bonus > 0 && gameState == .playing {

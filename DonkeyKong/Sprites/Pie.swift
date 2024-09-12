@@ -46,7 +46,7 @@ final class Pie:SwiftUISprite, Moveable, ObservableObject {
     static let pieSize = CGSize(width: 64, height:  36)
 #endif
     static var animateFrames: Int = 2
-    static var speed: Int = AppConstant.pieSpeed
+    static var speed: Int = GameConstants.pieSpeed
     static var moveFrames = 4
     static var fireConveyor = 12
     static var oilDrumLeft = 14

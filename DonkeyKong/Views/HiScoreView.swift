@@ -43,7 +43,7 @@ struct HiScoreView: View {
                 }
             }
             Spacer()
-            Text(AppConstant.startText)
+            Text(GameConstants.startText)
                 .foregroundStyle(.red)
                 .font(.custom("DonkeyKongClassicsNESExtended", size: HiScoreView.starttextSize))
 

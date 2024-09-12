@@ -50,7 +50,7 @@ extension GameManager {
         var barrelPos = barrel.position
         barrelPos.y -= barrel.frameSize.height
 
-        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: barrelPos, diameter2: barrel.frameSize.width / 2) {
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width, center2: barrelPos, diameter2: barrel.frameSize.width) {
             addPoints(value: 100, position: barrel.position)
             soundFX.barrelJumpSound()
         }
@@ -81,4 +81,35 @@ extension GameManager {
         }
     }
     
+    func checkJumpManHit(barrel:Barrel) {
+        guard !jumpMan.isDying && !testKilled else { return }
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: barrel.position, diameter2: barrel.frameSize.width / 2) {
+            barrelArray.remove(id: barrel.id)
+            jumpMan.dead()
+        }
+    }
+ 
+    func checkJumpManHit(fireBlob:FireBlob) {
+        guard !jumpMan.isDying && !testKilled else { return }
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: fireBlob.position, diameter2: fireBlob.frameSize.width / 2) {
+            fireBlobArray.remove(id: fireBlob.id)
+            jumpMan.dead()
+        }
+    }
+
+    func checkJumpManHit(pie:Pie) {
+        guard !jumpMan.isDying && !testKilled else { return }
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: pie.position, diameter2: pie.frameSize.width / 2) {
+            pieArray.remove(id: pie.id)
+            jumpMan.dead()
+        }
+    }
+
+    func checkJumpManHit(spring:Spring) {
+        guard !jumpMan.isDying && !testKilled else { return }
+        if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: spring.position, diameter2: spring.frameSize.width / 2) {
+            springArray.remove(id: spring.id)
+            jumpMan.dead()
+        }
+    }
 }

@@ -23,7 +23,9 @@ extension Notification.Name {
     static let notificationKongAngry = Notification.Name("NotificationKongAngry")
     static let notificationRemoveSpring = Notification.Name("NotificationRemoveSpring")
     static let notificationGirderPlug = Notification.Name("NotificationGirderPlug")
-    
+    static let notificationJumpManDead = Notification.Name("NotificationJumpManDead")
+    static let notificationNewGame = Notification.Name("NotificationNewGame")
+
 }
 
 extension GameManager {
@@ -42,6 +44,10 @@ extension GameManager {
         NotificationCenter.default.addObserver(self, selector: #selector(self.kongAngry(notification:)), name: .notificationKongAngry, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.removeSpring(notification:)), name: .notificationRemoveSpring, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.girderPlug(notification:)), name: .notificationGirderPlug, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.jumpmanDead(notification:)), name: .notificationJumpManDead, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.nextGame(notification:)), name: .notificationNewGame, object: nil)
+
+        
         
 #if os(tvOS)
 
@@ -136,10 +142,33 @@ extension GameManager {
         }
     }
     
+    @objc func jumpmanDead(notification: Notification) {
+        lives -= 1
+        if lives > 0 {
+            soundFX.howHighSound()
+            showHowHighView(notification: notification)
+        } else {
+            gameScreen.gameOver = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [self] in
+                if hiScores.isNewHiScore(score: score) {
+                    hiScores.resetInput()
+                    gameState = .highscore
+                } else {
+                    gameState = .intro
+                }
+            }
+        }
+    }
+
+    
     @objc func nextLevel(notification: Notification) {
         gameScreen.level += 1
         soundFX.howHighSound()
         showHowHighView(notification: notification)
+    }
+    
+    @objc func nextGame(notification: Notification) {
+        gameState = .intro
     }
     
     @objc func showHowHighView(notification: Notification){
@@ -156,6 +185,7 @@ extension GameManager {
         barrelArray.barrels.removeAll()
         fireBlobArray.fireblob.removeAll()
         pieArray.pies.removeAll()
+        springArray.springs.removeAll()
         kong.isThrowing = true
         pauline.isRescued = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in

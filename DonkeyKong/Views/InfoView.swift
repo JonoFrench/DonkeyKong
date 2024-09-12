@@ -22,7 +22,7 @@ struct InfoView: View {
 //                .frame(width: 50, height: 50)
 //                .rotationEffect(.degrees(90))
             Spacer()
-            Text(AppConstant.startText)
+            Text(GameConstants.startText)
                 .foregroundStyle(.red)
                 .font(.custom("DonkeyKongClassicsNESExtended", size: InfoView.starttextSize))
 //            Spacer()

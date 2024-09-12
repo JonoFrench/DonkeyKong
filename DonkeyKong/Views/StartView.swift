@@ -31,7 +31,7 @@ struct StartView: View {
                     .foregroundStyle(.white)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: StartView.copyTextSize))
                 Spacer()
-                Text(AppConstant.startText)
+                Text(GameConstants.startText)
                     .foregroundStyle(.red)
                     .font(.custom("DonkeyKongClassicsNESExtended", size: StartView.starttextSize))
                 //Spacer()
