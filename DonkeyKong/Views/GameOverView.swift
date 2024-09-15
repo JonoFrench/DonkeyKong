@@ -16,14 +16,16 @@ struct GameOverView: View {
 #endif
 
     var body: some View {
-        Rectangle()
-            .fill(.blue)
-            .frame(width: manager.gameScreen.gameSize.width / 1.50,height: manager.gameScreen.gameSize.width / 1.50,alignment: .center)
-            .overlay(alignment: .center, content: {
-                Text("GAME OVER")
-                    .foregroundStyle(.white)
-                    .font(.custom("DonkeyKongClassicsNESExtended", size: GameOverView.textSize))
-           })
+        ZStack {
+            Rectangle()
+                .fill(.black)
+                .frame(width: manager.gameScreen.gameSize.width / 1.50,height: manager.gameScreen.gameSize.width / 4.0,alignment: .center)
+                .overlay(alignment: .center, content: {
+                    Text("GAME OVER")
+                        .foregroundStyle(.cyan)
+                        .font(.custom("DonkeyKongClassicsNESExtended", size: GameOverView.textSize))
+                })
+        }
     }
 }
 

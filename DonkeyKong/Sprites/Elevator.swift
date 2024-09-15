@@ -119,7 +119,6 @@ final class Lift {
             let moveDistance = resolvedInstance.assetDimension / 8
             speedCounter += 1
             if speedCounter == Elevator.speed {
-                resolvedInstance.farCount += 1
                 speedCounter = 0
                 moveCounter += 1
                 if moveCounter == moveFrames {
@@ -129,10 +128,18 @@ final class Lift {
                     if jumpManInstance.onLiftUp {
                         jumpManInstance.yPos -= 1
                         jumpManInstance.position.y -= moveDistance
+                        if jumpManInstance.yPos <= 9 {
+                            jumpManInstance.dead()
+                            return
+                        }
                     }
                     if jumpManInstance.onLiftDown {
                         jumpManInstance.yPos += 1
                         jumpManInstance.position.y += moveDistance
+                        if jumpManInstance.yPos > 26 {
+                            jumpManInstance.dead()
+                            return
+                        }
                     }
                 } else {
                     if jumpManInstance.onLiftUp {

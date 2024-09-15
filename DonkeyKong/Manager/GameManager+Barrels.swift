@@ -10,7 +10,7 @@ import Foundation
 extension GameManager {
     
     func throwBarrel(){
-        if Int.random(in: 0..<300) == 25 && !kong.isThrowing {
+        if Int.random(in: 0..<200) == 25 && !kong.isThrowing {
             if Int.random(in: 0..<10) == 5 {
                 throwBarrelDown()
             } else {
@@ -82,7 +82,7 @@ extension GameManager {
     }
     
     func checkJumpManHit(barrel:Barrel) {
-        guard !jumpMan.isDying && !testKilled else { return }
+        guard !jumpMan.isDying && !turnOffCollisions else { return }
         if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: barrel.position, diameter2: barrel.frameSize.width / 2) {
             barrelArray.remove(id: barrel.id)
             jumpMan.dead()
@@ -90,7 +90,7 @@ extension GameManager {
     }
  
     func checkJumpManHit(fireBlob:FireBlob) {
-        guard !jumpMan.isDying && !testKilled else { return }
+        guard !jumpMan.isDying && !turnOffCollisions else { return }
         if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: fireBlob.position, diameter2: fireBlob.frameSize.width / 2) {
             fireBlobArray.remove(id: fireBlob.id)
             jumpMan.dead()
@@ -98,7 +98,7 @@ extension GameManager {
     }
 
     func checkJumpManHit(pie:Pie) {
-        guard !jumpMan.isDying && !testKilled else { return }
+        guard !jumpMan.isDying && !turnOffCollisions else { return }
         if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: pie.position, diameter2: pie.frameSize.width / 2) {
             pieArray.remove(id: pie.id)
             jumpMan.dead()
@@ -106,7 +106,7 @@ extension GameManager {
     }
 
     func checkJumpManHit(spring:Spring) {
-        guard !jumpMan.isDying && !testKilled else { return }
+        guard !jumpMan.isDying && !turnOffCollisions else { return }
         if circlesIntersect(center1: jumpMan.position, diameter1: jumpMan.frameSize.width / 2, center2: spring.position, diameter2: spring.frameSize.width / 2) {
             springArray.remove(id: spring.id)
             jumpMan.dead()

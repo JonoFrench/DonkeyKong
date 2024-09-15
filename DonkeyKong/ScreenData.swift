@@ -36,9 +36,11 @@ final class ScreenData:ObservableObject {
     var hasConveyor = false
     var hasLoftLadders = false
     var girderPlugs = 0
-    var pause = false
-    var farCount = 0
-
+    var pause:Bool = false {
+        didSet {
+            print("pause changed")
+        }
+    }
     /// Set Ladders for intro
     func setLadders() {
         for i in 8..<27 {

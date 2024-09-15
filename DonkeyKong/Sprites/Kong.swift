@@ -90,7 +90,7 @@ final class Kong:SwiftUISprite, ObservableObject {
     
     func animateExit(level:Int) {
         animationCounter += 1
-        if animationCounter == 14 {
+        if animationCounter == 20 {
             introCounter -= 1
             introCounter > 0 ? nextStepUp() : NotificationCenter.default.post(name: .notificationNextLevel, object: nil)
             animationCounter = 0

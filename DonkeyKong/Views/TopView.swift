@@ -50,7 +50,6 @@ struct TopView: View {
                 }
             }
             HStack {
-                //Text("HH")
                 HStack(alignment:.firstTextBaseline ,content:
                         {
                     ForEach(0..<manager.lives, id: \.self) {_ in

@@ -149,6 +149,7 @@ extension GameManager {
             showHowHighView(notification: notification)
         } else {
             gameScreen.gameOver = true
+            soundFX.gameOverSound()
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [self] in
                 if hiScores.isNewHiScore(score: score) {
                     hiScores.resetInput()
@@ -163,8 +164,8 @@ extension GameManager {
     
     @objc func nextLevel(notification: Notification) {
         gameScreen.level += 1
-        soundFX.howHighSound()
-        showHowHighView(notification: notification)
+            soundFX.howHighSound()
+            showHowHighView(notification: notification)
     }
     
     @objc func nextGame(notification: Notification) {
@@ -188,6 +189,7 @@ extension GameManager {
         springArray.springs.removeAll()
         kong.isThrowing = true
         pauline.isRescued = true
+        soundFX.endLevelSound()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
             gameScreen.levelEnd = true
             score += bonus

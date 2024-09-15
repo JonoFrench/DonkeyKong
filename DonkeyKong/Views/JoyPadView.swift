@@ -1,16 +1,20 @@
 //
-//  JoyPadView.swift
+//  JoyPadView2.swift
 //  DonkeyKong
 //
-//  Created by Jonathan French on 11.08.24.
+//  Created by Jonathan French on 29.08.24.
 //
 
 import SwiftUI
 
 struct JoyPadView: View {
     @EnvironmentObject var manager: GameManager
+    @GestureState private var _isPressingUp: Bool = false
+    @GestureState private var _isPressingDown: Bool = false
+    @GestureState private var _isPressingLeft: Bool = false
+    @GestureState private var _isPressingRight: Bool = false
+
     var body: some View {
-#if os(iOS)
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 Spacer()
@@ -19,21 +23,26 @@ struct JoyPadView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(90))
-                    .gesture(
-                        DragGesture(minimumDistance: 0) // Adjust duration as needed
-                            .onChanged { _ in
-                                if manager.gameState == .playing {
-                                    if manager.jumpMan.canClimbLadder() {
-                                        manager.jumpMan.calculateLadderHeightUp()
-                                        manager.jumpMan.isClimbingUp = true
-                                    }
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
+                        .sequenced(before: LongPressGesture(minimumDuration: .infinity))
+                        .updating($_isPressingUp) { value, state, transaction in
+                            switch value {
+                            case .second(true, nil): //This means the first Gesture completed
+                                state = true
+                                if manager.gameState == .playing {                                
+                                    manager.moveDirection = .up
                                 }
+                            default: break
                             }
-                            .onEnded { _ in
-                                if manager.gameState == .playing {
-                                }
+                        })
+                    .onChange(of: _isPressingUp) {oldValue, value in
+                        if !value {
+                            if manager.gameState == .playing {                            manager.moveDirection = .stop
+                            } else if manager.gameState == .highscore {
+                                manager.hiScores.letterUp()
                             }
-                    )
+                        }
+                    }
                 Spacer()
             }
             
@@ -42,29 +51,49 @@ struct JoyPadView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
-                    .gesture(
-                        DragGesture(minimumDistance: 0) // Adjust duration as needed
-                            .onChanged { _ in
-                                if manager.gameState == .playing {
-                                    if manager.jumpMan.canMoveLeft() {
-                                        manager.jumpMan.isWalking = true
-                                    }
-                                }
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
+                        .sequenced(before: LongPressGesture(minimumDuration: .infinity))
+                        .updating($_isPressingLeft) { value, state, transaction in
+                            switch value {
+                            case .second(true, nil): //This means the first Gesture completed
+                                state = true
+                                manager.moveDirection = .left
+                            default: break
                             }
-                            .onEnded { _ in
-                                if manager.gameState == .playing {
-                                    manager.jumpMan.isWalking = false
-                                }
-                            }
-                    )
+                        })
+                    .onChange(of: _isPressingLeft) {oldValue, value in
+                        if !value {
+                            manager.moveDirection = .stop
+                        }
+                    }
+                
                 
                 Spacer()
-                
-                // Center Circle
-                Circle()
-                    .fill(Color.black)
-                    .frame(width: 30, height: 30)
-                
+                if manager.gameState == .intro {
+                    // Center Circle
+                    Circle()
+                        .fill(Color.black)
+                        .frame(width: 30, height: 30)
+                        .overlay(alignment: .center, content: {
+                            Text("\(manager.gameScreen.level)")
+                                .foregroundStyle(.white)
+                                .font(.custom("DonkeyKongClassicsNESExtended", size: 8))
+                            //.padding(.bottom, 6)
+                        })
+                        .onTapGesture(count: 2) {
+                            print("Double tapped!")
+                            manager.gameScreen.level += 1
+                            manager.objectWillChange.send()
+                        }
+                } else {
+                    Circle()
+                        .fill(Color.black)
+                        .frame(width: 30, height: 30)
+                        .onTapGesture(count: 3) {
+                            print("Triple tapped!")
+                            manager.gameState = .intro
+                        }
+                }
                 Spacer()
                 
                 Image("ControlDirection")
@@ -72,21 +101,22 @@ struct JoyPadView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(180))
-                    .gesture(
-                        DragGesture(minimumDistance: 0)// Adjust duration as needed
-                            .onChanged { _ in
-                                if manager.gameState == .playing {
-                                    if manager.jumpMan.canMoveRight() {
-                                        manager.jumpMan.isWalking = true
-                                    }
-                                }
+                
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
+                        .sequenced(before: LongPressGesture(minimumDuration: .infinity))
+                        .updating($_isPressingRight) { value, state, transaction in
+                            switch value {
+                            case .second(true, nil): //This means the first Gesture completed
+                                state = true
+                                manager.moveDirection = .right
+                            default: break
                             }
-                            .onEnded { _ in
-                                if manager.gameState == .playing {
-                                    manager.jumpMan.isWalking = false
-                                }
-                            }
-                    )
+                        })
+                    .onChange(of: _isPressingRight) {oldValue, value in
+                        if !value {
+                            manager.moveDirection = .stop
+                        }
+                    }
             }
             
             HStack(spacing: 0) {
@@ -96,29 +126,34 @@ struct JoyPadView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .rotationEffect(.degrees(270))
-                    .gesture(
-                        DragGesture(minimumDistance: 0) // Adjust duration as needed
-                            .onChanged { _ in
+                    .simultaneousGesture(LongPressGesture(minimumDuration: 0.1)
+                        .sequenced(before: LongPressGesture(minimumDuration: .infinity))
+                        .updating($_isPressingDown) { value, state, transaction in
+                            switch value {
+                            case .second(true, nil): //This means the first Gesture completed
+                                state = true
                                 if manager.gameState == .playing {
-                                    if manager.jumpMan.canDecendLadder() {
-                                        manager.jumpMan.calculateLadderHeightDown()
-                                        manager.jumpMan.isClimbingDown = true
-                                    }
+                                    manager.moveDirection = .down
                                 }
+                            default: break
                             }
-                            .onEnded { _ in
-                                if manager.gameState == .playing {
-                                }
+                        })
+                    .onChange(of: _isPressingDown) {oldValue, value in
+                        if !value {
+                            if manager.gameState == .playing {                            manager.moveDirection = .stop
+                            } else if manager.gameState == .highscore {
+                                manager.hiScores.letterDown()
                             }
-                    )
+                        }
+                    }
                 Spacer()
             }
         }
         .frame(width: 180, height: 180)
-#endif
     }
 }
 
 #Preview {
     JoyPadView()
 }
+

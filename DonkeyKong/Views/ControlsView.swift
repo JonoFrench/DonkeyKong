@@ -14,7 +14,7 @@ struct ControlsView: View {
             HStack {
                 Spacer()
                 VStack {
-                    JoyPadView2()
+                    JoyPadView()
                 }
                 Spacer()
                 VStack {

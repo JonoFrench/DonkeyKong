@@ -22,6 +22,8 @@ final class SoundFX {
     private var walkingAudioPlayer: AVAudioPlayer?
     private var win1AudioPlayer: AVAudioPlayer?
     private var win2AudioPlayer: AVAudioPlayer?
+    private var endLevelAudioPlayer: AVAudioPlayer?
+    private var gameOverAudioPlayer: AVAudioPlayer?
 
     private lazy var backgroundurl = Bundle.main.url(forResource: "bacmusic", withExtension: "wav")
     private lazy var deathurl = Bundle.main.url(forResource: "death", withExtension: "wav")
@@ -35,6 +37,8 @@ final class SoundFX {
     private lazy var walkingurl = Bundle.main.url(forResource: "walking", withExtension: "wav")
     private lazy var win1url = Bundle.main.url(forResource: "win1", withExtension: "wav")
     private lazy var win2url = Bundle.main.url(forResource: "win2", withExtension: "wav")
+    private lazy var endLevelurl = Bundle.main.url(forResource: "DKEndLevel", withExtension: "m4a")
+    private lazy var gameOverurl = Bundle.main.url(forResource: "DKGameOver", withExtension: "m4a")
 
     init() {
         do {
@@ -52,6 +56,9 @@ final class SoundFX {
             walkingAudioPlayer = try AVAudioPlayer(contentsOf: walkingurl!, fileTypeHint: AVFileType.wav.rawValue)
             win1AudioPlayer = try AVAudioPlayer(contentsOf: win1url!, fileTypeHint: AVFileType.wav.rawValue)
             win2AudioPlayer = try AVAudioPlayer(contentsOf: win2url!, fileTypeHint: AVFileType.wav.rawValue)
+            endLevelAudioPlayer = try AVAudioPlayer(contentsOf: endLevelurl!, fileTypeHint: AVFileType.m4a.rawValue)
+            gameOverAudioPlayer = try AVAudioPlayer(contentsOf: endLevelurl!, fileTypeHint: AVFileType.m4a.rawValue)
+
         } catch let error {
             print(error.localizedDescription)
         }
@@ -60,7 +67,17 @@ final class SoundFX {
     @objc func play(audioPlayer:AVAudioPlayer){
         audioPlayer.play()
     }
-        
+
+    func gameOverSound(){
+        guard let gameOverAudioPlayer = gameOverAudioPlayer else { return }
+        Thread.detachNewThreadSelector(#selector(play), toTarget: self, with: gameOverAudioPlayer)
+    }
+
+    func endLevelSound(){
+        guard let endLevelAudioPlayer = endLevelAudioPlayer else { return }
+        Thread.detachNewThreadSelector(#selector(play), toTarget: self, with: endLevelAudioPlayer)
+    }
+
     func backgroundSound(){
         guard let backGroundMusicAudioPlayer = backGroundMusicAudioPlayer else { return }
         Thread.detachNewThreadSelector(#selector(play), toTarget: self, with: backGroundMusicAudioPlayer)

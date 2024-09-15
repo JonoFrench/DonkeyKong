@@ -22,7 +22,13 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     var animateCounter: Int = 0
     var isWalking = false
     var wasWalking = false
-    var isfalling = false
+    var isfalling = false {
+        didSet {
+            if isfalling {
+                fallingFrame = 0
+            }
+        }
+    }
     var fallingCount = 0
     var isClimbing = false
     var isClimbingUp = false
@@ -37,7 +43,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     var isJumpingUp:Bool {
         didSet {
-                isJumping = isJumpingUp
+            isJumping = isJumpingUp
         }
     }
     var jumpingUpPoints = [CGPoint]()
@@ -45,6 +51,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     var jumpStartPos = CGPoint()
     let jumpDistance = 3
     var willLandOnLift = false
+    var willLandOffLift = false
     @Published
     var hasHammer = false
 #if os(iOS)
@@ -76,12 +83,12 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     var climbingFrame2 = ImageResource(name: "JMClimb2", bundle: .main)
     var climbingFrame1 = ImageResource(name: "JMClimb3", bundle: .main)
     var dieing:[ImageResource] = [ImageResource(name: "JMDead1", bundle: .main),ImageResource(name: "JMDead2", bundle: .main),ImageResource(name: "JMDead3", bundle: .main),ImageResource(name: "JMDead4", bundle: .main)]
-
+    
     var walking:[ImageResource] = [ImageResource(name: "JM2", bundle: .main),ImageResource(name: "JM2", bundle: .main),ImageResource(name: "JM3", bundle: .main),ImageResource(name: "JM3", bundle: .main),ImageResource(name: "JM1", bundle: .main),ImageResource(name: "JM1", bundle: .main)]
     var climbing:[ImageResource] = [ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb2", bundle: .main),ImageResource(name: "JMClimb2", bundle: .main)]
     var climbing2:[ImageResource] = [ImageResource(name: "JMClimb1", bundle: .main),ImageResource(name: "JMClimb2", bundle: .main),ImageResource(name: "JMClimb3", bundle: .main),ImageResource(name: "JMBack", bundle: .main)]
     ///Certain frames i.e when hammer is down can kill barrels and fireblobs.
-    var hammerDown:[Bool] = [false,false,false,false,true,true,true,true,false,false,false,false,true,true,true,true]
+    var hammerDown:[Bool] = [true,false,false,false,false,true,true,true,true,false,false,false,false,true,true,true,false]
     var hammer1:[ImageResource] = [ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam1", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main),ImageResource(name: "JMHam2", bundle: .main)]
     var hammerWalking:[ImageResource] = [ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam3", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam4", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam5", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main),ImageResource(name: "JMHam6", bundle: .main)]
     
@@ -96,13 +103,11 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     func setupJumpman() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             jumpingUpPoints = generateParabolicPoints(from: CGPoint(x: 0, y: 0), to: CGPoint(x: 2 * resolvedInstance.assetDimension, y: 0),steps: 16, angleInDegrees: 65)
-            print("Jumping points \(jumpingPoints)")
             moveDistanceX = resolvedInstance.assetDimensionStep * Double(GameConstants.jumpmanSpeed)
             moveDataX = 8 / GameConstants.jumpmanSpeed
-            print("moveDistanceX \(moveDistanceX) moveDataX \(moveDataX)")
         }
     }
-    
+    ///Reset JumpMan for each level or restart.
     func reset() {
         currentFrame = standingFrame
         frameSize = normalFrameSize
@@ -133,7 +138,6 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             if isJumping {
                 animateJumping()
             } else if isWalking {
-                //                print("Control Walking")
                 facing == .right ? animateRight() : animateLeft()
             }
             if isClimbing {
@@ -148,6 +152,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             }
             if hasHammer {
                 animateHammer()
+                print("animateHammer \(animateHammerFrame)")
             }
             if isDying {
                 animateDead()
@@ -194,7 +199,13 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     gridOffsetX = 0
                 }
                 /// Level 4 with the Girder plugs
-                if resolvedInstance.level == GameConstants.GirderPlugs {checkGirderPlug(xOffset: xPos - 1)}
+                if resolvedInstance.level == GameConstants.GirderPlugs {
+                    checkGirderPlug(xOffset: xPos - 1)
+                    /// Don't walk into kong on the top of the screen.
+                    if yPos == 7 && xPos == 11 {
+                        dead()
+                    }
+                }
             }
             checkStandingOnBlank()
         }
@@ -230,7 +241,13 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 }
                 
                 /// Level 4 with the Girder plugs
-                if resolvedInstance.level == GameConstants.GirderPlugs {checkGirderPlug(xOffset: xPos + 1)}
+                if resolvedInstance.level == GameConstants.GirderPlugs {
+                    checkGirderPlug(xOffset: xPos + 1)
+                    /// Don't walk into kong on the top of the screen.
+                    if yPos == 7 && xPos == 16 {
+                        dead()
+                    }
+                }
             }
             checkStandingOnBlank()
         }
@@ -272,13 +289,15 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     isfalling = true
                     isWalking = false
                     fallingFrame = 0
-                } else {
+                } else { /// We can fall a bit.
                     isfalling = false
                     if fallingCount > 2 {
                         dead()
                     }
+                    if yPos == 27 {
+                        dead()
+                    }
                 }
-                print("Jumpman falling yPos \(yPos) falling count \(fallingCount)")
             }
         }
     }
@@ -355,14 +374,20 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 isClimbing = false
                 isClimbingUp = false
                 currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                ///Ok so this is just for level 1,2,3 4 is handled elsewhere with the girder plugs
+                ///Finished Level?
+                ///Ok so this is just for level 1 & 3 4 is handled elsewhere with the girder plugs
                 ///
-                if xPos == 17 && yPos == 3  {
+                if xPos == 17 && yPos == 3 && (resolvedInstance.level == GameConstants.Barrels || resolvedInstance.level == GameConstants.Elevators) {
                     currentFrame = standingFrame
                     facing = .left
                     NotificationCenter.default.post(name: .notificationLevelComplete, object: nil)
                 }
-                
+                /// Pie factory Jumpman just has to get to top conveyor.
+                if yPos == 7 && resolvedInstance.level == GameConstants.PieFactory {
+                    currentFrame = standingFrame
+                    facing = xPos < 15 ? .right : .left
+                    NotificationCenter.default.post(name: .notificationLevelComplete, object: nil)
+                }
             }
         }
     }
@@ -411,61 +436,232 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
         isClimbing = false
     }
     
+    func checkForGirder(xPos:Int, yPos: Int) -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in -1...1 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .girder {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func getYForGirder(xPos:Int, yPos: Int) -> Int {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in -1...1 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .girder {
+                    return yPos + i
+                }
+            }
+        }
+        return 0
+    }
+    
+    func checkForLiftUp(xPos:Int, yPos: Int) -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in 0...2 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .liftGirder {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func getYForLiftUp(xPos:Int, yPos: Int) -> Int {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in 0...2 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .liftGirder {
+                    return yPos + i
+                }
+            }
+        }
+        return 0
+    }
+    
+    func checkForLiftDown(xPos:Int, yPos: Int) -> Bool {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in -1...1 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .liftGirder {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func getYForLiftDown(xPos:Int, yPos: Int) -> Int {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            for i in -1...1 {
+                if resolvedInstance.screenData[yPos + i][xPos].assetType == .liftGirder {
+                    return yPos + i
+                }
+            }
+        }
+        return 0
+    }
+    
+    func testJump1() {
+        if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+            if !isJumping {
+                if xPos == 2 && yPos == 20 {
+                    if checkForLiftUp(xPos: xPos + jumpDistance, yPos: yPos) {
+                        let t = getYForLiftUp(xPos: xPos + jumpDistance, yPos: yPos) - yPos
+                        if t == 2 {
+                            print("lift jump test yPos \(t) offset \(resolvedInstance.screenData[yPos + t][xPos+jumpDistance].assetOffset)")
+                            isJumping = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     func jump() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            resolvedInstance.farCount = 0
+            if let resolvedInstance: SoundFX = ServiceLocator.shared.resolve() {
+                resolvedInstance.jumpSound()
+            }
             var jumpOffset = 0.0
             var jumpDifference = 0.0
             var jumpingTo = CGPoint()
             isWalking = false
-            onLiftUp = false
-            onLiftDown = false
             willLandOnLift = false
+            willLandOffLift = false
             jumpYAdjust = 0
             jumpStartPos = position
-            if !isJumpingUp {
+            /// Not a lot to do here if jumping up.
+            if isJumpingUp { return }
+            /// Basic jumping stuff
+            jumpingTo = position
+            if facing == .right {
+                jumpingTo.x += resolvedInstance.assetDimension * CGFloat(jumpDistance)
+            } else {
+                jumpingTo.x -= resolvedInstance.assetDimension * CGFloat(jumpDistance)
+            }
+            
+            /// Elevators level has some slightly more involved jumping we don't need to worry about elsewhere
+            if resolvedInstance.level == GameConstants.Elevators {
                 if facing == .right {
-                    jumpingTo = position
-                    jumpingTo.x += resolvedInstance.assetDimension * CGFloat(jumpDistance) /// Jumping jumpDistance blocks to the right
-                    
-                    if resolvedInstance.level == GameConstants.Elevators && yPos < 26 {
-                        
+                    /// Jumping off a lift
+                    if onLiftUp {
+                        if checkForGirder(xPos: xPos + jumpDistance, yPos: yPos) {
+                            let y = getYForGirder(xPos: xPos + jumpDistance, yPos: yPos)
+                            let pos = calcPositionFromScreen(xPos: xPos + jumpDistance, yPos: y, frameSize: frameSize)
+                            jumpingTo.y = pos.y
+                            jumpYAdjust = y - yPos
+                            willLandOffLift = true
+                        }
+                    } else if onLiftDown {
+                        if checkForGirder(xPos: xPos + jumpDistance, yPos: yPos) {
+                            let y = getYForGirder(xPos: xPos + jumpDistance, yPos: yPos)
+                            let pos = calcPositionFromScreen(xPos: xPos + jumpDistance, yPos: y, frameSize: frameSize)
+                            jumpingTo.y = pos.y
+                            jumpYAdjust = y - yPos
+                            willLandOffLift = true
+                        }
+                    }
+                    /// Jumping onto a lift
+                    if !onLiftUp && !onLiftDown {
                         if xPos < 9 {
                             /// Jumping on to lift going up from the right
-                            if resolvedInstance.screenData[yPos][xPos+jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos][xPos+jumpDistance].assetOffset
-                                print("Lift jumped right on offset \(off)")
-                                jumpYAdjust = -1
-                                print("Lift jumped right will land ok")
-                                jumpingTo.y -= resolvedInstance.assetDimension + ((resolvedInstance.assetDimension / 8) * off)
-                                willLandOnLift = true
-                            }
-                            if resolvedInstance.screenData[yPos+1][xPos+jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos+1][xPos+jumpDistance].assetOffset
-                                print("Lift jumped right on coming up offset \(off)")
-                                print("Lift jumped right will land ok")
-                                jumpingTo.y -= resolvedInstance.assetDimension - ((resolvedInstance.assetDimension / 8) * (8 - off))
+                            if checkForLiftUp(xPos: xPos + jumpDistance, yPos: yPos) {
+                                let y = getYForLiftUp(xPos: xPos + jumpDistance, yPos: yPos)
+                                var pos = calcPositionFromScreen(xPos: xPos + jumpDistance, yPos: yPos, frameSize: frameSize)
+                                let d = y - yPos
+                                if d == 0 {
+                                    pos.y -= resolvedInstance.assetDimension
+                                    jumpYAdjust = -1
+                                }
+                                if d == 2 {
+                                    pos.y += resolvedInstance.assetDimension
+                                    jumpYAdjust = 1
+                                }
+                                jumpingTo.y = pos.y
                                 willLandOnLift = true
                             }
                         } else {
                             /// Jumping on to lift going down from the right
-                            if resolvedInstance.screenData[yPos][xPos+jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos][xPos+jumpDistance].assetOffset
-                                print("Lift going down right jumped on offset \(off)")
-                                jumpYAdjust = -1
-                                jumpingTo.y += resolvedInstance.assetDimension + ((resolvedInstance.assetDimension / 8) * off)
-                                willLandOnLift = true
-                            }
-                            if resolvedInstance.screenData[yPos-1][xPos+jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos-1][xPos+jumpDistance].assetOffset
-                                print("Lift going down right jumped on coming down offset \(off)")
-                                jumpingTo.y -= resolvedInstance.assetDimension - ((resolvedInstance.assetDimension / 8) * (8 - off))
-                                willLandOnLift = true
-                            }
-
+                            if checkForLiftDown(xPos: xPos + jumpDistance, yPos: yPos) {
+                                let y = getYForLiftDown(xPos: xPos + jumpDistance, yPos: yPos)
+                                var pos = calcPositionFromScreen(xPos: xPos + jumpDistance, yPos: yPos, frameSize: frameSize)
+                                let d = y - yPos
+                                if d == 0 {
+                                    pos.y += resolvedInstance.assetDimension
+                                    jumpYAdjust = +1
+                                }
+                                if d == 2 {
+                                    pos.y -= resolvedInstance.assetDimension
+                                    jumpYAdjust = -1
+                                }
+                                jumpingTo.y = pos.y
+                                willLandOnLift = true                            }
                         }
                     }
-                    if !willLandOnLift {
+                    jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: 65)
+                    
+                } else { /// Facing left
+                    /// Jumping off a lift
+                    if onLiftUp {
+                        if checkForGirder(xPos: xPos - jumpDistance, yPos: yPos) {
+                            let y = getYForGirder(xPos: xPos - jumpDistance, yPos: yPos)
+                            let pos = calcPositionFromScreen(xPos: xPos - jumpDistance, yPos: y, frameSize: frameSize)
+                            jumpingTo.y = pos.y
+                            jumpYAdjust = y - yPos
+                            willLandOffLift = true
+                        }
+                    } else if onLiftDown {
+                        if checkForGirder(xPos: xPos - jumpDistance, yPos: yPos) {
+                            let y = getYForGirder(xPos: xPos - jumpDistance, yPos: yPos)
+                            let pos = calcPositionFromScreen(xPos: xPos - jumpDistance, yPos: y, frameSize: frameSize)
+                            jumpingTo.y = pos.y
+                            jumpYAdjust = y - yPos
+                            willLandOffLift = true
+                        }
+                    }
+                    /// Jumping onto a lift from left
+                    if !onLiftUp && !onLiftDown {
+                        if xPos < 9 {
+                            /// Jumping on to lift going up from the left
+                            if checkForLiftUp(xPos: xPos - jumpDistance, yPos: yPos) {
+                                let y = getYForLiftUp(xPos: xPos - jumpDistance, yPos: yPos)
+                                var pos = calcPositionFromScreen(xPos: xPos - jumpDistance, yPos: yPos, frameSize: frameSize)
+                                let d = y - yPos
+                                if d == 0 {
+                                    pos.y -= resolvedInstance.assetDimension
+                                    jumpYAdjust = -1
+                                }
+                                if d == 2 {
+                                    pos.y += resolvedInstance.assetDimension
+                                    jumpYAdjust = 1
+                                }
+                                jumpingTo.y = pos.y
+                                willLandOnLift = true
+                            }
+                        } else {
+                            /// Jumping on to lift going down from the right
+                            if checkForLiftDown(xPos: xPos - jumpDistance, yPos: yPos) {
+                                let y = getYForLiftDown(xPos: xPos - jumpDistance, yPos: yPos)
+                                var pos = calcPositionFromScreen(xPos: xPos - jumpDistance, yPos: yPos, frameSize: frameSize)
+                                let d = y - yPos
+                                if d == 0 {
+                                    pos.y += resolvedInstance.assetDimension
+                                    jumpYAdjust = +1
+                                }
+                                if d == 2 {
+                                    pos.y -= resolvedInstance.assetDimension
+                                    jumpYAdjust = -1
+                                }
+                                jumpingTo.y = pos.y
+                                willLandOnLift = true                            }
+                        }
+                    }
+                    jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: -65)
+                }
+                
+                if !willLandOnLift && !willLandOffLift {
+                    if facing == .right {
                         if resolvedInstance.screenData[yPos][xPos+jumpDistance].assetBlank() {
                             if resolvedInstance.screenData[yPos-1][xPos+jumpDistance].assetType == .girder {
                                 jumpYAdjust = -1
@@ -475,7 +671,6 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                                 jumpYAdjust = 1
                                 jumpingTo.y += resolvedInstance.assetDimension
                             }
-                            print ("Jumpman jumping up or down a bit right\(jumpYAdjust)")
                         }
                         if xPos < resolvedInstance.screenDimensionX - 3 {
                             jumpOffset = getOffsetForPosition(xPos: xPos + jumpDistance, yPos: yPos + jumpYAdjust)
@@ -485,66 +680,22 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         if jumpOffset != currentHeightOffset {
                             if jumpOffset > currentHeightOffset {
                                 jumpDifference = jumpOffset - currentHeightOffset
-                                                            print("Jumpman right up jumpDifference \(jumpDifference)")
                                 jumpingTo.y -= jumpDifference * resolvedInstance.assetDimensionStep
                             } else {
                                 jumpDifference = currentHeightOffset - jumpOffset
-                                                            print("Jumpman right down jumpDifference \(jumpDifference)")
                                 jumpingTo.y += jumpDifference * resolvedInstance.assetDimensionStep
                             }
                         }
-                    }
-                    jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 15, angleInDegrees: 65)
-                } else {
-                    jumpingTo = position
-                    jumpingTo.x -= resolvedInstance.assetDimension * CGFloat(jumpDistance)
-                    if resolvedInstance.level == GameConstants.Elevators && yPos < 26 {
-                        if xPos < 9 {
-                            /// Jumping on to lift going up from the left
-                            if resolvedInstance.screenData[yPos][xPos-jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos][xPos-jumpDistance].assetOffset
-                                print("Lift jumped left on offset \(off)")
-                                jumpYAdjust = -1
-                                print("Lift jumped left will land ok")
-                                jumpingTo.y -= resolvedInstance.assetDimension + ((resolvedInstance.assetDimension / 8) * off)
-                                willLandOnLift = true
-                            }
-                            if resolvedInstance.screenData[yPos+1][xPos-jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos+1][xPos-jumpDistance].assetOffset
-                                print("Lift jumped left on coming up offset \(off)")
-                                print("Lift jumped left will land ok")
-                                jumpingTo.y -= resolvedInstance.assetDimension - ((resolvedInstance.assetDimension / 8) * (8 - off))
-                                willLandOnLift = true
-                            }
-                        } else {
-                            /// Jumping on to lift going down from the left
-                            if resolvedInstance.screenData[yPos][xPos-jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos][xPos-jumpDistance].assetOffset
-                                print("Lift going down left jumped on offset \(off)")
-                                jumpYAdjust = -1
-                                jumpingTo.y += resolvedInstance.assetDimension + ((resolvedInstance.assetDimension / 8) * off)
-                                willLandOnLift = true
-                            }
-                            if resolvedInstance.screenData[yPos-1][xPos-jumpDistance].assetType == .liftGirder {
-                                let off = resolvedInstance.screenData[yPos-1][xPos-jumpDistance].assetOffset
-                                print("Lift going down left jumped on coming down offset \(off)")
-                                jumpingTo.y -= resolvedInstance.assetDimension - ((resolvedInstance.assetDimension / 8) * (8 - off))
-                                willLandOnLift = true
-                            }
-
-                        }
-                    }
-                    if !willLandOnLift {
+                        jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: 65)
+                    } else { /// Left
                         if resolvedInstance.screenData[yPos][xPos-jumpDistance].assetBlank() {
                             if resolvedInstance.screenData[yPos-1][xPos-jumpDistance].assetType == .girder {
                                 jumpYAdjust = -1
                                 jumpingTo.y -= resolvedInstance.assetDimension
-                                print ("Jumpman jumping up a bit left\(jumpYAdjust)")
                             }
                             if resolvedInstance.screenData[yPos+1][xPos-jumpDistance].assetType == .girder {
                                 jumpYAdjust = 1
                                 jumpingTo.y += resolvedInstance.assetDimension
-                                print ("Jumpman jumping down a bit left\(jumpYAdjust)")
                             }
                         }
                         if xPos > 1 {
@@ -555,23 +706,56 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         if jumpOffset != currentHeightOffset {
                             if jumpOffset > currentHeightOffset {
                                 jumpDifference = jumpOffset - currentHeightOffset
-                                //                            print("Jumpman left up jumpDifference \(jumpDifference)")
                                 jumpingTo.y -= jumpDifference * resolvedInstance.assetDimensionStep
                             } else {
                                 jumpDifference = currentHeightOffset - jumpOffset
-                                //                            print("Jumpman left down jumpDifference \(jumpDifference)")
                                 jumpingTo.y += jumpDifference * resolvedInstance.assetDimensionStep
                             }
                         }
-                        
+                        jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: -65)
+                    }
+                }
+                jumpingPoints[16] = jumpingTo
+                onLiftUp = false
+                onLiftDown = false
+            }
+            else { /// Normal jumping
+                if facing == .right {
+                    if xPos < resolvedInstance.screenDimensionX - 3 {
+                        jumpOffset = getOffsetForPosition(xPos: xPos + jumpDistance, yPos: yPos + jumpYAdjust)
+                    } else {
+                        jumpOffset = currentHeightOffset
+                    }
+                    if jumpOffset != currentHeightOffset {
+                        if jumpOffset > currentHeightOffset {
+                            jumpDifference = jumpOffset - currentHeightOffset
+                            jumpingTo.y -= jumpDifference * resolvedInstance.assetDimensionStep
+                        } else {
+                            jumpDifference = currentHeightOffset - jumpOffset
+                            jumpingTo.y += jumpDifference * resolvedInstance.assetDimensionStep
+                        }
+                    }
+                    jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 15, angleInDegrees: 65)
+                } else { /// Left
+                    if xPos > 1 {
+                        jumpOffset = getOffsetForPosition(xPos: xPos - jumpDistance, yPos: yPos + jumpYAdjust)
+                    } else {
+                        jumpOffset = currentHeightOffset
+                    }
+                    if jumpOffset != currentHeightOffset {
+                        if jumpOffset > currentHeightOffset {
+                            jumpDifference = jumpOffset - currentHeightOffset
+                            jumpingTo.y -= jumpDifference * resolvedInstance.assetDimensionStep
+                        } else {
+                            jumpDifference = currentHeightOffset - jumpOffset
+                            jumpingTo.y += jumpDifference * resolvedInstance.assetDimensionStep
+                        }
                     }
                     jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 15, angleInDegrees: -65)
                 }
                 jumpingPoints[15] = jumpingTo
+                return
             }
-        }
-        if let resolvedInstance: SoundFX = ServiceLocator.shared.resolve() {
-            resolvedInstance.jumpSound()
         }
     }
     
@@ -588,9 +772,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 position.x = 386.33
                 xPos = 27
             }
-            
         }
-        calcFromPosition()
         jumpingFrame += 1
         if !isJumpingUp {
             if jumpingFrame == jumpingPoints.count {
@@ -607,38 +789,37 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func finishJump() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            print("Lift moved \(resolvedInstance.farCount)")
+            yPos += jumpYAdjust ///This is going to be + or - so add it!
+            currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+            isWalking = wasWalking
+            
             if facing == .left && !isJumpingUp  {
                 if xPos - jumpDistance < 0 {
                     xPos = 0
                 } else {
                     xPos -= jumpDistance
                 }
-                yPos += jumpYAdjust ///This is going to be + or - so add it!
-                currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                isWalking = wasWalking
             } else if facing == .right && !isJumpingUp {
                 if xPos + jumpDistance > resolvedInstance.screenDimensionX - 2 {
                     xPos = resolvedInstance.screenDimensionX - 2
                 } else {
                     xPos += jumpDistance
                 }
-                yPos += jumpYAdjust
-                currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
-                isWalking = wasWalking
             }
             if willLandOnLift {
                 if xPos == 4 || xPos == 5 {
                     onLiftUp = true
-                    print("On Lift jumped lift up")
                 } else {
-                    print("On Lift jumped lift down")
                     onLiftDown = true
                 }
                 willLandOnLift = false
+            } else if willLandOffLift {
+                currentHeightOffset = resolvedInstance.screenData[yPos][xPos].assetOffset
+                onLiftUp = false
+                onLiftDown = false
             }
             printPosition()
-
+            
             isJumping = false
             isJumpingUp = false
             if hasHammer {
@@ -651,20 +832,17 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             if !onLiftUp && !onLiftDown {
                 if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
                     if resolvedInstance.screenData[yPos][xPos].assetType == .LiftPoleL || resolvedInstance.screenData[yPos][xPos].assetType == .LiftPoleR || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
-                        fallingFrame = 0
                         isfalling = true
                     } else if resolvedInstance.screenData[yPos][xPos].assetBlank() {
-                        fallingFrame = 0
                         isfalling = true
                     }
                 }
             } else {
                 if resolvedInstance.screenData[yPos][xPos].assetBlank() {
-                    fallingFrame = 0
                     isfalling = true
                 }
             }
-            print("Finished Jump X:\(xPos) y:\(yPos)")
+            currentFrame = standingFrame
         }
     }
     
@@ -674,7 +852,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     
     func canMoveLeft() -> Bool {
-        guard xPos >= 0 && !isfalling else {
+        guard xPos >= 0 && (!isfalling && !isClimbingUp && !isClimbingDown) else {
             return false
         }
         return true
@@ -682,7 +860,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func canMoveRight() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            guard xPos < resolvedInstance.screenDimensionX - 2 && !isfalling else {
+            guard xPos < resolvedInstance.screenDimensionX - 2 && (!isfalling && !isClimbingUp && !isClimbingDown) else {
                 return false
             }
         }
@@ -755,18 +933,17 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             }
             animateCounter = 0
         }
-
+        
     }
     
     /// Level 2 Conveyor belts!
     ///
     func conveyor(direction:ConveyorDirection) {
-        guard !isClimbing else {return}
+        guard !isClimbing && !isJumping else {return}
         conveyorFrame += 1
         if conveyorFrame == 4 {
             conveyorFrame = 0
             if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-                
                 if yPos == 22 {
                     if resolvedInstance.screenData[yPos][xPos].assetType == .conveyor {
                         if direction == .left {
@@ -797,18 +974,15 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         }
                         
                     } else {
-                        //                            guard xPos >= 18 else { return }
                         position.x -= moveDistanceX
                         gridOffsetX -= 1
                         if gridOffsetX == -1 {
                             xPos -= 1
                             gridOffsetX = moveDataX - 1
                         }
-                        
                     }
                 }
                 else if yPos == 7 {
-                    
                 }
                 printPosition()
             }
