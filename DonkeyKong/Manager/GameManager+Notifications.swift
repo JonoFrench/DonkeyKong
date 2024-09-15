@@ -102,7 +102,7 @@ extension GameManager {
     
     @objc func removePie(notification: Notification) {
         if let id = notification.userInfo?["id"] as? UUID {
-            barrelArray.remove(id: id)
+            pieArray.remove(id: id)
         }
     }
     

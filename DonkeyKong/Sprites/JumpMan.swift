@@ -115,6 +115,9 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
         gridOffsetY = 0
         isJumping = false
         isJumpingUp = false
+        isClimbing = false
+        isClimbingUp = false
+        isClimbingDown = false
         facing = .right
         onLiftUp = false
         onLiftDown = false
@@ -206,6 +209,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         dead()
                     }
                 }
+                printPosition()
             }
             checkStandingOnBlank()
         }
@@ -248,6 +252,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         dead()
                     }
                 }
+                printPosition()
             }
             checkStandingOnBlank()
         }
@@ -737,7 +742,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     }
                     jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 15, angleInDegrees: 65)
                 } else { /// Left
-                    if xPos > 1 {
+                    if xPos > 2 {
                         jumpOffset = getOffsetForPosition(xPos: xPos - jumpDistance, yPos: yPos + jumpYAdjust)
                     } else {
                         jumpOffset = currentHeightOffset
@@ -765,6 +770,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
             position.y = jumpStartPos.y + jumpingUpPoints[jumpingFrame].y
         } else {
             position = jumpingPoints[jumpingFrame]
+#if os(iOS)
             if position.x < 6.77 {
                 position.x = 6.77
                 xPos = 0
@@ -772,6 +778,17 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 position.x = 386.33
                 xPos = 27
             }
+#elseif os(tvOS)
+            if position.x < 14.48 {
+                position.x = 14.48
+                xPos = 0
+            } else if position.x > 815.58 {
+                position.x = 815.58
+                xPos = 27
+            }
+
+            
+#endif
         }
         jumpingFrame += 1
         if !isJumpingUp {
@@ -847,12 +864,12 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     
     func canJump()-> Bool {
-        if !hasHammer && !isfalling && !isClimbing && !isJumping { return true }
+        if !hasHammer && !isfalling && !isClimbing && !isJumping && !isDying { return true }
         return false
     }
     
     func canMoveLeft() -> Bool {
-        guard xPos >= 0 && (!isfalling && !isClimbingUp && !isClimbingDown) else {
+        guard xPos >= 0 && (!isfalling && !isClimbingUp && !isClimbingDown && !isDying) else {
             return false
         }
         return true
@@ -860,7 +877,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func canMoveRight() -> Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
-            guard xPos < resolvedInstance.screenDimensionX - 2 && (!isfalling && !isClimbingUp && !isClimbingDown) else {
+            guard xPos < resolvedInstance.screenDimensionX - 2 && (!isfalling && !isClimbingUp && !isClimbingDown && !isDying) else {
                 return false
             }
         }
@@ -904,6 +921,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     }
     
     func dead(){
+        guard !isDying else {return}
         isWalking = false
         isClimbing = false
         isJumping = false

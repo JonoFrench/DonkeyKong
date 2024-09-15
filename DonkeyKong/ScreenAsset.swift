@@ -2931,7 +2931,7 @@ struct Screens {
          ScreenAsset(assetType: .girder, assetOffset: 0.0),
          ScreenAsset(assetType: .girder, assetOffset: 0.0),
          ScreenAsset(assetType: .girder, assetOffset: 0.0),
-         ScreenAsset(assetType: .girder, assetOffset: 0.0)
+         ScreenAsset(assetType: .blank, assetOffset: 0.0)
         ]
         
     ]

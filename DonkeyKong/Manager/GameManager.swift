@@ -101,7 +101,13 @@ class GameManager: ObservableObject {
     }
     /// So we can turn off Jumpman collisions to test
     var turnOffCollisions = false
-    var checkCounter = 0
+    var checkCounter:Int = 0 {
+        didSet {
+            if checkCounter > 4 {
+                checkCounter = 0
+            }
+        }
+    }
     
     init() {
         moveDirection = .stop
@@ -227,7 +233,7 @@ class GameManager: ObservableObject {
                                     checkFireBlobJumped(fireBlob: fireBlob)
                                 }
                             }
-                            if checkCounter >= 4 { checkCounter = 0}
+                            //if checkCounter >= 4 { checkCounter = 0}
                         }
                         if gameScreen.level == GameConstants.PieFactory {
                             checkCounter += 1
@@ -280,7 +286,7 @@ class GameManager: ObservableObject {
                                 }
                             }
                             lift.move()
-                            if checkCounter >= 4 { checkCounter = 0}
+                           // if checkCounter >= 4 { checkCounter = 0}
                         }
                         if gameScreen.level == GameConstants.GirderPlugs {
                             checkCounter += 1
@@ -294,7 +300,7 @@ class GameManager: ObservableObject {
                                 }
                                 fireBlob.hasHammer = jumpMan.hasHammer
                             }
-                            if checkCounter >= 4 { checkCounter = 0}
+                           // if checkCounter >= 4 { checkCounter = 0}
                         }
                     }
                 } else {

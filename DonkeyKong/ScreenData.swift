@@ -19,7 +19,7 @@ final class ScreenData:ObservableObject {
     var gameSize = CGSize()
     var screenSize = CGSize()
     @Published
-    var level:Int = 1 {
+    var level:Int = 3 {
         didSet {
             if level > 4 {
                 level = 1

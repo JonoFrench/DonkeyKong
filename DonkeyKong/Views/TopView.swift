@@ -22,13 +22,11 @@ struct TopView: View {
     var body: some View {
         VStack {
             HStack {
-                //Spacer()
                 VStack {
                     Text("1UP")
                         .foregroundStyle(.red)
                         .font(.custom("DonkeyKongClassicsNESExtended", size: TopView.topTextSize))
                         .padding([.leading])
-                    //Spacer()
                     Text("\(String(format: "%06d", manager.score))")
                         .foregroundStyle(.white)
                         .font(.custom("DonkeyKongClassicsNESExtended", size: TopView.topTextSize))
@@ -40,13 +38,10 @@ struct TopView: View {
                         .foregroundStyle(.red)
                         .font(.custom("DonkeyKongClassicsNESExtended", size: TopView.topTextSize))
                         .padding([.trailing])
-                    //Spacer()
                     Text("\(String(format: "%06d", manager.hiScores.highScore))")
                         .foregroundStyle(.white)
                         .font(.custom("DonkeyKongClassicsNESExtended", size: TopView.topTextSize))
                         .padding([.trailing])
-
-                    
                 }
             }
             HStack {
