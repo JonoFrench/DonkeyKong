@@ -261,11 +261,30 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     func checkStandingOnBlank() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             /// On empty space, but just in the middle!
-            if resolvedInstance.screenData[yPos][xPos].assetBlank() && gridOffsetX == 1 {
-                fallingCount = 0
-                isfalling = true
-                isWalking = false
+            if resolvedInstance.level == GameConstants.Elevators {
+                if resolvedInstance.screenData[yPos][xPos].assetBlank() && resolvedInstance.screenData[yPos][xPos+1].assetType != .girder && gridOffsetX > 2 && facing == .right {
+                    fallingCount = 0
+                    isfalling = true
+                    isWalking = false
+                }
+                if resolvedInstance.screenData[yPos][xPos].assetBlank() && resolvedInstance.screenData[yPos][xPos-1].assetType != .girder && gridOffsetX < 1 && facing == .left {
+                    fallingCount = 0
+                    isfalling = true
+                    isWalking = false
+                }
+            } else {
+                if resolvedInstance.screenData[yPos][xPos].assetBlank() && gridOffsetX > 1 && facing == .right {
+                    fallingCount = 0
+                    isfalling = true
+                    isWalking = false
+                }
+                if resolvedInstance.screenData[yPos][xPos].assetBlank() && gridOffsetX < 2 && facing == .left {
+                    fallingCount = 0
+                    isfalling = true
+                    isWalking = false
+                }
             }
+
         }
     }
     
@@ -280,6 +299,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
     
     func fall() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
+print("Jumpman falling")
             let speedAdjust = 2
             position.y += resolvedInstance.assetDimensionStep * Double(speedAdjust)
             fallingFrame += 1
@@ -297,6 +317,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                 } else { /// We can fall a bit.
                     isfalling = false
                     if fallingCount > 2 {
+                        print("Jumpman falling and dead \(gridOffsetX)")
                         dead()
                     }
                     if yPos == 27 {
@@ -664,10 +685,10 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     }
                     jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: -65)
                 }
-                
+                /// Nornal jumping on elevator level, except you can jump up and down the girders
                 if !willLandOnLift && !willLandOffLift {
                     if facing == .right {
-                        if resolvedInstance.screenData[yPos][xPos+jumpDistance].assetBlank() {
+                        if resolvedInstance.screenData[yPos][xPos+jumpDistance].assetBlank() || resolvedInstance.screenData[yPos][xPos+jumpDistance].assetType == .ladder {
                             if resolvedInstance.screenData[yPos-1][xPos+jumpDistance].assetType == .girder {
                                 jumpYAdjust = -1
                                 jumpingTo.y -= resolvedInstance.assetDimension
@@ -693,7 +714,7 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                         }
                         jumpingPoints = generateParabolicPoints(from: position, to: jumpingTo,steps: 16, angleInDegrees: 65)
                     } else { /// Left
-                        if resolvedInstance.screenData[yPos][xPos-jumpDistance].assetBlank() {
+                        if resolvedInstance.screenData[yPos][xPos-jumpDistance].assetBlank() || resolvedInstance.screenData[yPos][xPos-jumpDistance].assetType == .ladder {
                             if resolvedInstance.screenData[yPos-1][xPos-jumpDistance].assetType == .girder {
                                 jumpYAdjust = -1
                                 jumpingTo.y -= resolvedInstance.assetDimension
@@ -851,7 +872,9 @@ final class JumpMan:SwiftUISprite,Moveable,Animatable, ObservableObject {
                     if resolvedInstance.screenData[yPos][xPos].assetType == .LiftPoleL || resolvedInstance.screenData[yPos][xPos].assetType == .LiftPoleR || resolvedInstance.screenData[yPos][xPos].assetType == .ladder {
                         isfalling = true
                     } else if resolvedInstance.screenData[yPos][xPos].assetBlank() {
-                        isfalling = true
+                        if resolvedInstance.screenData[yPos][xPos+1].assetType != .girder && gridOffsetX < 3 {
+                            isfalling = true
+                        }
                     }
                 }
             } else {

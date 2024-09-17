@@ -133,7 +133,7 @@ class GameManager: ObservableObject {
         lives = 3
         score = 0
         jumpMan.setupJumpman()
-        //turnOffCollisions = true
+//        turnOffCollisions = true
         if gameScreen.level == 1 {
             setKongIntro()   /// If we don't want the intro....
         } else {
@@ -233,7 +233,6 @@ class GameManager: ObservableObject {
                                     checkFireBlobJumped(fireBlob: fireBlob)
                                 }
                             }
-                            //if checkCounter >= 4 { checkCounter = 0}
                         }
                         if gameScreen.level == GameConstants.PieFactory {
                             checkCounter += 1
@@ -286,7 +285,6 @@ class GameManager: ObservableObject {
                                 }
                             }
                             lift.move()
-                           // if checkCounter >= 4 { checkCounter = 0}
                         }
                         if gameScreen.level == GameConstants.GirderPlugs {
                             checkCounter += 1
@@ -300,7 +298,6 @@ class GameManager: ObservableObject {
                                 }
                                 fireBlob.hasHammer = jumpMan.hasHammer
                             }
-                           // if checkCounter >= 4 { checkCounter = 0}
                         }
                     }
                 } else {
@@ -445,8 +442,8 @@ class GameManager: ObservableObject {
     ///Lifts or Elevators Level 3
     func setLevel3() {
         gameScreen.hasSprings  = true
-                jumpMan.setPosition(xPos: 1, yPos: 25)
-        //jumpMan.setPosition(xPos: 7, yPos: 13)
+        jumpMan.setPosition(xPos: 1, yPos: 25)
+        //jumpMan.setPosition(xPos: 21, yPos: 17)
         pauline.setPosition(xPos: 14, yPos: 3)
         pauline.isShowing = true
         kong.setPosition(xPos: 5, yPos: 7)
