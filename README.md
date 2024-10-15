@@ -1,6 +1,4 @@
-Here’s a draft README file for your **Donkey Kong** project, similar to the one created for your Asteroids repo:
 
----
 
 # Donkey Kong - SwiftUI Game for iPhone and Apple TV
 
@@ -44,5 +42,3 @@ This is a SwiftUI-based version of the classic **Donkey Kong** game. It runs on 
 This project is licensed under the MIT License.
 
 ---
-
-Make sure to add any specific screenshots you want, and ensure they are placed in a "Screenshots" directory within your repository.
