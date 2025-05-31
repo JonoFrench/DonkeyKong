@@ -49,6 +49,7 @@ struct ElevatorView: View {
         }
         .background(.clear)
         .frame(width: 1,height: 1,alignment: .center)
+        .position(elevator.position)
     }
 }
 

@@ -140,7 +140,8 @@ struct JoyPadView: View {
                         })
                     .onChange(of: _isPressingDown) {oldValue, value in
                         if !value {
-                            if manager.gameState == .playing {                            manager.moveDirection = .stop
+                            if manager.gameState == .playing {                            
+                                manager.moveDirection = .stop
                             } else if manager.gameState == .highscore {
                                 manager.hiScores.letterDown()
                             }

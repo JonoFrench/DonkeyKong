@@ -29,5 +29,6 @@ struct FireBlobView: View {
             }
         }.background(.clear)
             .frame(width: 1,height: 1,alignment: .center)
+            .position(fireBlob.position)
     }
 }

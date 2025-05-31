@@ -26,5 +26,7 @@ struct BarrelView: View {
 //                })
         }.background(.clear)
             .frame(width: 1,height: 1,alignment: .center)
+            .position(barrel.position)
+//            .frame(width: 1,height: 1,alignment: .center)
     }
 }

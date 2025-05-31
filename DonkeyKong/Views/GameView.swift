@@ -59,14 +59,12 @@ struct GameView: View {
             ForEach(barrelArray.barrels, id: \.id) { barrel in
                 if barrel.isShowing {
                     BarrelView(barrel: barrel)
-                        .position(barrel.position)
                         .zIndex(2.1)
                 }
             }
             ForEach(fireBlobArray.fireblob, id: \.id) { fireBlob in
                 if fireBlob.isShowing {
                     FireBlobView(fireBlob: fireBlob)
-                        .position(fireBlob.position)
                         .zIndex(2.2)
                 }
             }
@@ -80,14 +78,12 @@ struct GameView: View {
             if manager.gameScreen.hasElevators {
                 ForEach(elevatorArray.elevators, id: \.id) { elevator in
                     ElevatorView(elevator: elevator)
-                        .position(elevator.position)
                         .zIndex(1.85)
                 }
             }
             if manager.gameScreen.hasSprings {
                 ForEach(springArray.springs, id: \.id) { spring in
                     SpringView(spring: spring)
-                        .position(spring.position)
                         .zIndex(2.3)
                 }
             }
@@ -99,7 +95,6 @@ struct GameView: View {
                 }
                 ForEach(pieArray.pies, id: \.id) { pie in
                     PieView(pie: pie)
-                        .position(pie.position)
                         .zIndex(1.85)
                 }
                 

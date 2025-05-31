@@ -131,7 +131,6 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
             self.direction = hoppingTodirection
             setPosition(xPos: hoppingToX, yPos: hoppingToY)
         }
-        updateScreenArray()
     }
     
     func moveFrame() {
@@ -277,7 +276,6 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
                     }
 
                 }
-                updateScreenArray()
             }
         }
     }
@@ -303,13 +301,7 @@ final class FireBlob: SwiftUISprite,Animatable, ObservableObject {
         }
         return false
     }
-    
-    private func updateScreenArray() {
-        if let resolvedInstance: FireBlobArray = ServiceLocator.shared.resolve() {
-            resolvedInstance.objectWillChange.send()
-        }
-    }
-    
+        
     override func calculateLadderHeightUp() {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
             let endPosition = calcPositionFromScreen(xPos: xPos, yPos: yPos-4,frameSize: frameSize)

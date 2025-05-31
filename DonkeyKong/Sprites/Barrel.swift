@@ -214,17 +214,10 @@ final class Barrel:SwiftUISprite,Animatable, Moveable, ObservableObject {
                         }
                     }
                 }
-                updateScreenArray()
             }
         }
     }
-    
-    private func updateScreenArray() {
-        if let resolvedInstance: BarrelArray = ServiceLocator.shared.resolve() {
-            resolvedInstance.objectWillChange.send()
-        }
-    }
-    
+        
     /// If barrel goes over ladder 1 in 3 of it dropping down
     private func checkLadderDrop() ->Bool {
         if let resolvedInstance: ScreenData = ServiceLocator.shared.resolve() {
